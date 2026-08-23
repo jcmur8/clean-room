@@ -1,0 +1,1 @@
+export function assert(cond,msg='Assertion failed'){if(!cond)throw new Error(msg)}export function equal(a,b,msg='Values differ'){if(JSON.stringify(a)!==JSON.stringify(b))throw new Error(msg+` (${JSON.stringify(a)} !== ${JSON.stringify(b)})`)}

@@ -1,0 +1,1 @@
+let current='home';export function navigate(name,params={}){current=name;window.dispatchEvent(new CustomEvent('route',{detail:{name,params}}))}export function currentRoute(){return current}

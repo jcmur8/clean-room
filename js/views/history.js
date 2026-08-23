@@ -1,0 +1,1 @@
+export{renderParentDashboard as render}from './parent-dashboard.js';export const section='history';

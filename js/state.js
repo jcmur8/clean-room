@@ -1,0 +1,1 @@
+let state=null;const subs=new Set();export function setState(s){state=s;for(const f of subs)f(state)}export function getState(){return state}export function update(fn){setState(fn(state));return state}export function subscribe(fn){subs.add(fn);return()=>subs.delete(fn)}

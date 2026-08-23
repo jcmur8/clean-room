@@ -1,0 +1,46 @@
+@keyframes wobble{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg) scale(1.02)}}@keyframes pop{0%{transform:scale(.9);opacity:.2}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}.celebrate{animation:pop .6s ease-out}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}.monster.messy{animation:none}}body.reduce-motion *{animation:none!important;transition:none!important}
+@keyframes confetti-fall {
+  0% { transform: translate3d(0,-12vh,0) rotate(0deg); opacity: 0; }
+  8% { opacity: 1; }
+  100% { transform: translate3d(var(--drift),110vh,0) rotate(var(--spin)); opacity: .95; }
+}
+@keyframes victory-bounce {
+  0%,100% { transform: translateY(0) scale(1); }
+  45% { transform: translateY(-18px) scale(1.08); }
+}
+@keyframes star-pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+@keyframes timer-urgent {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+.confetti-layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 100;
+}
+.confetti-piece {
+  position: absolute;
+  left: var(--x);
+  top: -10vh;
+  font-size: 20px;
+  color: var(--blue);
+  animation: confetti-fall var(--fall) linear var(--delay) forwards;
+}
+.confetti-piece[data-variant="1"] { color: var(--green); }
+.confetti-piece[data-variant="2"] { color: var(--gold); }
+.confetti-piece[data-variant="3"] { color: var(--orange); }
+.confetti-piece[data-variant="4"] { color: var(--red); }
+.final-confetti .confetti-piece { font-size: 26px; }
+.celebration-monster { animation: victory-bounce .75s ease-in-out 2; }
+.celebration-stars,.victory-stars { animation: star-pulse .65s ease-in-out 2; }
+.victory-monster { animation: victory-bounce .7s ease-in-out 4; }
+.mission-countdown.urgent { animation: timer-urgent .65s ease-in-out infinite; }
+@media(prefers-reduced-motion:reduce){
+  .confetti-layer{display:none!important}
+}
+body.reduce-motion .confetti-layer{display:none!important}
