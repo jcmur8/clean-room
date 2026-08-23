@@ -1,1 +1,16 @@
-export function applyAccessibility(settings){document.body.classList.toggle('reduce-motion',!!settings.reducedMotion)}export function focusMain(){requestAnimationFrame(()=>document.querySelector('main')?.focus())}export function announce(msg){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.className='toast';setTimeout(()=>{t.textContent='';t.className=''},2200)}
+export function applyAccessibility(settings) {
+  document.body.classList.toggle("reduce-motion", !!settings.reducedMotion);
+}
+export function focusMain() {
+  requestAnimationFrame(() => document.querySelector("main")?.focus());
+}
+export function announce(msg) {
+  const t = document.getElementById("toast");
+  if (!t) return;
+  t.textContent = msg;
+  t.className = "toast";
+  setTimeout(() => {
+    t.textContent = "";
+    t.className = "";
+  }, 2200);
+}

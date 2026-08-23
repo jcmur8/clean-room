@@ -15,7 +15,7 @@ export function pauseTimer(timer, now = Date.now()) {
     ...timer,
     accumulatedMs: elapsedMs(timer, now),
     runningSince: null,
-    pausedAt: now
+    pausedAt: now,
   };
 }
 
@@ -28,17 +28,21 @@ export function formatDuration(ms) {
   const seconds = Math.max(0, Math.ceil(ms / 1000));
   const minutes = Math.floor(seconds / 60);
   const remainder = seconds % 60;
-  return `${minutes}:${String(remainder).padStart(2, '0')}`;
+  return `${minutes}:${String(remainder).padStart(2, "0")}`;
 }
 
-export function newStepTimer(missionId, now = Date.now(), durationMs = STEP_COUNTDOWN_MS) {
+export function newStepTimer(
+  missionId,
+  now = Date.now(),
+  durationMs = STEP_COUNTDOWN_MS,
+) {
   return {
     missionId,
     durationMs,
     deadlineAt: now + durationMs,
     pausedRemainingMs: null,
     attempts: 0,
-    lastExpiredAt: null
+    lastExpiredAt: null,
   };
 }
 
@@ -58,7 +62,7 @@ export function expireStepTimer(stepTimer, now = Date.now()) {
     deadlineAt: now + durationMs,
     pausedRemainingMs: null,
     attempts: (stepTimer?.attempts || 0) + 1,
-    lastExpiredAt: now
+    lastExpiredAt: now,
   };
 }
 
@@ -67,7 +71,7 @@ export function pauseStepTimer(stepTimer, now = Date.now()) {
   return {
     ...stepTimer,
     pausedRemainingMs: stepRemainingMs(stepTimer, now),
-    deadlineAt: null
+    deadlineAt: null,
   };
 }
 
@@ -76,6 +80,6 @@ export function resumeStepTimer(stepTimer, now = Date.now()) {
   return {
     ...stepTimer,
     deadlineAt: now + stepTimer.pausedRemainingMs,
-    pausedRemainingMs: null
+    pausedRemainingMs: null,
   };
 }

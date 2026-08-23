@@ -37,3 +37,7 @@ Existing schema-version-3 installations migrate to schema version 4 without clea
 ## v1.2.1 Safari inspection fix
 
 Reformatted `js/views/inspection.js` into Safari-friendly multi-line JavaScript and bumped the service-worker cache to `room-monster-v1.2.1`. No data-schema change is required.
+
+## v1.2.2 Safari parent dashboard fix
+
+Corrected malformed nested calls in `js/views/parent-dashboard.js`, reformatted the JavaScript sources for easier browser diagnostics, restored the required `.nojekyll` marker, and bumped the service-worker cache to `room-monster-v1.2.2`. No data-schema change is required.

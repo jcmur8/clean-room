@@ -1,1 +1,2 @@
-export{renderParentDashboard as render}from './parent-dashboard.js';export const section='missions';
+export { renderParentDashboard as render } from "./parent-dashboard.js";
+export const section = "missions";

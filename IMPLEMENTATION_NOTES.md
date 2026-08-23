@@ -55,3 +55,7 @@ Current schema version: 2. Migration from version 1 adds reward defaults and fil
 ## v1.2.1 Safari inspection fix
 
 Reformatted `js/views/inspection.js` into Safari-friendly multi-line JavaScript and bumped the service-worker cache to `room-monster-v1.2.1`. No data-schema change is required.
+
+## v1.2.2 Safari parent dashboard fix
+
+Replaced the malformed compressed `js/views/parent-dashboard.js` implementation with equivalent readable control flow. The service-worker cache is now `room-monster-v1.2.2`; the application data schema remains version 4.
