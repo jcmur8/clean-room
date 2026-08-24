@@ -69,3 +69,7 @@ Verify the 5/7/8-minute mode defaults, parent duration editing, schema 4→5 mig
 ## Version 1.4 live mission experience
 
 Verify that the timer changes every second without any button press, remains legible at landscape iPad distance, and retains the selected mode duration. Confirm that action music begins only after audio activation, continues across mission rerenders, and stops outside the active mission. Run four new battles to verify the monster sequence Gobbler → Crawler → Slime → Gobbler. Verify all three images work offline and each child can select and later edit an avatar.
+
+## Version 1.5 battle-console redesign
+
+Verify the monster attack screen automatically deploys the next mission, the automatic command narration runs once per phase, the instruction icon repeats it, and the action music scheduler starts after audio activation. Confirm the help icon opens a large modal with a working X, More Time is absent, icon controls remain on the left, and hero check fields remain on the right. Test the red flashing timer at 1:59 and the normal green timer at 2:00 with reduced-motion both enabled and disabled.

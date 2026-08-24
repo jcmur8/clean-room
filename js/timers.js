@@ -60,6 +60,10 @@ export function shouldAlertHalfway(stepTimer, remainingMs) {
   return remainingMs <= (stepTimer.durationMs || STEP_COUNTDOWN_MS) / 2;
 }
 
+export function isCriticalRemaining(remainingMs) {
+  return remainingMs > 0 && remainingMs < 2 * 60 * 1000;
+}
+
 export function expireStepTimer(stepTimer, now = Date.now()) {
   const durationMs = stepTimer?.durationMs || STEP_COUNTDOWN_MS;
   return {

@@ -35,7 +35,7 @@ export function renderCelebration(root, data, actions) {
           } else if (session.status === "victory") {
             actions.go("victory");
           } else {
-            actions.go("mission");
+            actions.go("battle-transition");
           }
         }),
       ),

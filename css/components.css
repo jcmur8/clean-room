@@ -382,3 +382,166 @@
   background: #eef3ff;
   transform: scale(1.06);
 }
+.card,
+.list-item,
+.hero-chip,
+.field input,
+.field select,
+.field textarea {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn-secondary {
+  background: #0b2925;
+  color: #caffd0;
+}
+.btn-primary {
+  color: #031009;
+}
+.btn-gold {
+  background: #9cffad;
+  color: #052010;
+}
+.notice {
+  background: #0a2723;
+  color: #caffd0;
+}
+.warning {
+  background: #2c2010;
+  color: #ffe7b4;
+}
+.mission-countdown {
+  min-height: clamp(270px, 43vh, 470px);
+  padding: 18px;
+  border: 3px solid #3b9c66;
+  border-radius: 12px;
+  background: radial-gradient(circle, #0b2f25, #020b0c 72%);
+  box-shadow:
+    inset 0 0 40px rgba(53, 224, 111, 0.1),
+    0 0 24px rgba(53, 224, 111, 0.12);
+  overflow: hidden;
+}
+.countdown-label {
+  color: #74ff99;
+  letter-spacing: 0.2em;
+  font-size: clamp(16px, 2vw, 25px);
+}
+.countdown-value {
+  font-size: clamp(126px, 21vw, 280px);
+  line-height: 0.76;
+  color: #b9ffc5;
+  text-shadow:
+    0 0 12px rgba(107, 255, 142, 0.55),
+    0 0 34px rgba(53, 224, 111, 0.2);
+}
+.soundtrack-status {
+  color: #62ba7a;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+.mission-countdown.critical {
+  border-color: #ff3d3d;
+  background: radial-gradient(circle, #421011, #130203 75%);
+  animation: critical-flash 0.62s steps(2, end) infinite;
+}
+.mission-countdown.critical .countdown-value,
+.mission-countdown.critical .countdown-label {
+  color: #ff5656;
+  text-shadow:
+    0 0 15px rgba(255, 45, 45, 0.8),
+    0 0 40px rgba(255, 0, 0, 0.38);
+}
+.help-modal > .card {
+  position: relative;
+  width: min(820px, 94vw);
+  padding: 38px;
+  background: #061819;
+  border: 2px solid #68e98a;
+  text-align: center;
+}
+.help-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 58px;
+  min-height: 58px;
+  padding: 0;
+  background: #351113;
+  color: #ffb2b2;
+  font-size: 28px;
+}
+.help-hand {
+  font-size: 80px;
+}
+.help-large-text {
+  font-size: clamp(28px, 4vw, 54px);
+  line-height: 1.16;
+  color: #dcffe2;
+  font-weight: 800;
+}
+.battle-interlude {
+  position: relative;
+  min-height: calc(100vh - 110px);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  overflow: hidden;
+  border: 1px solid #326d50;
+  border-radius: 18px;
+  background: #020b0c;
+  text-align: center;
+}
+.radar-grid {
+  position: absolute;
+  inset: -20%;
+  background:
+    repeating-radial-gradient(
+      circle,
+      transparent 0 75px,
+      rgba(72, 255, 131, 0.1) 77px 79px
+    ),
+    linear-gradient(
+      90deg,
+      transparent 49.8%,
+      rgba(72, 255, 131, 0.14) 50%,
+      transparent 50.2%
+    ),
+    linear-gradient(
+      transparent 49.8%,
+      rgba(72, 255, 131, 0.14) 50%,
+      transparent 50.2%
+    );
+  animation: radar-pulse 2.2s linear infinite;
+}
+.alert-banner {
+  z-index: 1;
+  color: #ff6c6c;
+  font-weight: 950;
+  font-size: clamp(22px, 3.5vw, 48px);
+  letter-spacing: 0.08em;
+  animation: alert-blink 0.55s steps(2, end) infinite;
+}
+.attacking-monster {
+  z-index: 1;
+  width: min(55vw, 470px);
+  animation: monster-charge 1.05s ease-in-out infinite;
+}
+.battle-interlude h1,
+.interlude-order,
+.deploy-button {
+  z-index: 1;
+}
+.battle-interlude h1 {
+  font-size: clamp(34px, 5vw, 70px);
+  margin: 0;
+}
+.interlude-order {
+  font-size: clamp(22px, 3vw, 40px);
+  color: #b9ffc5;
+  margin: 0;
+}
+.deploy-button {
+  min-width: 240px;
+}

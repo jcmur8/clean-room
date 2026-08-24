@@ -111,6 +111,32 @@ export function beep(kind = "ok", volume = 0.4) {
     return;
   }
 
+  if (kind === "radio") {
+    noiseBurst(0, 0.11, Math.min(0.22, v * 0.34));
+    sequence(
+      [
+        { f: 1250, at: 0.03, d: 0.07, v: 0.7, type: "square" },
+        { f: 980, at: 0.14, d: 0.08, v: 0.65, type: "square" },
+      ],
+      v,
+    );
+    noiseBurst(0.24, 0.08, Math.min(0.15, v * 0.25));
+    return;
+  }
+
+  if (kind === "monster-attack") {
+    sweep(190, 58, 0, 1.05, Math.min(0.34, v * 0.55), "sawtooth");
+    noiseBurst(0.18, 0.28, Math.min(0.25, v * 0.4));
+    sequence(
+      [
+        { f: 92, at: 0.5, d: 0.35, v: 0.85, type: "square" },
+        { f: 72, at: 0.92, d: 0.5, v: 0.9, type: "sawtooth" },
+      ],
+      v,
+    );
+    return;
+  }
+
   if (kind === "halfway") {
     sequence(
       [
@@ -198,7 +224,7 @@ export function beep(kind = "ok", volume = 0.4) {
 
 function scheduleBattleBar() {
   if (!enabled || !ctx || musicTimer == null) return;
-  const v = Math.max(0.03, Math.min(0.16, musicVolume * 0.18));
+  const v = Math.max(0.06, Math.min(0.24, musicVolume * 0.3));
   const roots = [110, 123.47, 98, 146.83];
   const root = roots[musicStep % roots.length];
   const pattern = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5];

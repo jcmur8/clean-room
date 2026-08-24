@@ -17,6 +17,7 @@ import {
   pauseStepTimer,
   resumeStepTimer,
   shouldAlertHalfway,
+  isCriticalRemaining,
 } from "../js/timers.js";
 import { migrate } from "../js/migrations.js";
 import { validateRoot } from "../js/validation.js";
@@ -123,6 +124,11 @@ test("Halfway warning fires once per countdown", () => {
   assert(shouldAlertHalfway(timer, 210000));
   timer.halfwayAlerted = true;
   assert(!shouldAlertHalfway(timer, 200000));
+});
+test("Two-minute critical timer threshold", () => {
+  assert(!isCriticalRemaining(120000));
+  assert(isCriticalRemaining(119999));
+  assert(!isCriticalRemaining(0));
 });
 test("Monster rotation and avatar choices", () => {
   const d = base();

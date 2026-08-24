@@ -131,3 +131,49 @@ body.reduce-motion * {
 body.reduce-motion .confetti-layer {
   display: none !important;
 }
+@keyframes critical-flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.62;
+  }
+}
+@keyframes hud-attack {
+  0%,
+  100% {
+    transform: translateX(-5px) rotate(-2deg);
+  }
+  50% {
+    transform: translateX(8px) rotate(3deg) scale(1.06);
+  }
+}
+@keyframes monster-charge {
+  0%,
+  100% {
+    transform: translateX(-18vw) scale(0.82) rotate(-4deg);
+  }
+  50% {
+    transform: translateX(18vw) scale(1.12) rotate(5deg);
+  }
+}
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.16);
+    opacity: 0.95;
+  }
+}
+@keyframes alert-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.28;
+  }
+}

@@ -14,6 +14,7 @@ import {
   expireStepTimer,
   newStepTimer,
   shouldAlertHalfway,
+  isCriticalRemaining,
 } from "../timers.js";
 import { t, localized, roleName } from "../i18n.js";
 import { monsterSprite, monsterForSession, monsterName } from "../monsters.js";
@@ -21,20 +22,34 @@ import { monsterSprite, monsterForSession, monsterName } from "../monsters.js";
 let activeCountdown = null;
 
 function stopCountdown() {
-  if (activeCountdown) {
-    clearInterval(activeCountdown);
-    activeCountdown = null;
-  }
+  if (activeCountdown) clearInterval(activeCountdown);
+  activeCountdown = null;
+}
+
+function showHelp(instruction) {
+  const modal = el(
+    "div",
+    { class: "modal help-modal", role: "dialog", "aria-modal": "true" },
+    el(
+      "div",
+      { class: "card" },
+      button("✕", "help-close", () => modal.remove(), {
+        "aria-label": t("closeHelp"),
+      }),
+      el("div", { class: "help-hand", text: "✋" }),
+      el("h2", { text: t("helpTitle") }),
+      el("p", { class: "help-large-text", text: instruction }),
+      el("p", { class: "notice", text: t("helpNotice") }),
+    ),
+  );
+  document.body.append(modal);
 }
 
 export function renderMission(root, data, actions) {
   stopCountdown();
   const session = data.activeSession;
   const mission = currentMission(session);
-  if (!mission) {
-    actions.go("home");
-    return;
-  }
+  if (!mission) return actions.go("home");
 
   if (!session.stepTimer || session.stepTimer.missionId !== mission.id) {
     session.stepTimer = newStepTimer(
@@ -55,6 +70,8 @@ export function renderMission(root, data, actions) {
     0,
     healthCount - Math.round((completed / total) * healthCount),
   );
+  const instruction = localized(mission, "childInstruction");
+  const safety = localized(mission, "safetyNote");
 
   const health = el(
     "div",
@@ -62,7 +79,7 @@ export function renderMission(root, data, actions) {
     ...Array.from({ length: healthCount }, (_, index) =>
       el("span", {
         class: `heart ${index < alive ? "alive" : ""}`,
-        text: "💚",
+        text: "◆",
       }),
     ),
   );
@@ -74,11 +91,11 @@ export function renderMission(root, data, actions) {
   const timerBox = el(
     "div",
     { class: "mission-countdown", "aria-live": "polite" },
-    el("span", { class: "countdown-label", text: `⏱ ${t("timerLabel")}` }),
+    el("span", { class: "countdown-label", text: t("timeToTarget") }),
     timerValue,
     el("span", {
       class: "soundtrack-status",
-      text: `🎵 ${t("battleMusicActive")}`,
+      text: `◉ ${t("battleMusicActive")}`,
     }),
   );
   const timerCoach = el("p", {
@@ -94,16 +111,14 @@ export function renderMission(root, data, actions) {
   let expiryBusy = false;
   let halfwayBusy = false;
   const tick = async () => {
-    if (!timerValue.isConnected) {
-      stopCountdown();
-      return;
-    }
+    if (!timerValue.isConnected) return stopCountdown();
     const current = data.activeSession;
     if (!current?.stepTimer || current.stepTimer.missionId !== mission.id)
       return;
     const remaining = stepRemainingMs(current.stepTimer);
     timerValue.textContent = formatDuration(remaining);
-    timerBox.classList.toggle("urgent", remaining <= 30000 && remaining > 0);
+    const critical = isCriticalRemaining(remaining);
+    timerBox.classList.toggle("critical", critical);
 
     if (
       shouldAlertHalfway(current.stepTimer, remaining) &&
@@ -132,15 +147,16 @@ export function renderMission(root, data, actions) {
       timerCoach.textContent = message;
       timerCoach.classList.remove("hidden");
       actions.notice(message);
-      actions.speak(message);
+      actions.commandSpeak(message);
       timerValue.textContent = formatDuration(
         stepRemainingMs(current.stepTimer),
       );
-      timerBox.classList.remove("urgent");
+      timerBox.classList.remove("critical");
       expiryBusy = false;
     }
   };
-  const confirms = el(
+
+  const heroChecks = el(
     "div",
     { class: "heroes-confirm" },
     ...assignments.map((assignment) => {
@@ -150,11 +166,9 @@ export function renderMission(root, data, actions) {
       if (!child) return null;
       const done = confirmed.includes(assignment.childId);
       let holdTimer;
-      const control = button(
-        done
-          ? `${child.displayName} ${t("done")}`
-          : `${child.displayName}: ${t("didPart")}`,
-        done ? "confirm-btn confirmed" : "confirm-btn btn-primary",
+      const check = button(
+        done ? "✓" : "",
+        `hero-check ${done ? "checked" : ""}`,
         async () => {
           if (done) return;
           data.activeSession = confirmChild(
@@ -166,10 +180,14 @@ export function renderMission(root, data, actions) {
           actions.sound("confirm");
           actions.go("mission");
         },
+        {
+          "aria-label": `${child.displayName}: ${done ? t("done") : t("didPart")}`,
+          "aria-pressed": done ? "true" : "false",
+        },
       );
 
       if (done) {
-        control.addEventListener("pointerdown", () => {
+        check.addEventListener("pointerdown", () => {
           holdTimer = setTimeout(async () => {
             data.activeSession = undoChild(
               data.activeSession,
@@ -181,83 +199,105 @@ export function renderMission(root, data, actions) {
             actions.go("mission");
           }, 2000);
         });
-        ["pointerup", "pointercancel", "pointerleave"].forEach((eventName) => {
-          control.addEventListener(eventName, () => clearTimeout(holdTimer));
-        });
+        ["pointerup", "pointercancel", "pointerleave"].forEach((eventName) =>
+          check.addEventListener(eventName, () => clearTimeout(holdTimer)),
+        );
       }
 
       return el(
         "div",
-        { class: "hero-confirm-card" },
+        { class: `hero-check-card ${done ? "complete" : ""}` },
+        el("span", { class: "hero-avatar", text: child.avatar }),
         el(
           "div",
-          { class: "hero-chip compact" },
-          el("span", { class: "hero-avatar", text: child.avatar }),
-          el(
-            "div",
-            {},
-            el("strong", { text: child.displayName }),
-            el("div", { text: `${t("role")}: ${roleName(assignment.role)}` }),
-          ),
+          { class: "hero-check-copy" },
+          el("strong", { text: child.displayName }),
+          el("span", { text: roleName(assignment.role) }),
         ),
-        control,
+        check,
       );
     }),
   );
 
   const advance = missionReady(session, mission.id)
-    ? button(t("teamContinue"), "btn-gold", async () => {
-        stopCountdown();
-        data.activeSession = advanceMission(data.activeSession);
-        await actions.save(data);
-        actions.go("celebration");
-      })
-    : el("p", { class: "notice", text: t("waitBoth") });
+    ? button(
+        "▶",
+        "team-advance",
+        async () => {
+          stopCountdown();
+          data.activeSession = advanceMission(data.activeSession);
+          await actions.save(data);
+          actions.go("celebration");
+        },
+        { "aria-label": t("teamContinue"), title: t("teamContinue") },
+      )
+    : el("p", { class: "check-status", text: t("waitBoth") });
 
-  const instruction = localized(mission, "childInstruction");
-  const safety = localized(mission, "safetyNote");
+  const commandRail = el(
+    "aside",
+    { class: "command-rail", "aria-label": t("missionControls") },
+    button("📋", "command-icon", () => actions.commandSpeak(instruction), {
+      "aria-label": t("repeatInstructions"),
+      title: t("repeatInstructions"),
+    }),
+    button("✋", "command-icon", () => showHelp(instruction), {
+      "aria-label": t("help"),
+      title: t("help"),
+    }),
+    button("⏸", "command-icon", () => actions.pause(), {
+      "aria-label": t("pause"),
+      title: t("pause"),
+    }),
+    button("🛑", "command-icon danger", () => actions.requireParent("abort"), {
+      "aria-label": t("abortMission"),
+      title: t("abortMission"),
+    }),
+  );
 
   root.replaceChildren(
     el(
       "section",
-      { class: "child-screen" },
+      { class: "child-screen battle-console-screen" },
       el(
         "div",
-        { class: "card mission-layout" },
+        { class: "battle-console" },
+        commandRail,
         el(
           "div",
-          {},
-          monsterSprite(session, "monster-sprite mission-monster messy"),
-          el("strong", {
-            class: "monster-name",
-            text: monsterName(monsterForSession(session)),
-          }),
-          health,
+          { class: "mission-core" },
           el(
             "div",
-            { class: "progress-track" },
-            el("div", { class: "progress-fill", style: `width:${pct}%` }),
+            { class: "mission-hud" },
+            el(
+              "div",
+              {},
+              el("span", { class: "hud-label", text: t("target") }),
+              el("strong", { text: monsterName(monsterForSession(session)) }),
+              health,
+            ),
+            monsterSprite(session, "monster-sprite hud-monster attacking"),
+            el(
+              "div",
+              {},
+              el("span", { class: "hud-label", text: t("missionProgress") }),
+              el("strong", { text: `${completed + 1} / ${total}` }),
+              el("span", { text: formatDuration(elapsedMs(session.timer)) }),
+            ),
           ),
-          el("p", {
-            text: t("missionCount", {
-              current: completed + 1,
-              total,
-              time: formatDuration(elapsedMs(session.timer)),
-            }),
-          }),
           timerBox,
           timerCoach,
-          el("div", {
-            class: "collectibles",
-            text: (session.rewards || []).map(() => "⭐").join(" "),
-          }),
-        ),
-        el(
-          "div",
-          {},
-          el("div", { class: "mission-icon", text: mission.icon }),
-          el("h1", { text: localized(mission, "title") }),
-          el("p", { text: instruction }),
+          el(
+            "div",
+            { class: "mission-order" },
+            el("span", { class: "mission-icon", text: mission.icon }),
+            el(
+              "div",
+              {},
+              el("span", { class: "hud-label", text: t("currentOrders") }),
+              el("h1", { text: localized(mission, "title") }),
+              el("p", { text: instruction }),
+            ),
+          ),
           safety
             ? el(
                 "div",
@@ -268,43 +308,31 @@ export function renderMission(root, data, actions) {
             : null,
           el(
             "div",
-            { class: "mission-actions" },
-            button(t("hear"), "btn-secondary", () =>
-              actions.speak(instruction),
-            ),
-            button(t("help"), "btn-secondary", () =>
-              actions.notice(t("helpNotice")),
-            ),
-            button(t("moreTime"), "btn-secondary", async () => {
-              const attempts = data.activeSession.stepTimer?.attempts || 0;
-              const durationMs =
-                data.activeSession.stepTimer?.durationMs ||
-                data.activeSession.stepDurationMs ||
-                300000;
-              data.activeSession.stepTimer = {
-                ...newStepTimer(mission.id, Date.now(), durationMs),
-                attempts,
-                lastExpiredAt:
-                  data.activeSession.stepTimer?.lastExpiredAt || null,
-              };
-              await actions.save(data);
-              timerValue.textContent = formatDuration(durationMs);
-              timerBox.classList.remove("urgent");
-              actions.notice(t("timeNotice"));
-            }),
-            button(t("pause"), "btn-secondary", () => actions.pause()),
-            button(t("abortMission"), "btn-danger", () =>
-              actions.requireParent("abort"),
-            ),
+            { class: "progress-track" },
+            el("div", { class: "progress-fill", style: `width:${pct}%` }),
           ),
-          confirms,
+        ),
+        el(
+          "aside",
+          { class: "hero-check-column" },
+          el("h2", { text: t("teamStatus") }),
+          heroChecks,
           advance,
         ),
       ),
     ),
   );
+  window.requestAnimationFrame(() => window.scrollTo(0, 0));
 
-  // The loop must begin after the display is attached to the page.
   activeCountdown = setInterval(tick, 200);
   tick();
+
+  if (session.lastAutoSpokenMissionId !== mission.id) {
+    session.lastAutoSpokenMissionId = mission.id;
+    actions.save(data);
+    actions.commandSpeak(`${t("commandPrefix")} ${instruction}`);
+    window.setTimeout(() => actions.startMusic(), 1600);
+  } else {
+    actions.startMusic();
+  }
 }

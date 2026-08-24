@@ -10,7 +10,7 @@ import {
 } from "./audio.js";
 import { monsters } from "./defaults.js";
 import { monsterSprite } from "./monsters.js";
-import { speak } from "./speech.js";
+import { speak, speakCommand } from "./speech.js";
 import { applyAccessibility, announce, focusMain } from "./accessibility.js";
 import { createSession } from "./game-engine.js";
 import {
@@ -30,6 +30,7 @@ import {
   renderInspection,
 } from "./views/inspection.js";
 import { renderVictory } from "./views/victory.js";
+import { renderBattleTransition } from "./views/battle-transition.js";
 import { renderParentDashboard } from "./views/parent-dashboard.js";
 import { el, button } from "./ui.js";
 import { t, setLanguage, modeName, localized } from "./i18n.js";
@@ -80,6 +81,19 @@ const actions = {
     const d = getState();
     if (!speak(tText, d.appSettings.speech, d.appSettings.language))
       announce(t("spokenUnavailable"));
+  },
+  commandSpeak: (text) => {
+    const d = getState();
+    if (!d.appSettings.speech) return;
+    beep("radio", d.appSettings.soundVolume);
+    window.setTimeout(() => {
+      if (!speakCommand(text, true, d.appSettings.language))
+        announce(t("spokenUnavailable"));
+    }, 280);
+  },
+  startMusic: () => {
+    const d = getState();
+    if (d.appSettings.sound) startBattleMusic(d.appSettings.soundVolume);
   },
   notice: announce,
   applyAccessibility: () => applyAccessibility(getState().appSettings),
@@ -196,9 +210,7 @@ const actions = {
 };
 function render() {
   const d = getState();
-  if (route === "mission" && d.appSettings.sound) {
-    startBattleMusic(d.appSettings.soundVolume);
-  } else {
+  if (route !== "mission") {
     stopBattleMusic();
   }
   setLanguage(d.appSettings.language || "en");
@@ -210,6 +222,8 @@ function render() {
   else if (route === "intro")
     renderIntro(params.modeId || d.appSettings.lastModeId || "normal");
   else if (route === "mission") renderMission(root, d, actions);
+  else if (route === "battle-transition")
+    renderBattleTransition(root, d, actions);
   else if (route === "celebration") renderCelebration(root, d, actions);
   else if (route === "inspection-request")
     renderInspectionRequest(root, d, actions);
@@ -324,6 +338,7 @@ function renderIntro(modeId) {
 }
 async function startBattle(modeId) {
   const d = getState();
+  await activateAudio();
   if (!d.activeSession) {
     d.activeSession = createSession(d, modeId);
     d.appSettings.nextMonsterIndex =
@@ -331,7 +346,7 @@ async function startBattle(modeId) {
     d.appSettings.lastModeId = modeId;
     await persist(d);
   }
-  route = "mission";
+  route = "battle-transition";
   actions.sound("mission-warning");
   actions.notice(t("missionAlarm"));
   render();

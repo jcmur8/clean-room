@@ -63,3 +63,15 @@ Schema version 5 adds per-mode mission durations and migrates existing schema-ve
 - Added twelve child-selectable hero avatars during family setup and avatar editing under Parent → Profiles.
 
 Schema version 6 adds monster-rotation state and migrates active schema-version-5 battles to The Mess Gobbler. The service-worker cache is `room-monster-v1.4.0` and includes all three monster images for offline play.
+
+## Version 1.5 battle-console redesign
+
+- Replaced the bright mission page with a dark aircraft/submarine-style HMI using luminous green text, grid lines, target telemetry, and high-contrast panels.
+- Added animated monster attack/radar interludes before the first mission and between completed phases.
+- Made the timer the central display and added a flashing red critical state below two minutes.
+- Reorganized controls into a left icon rail: repeat command, large help dialog, pause, and PIN-protected abort. Removed More Time.
+- Replaced large child completion buttons with right-side avatar/name check fields.
+- Mission instructions now play automatically once per phase using a lower-pitched battlefield-command speech profile with radio static cues. The instruction icon repeats them on demand.
+- Increased original action-music output and ensures audio is reactivated from the Begin Mission gesture. Music pauses outside active cleaning phases.
+
+The service-worker cache is `room-monster-v1.5.0`. Schema version remains 6 because existing version-6 session objects accept the new narration marker without migration.
