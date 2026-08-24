@@ -11,10 +11,10 @@ import {
   formatDuration,
   elapsedMs,
   stepRemainingMs,
-  expireStepTimer,
   newStepTimer,
   shouldAlertHalfway,
   isCriticalRemaining,
+  retryDurationMs,
 } from "../timers.js";
 import { t, localized, roleName } from "../i18n.js";
 import { monsterSprite, monsterForSession, monsterName } from "../monsters.js";
@@ -26,7 +26,8 @@ function stopCountdown() {
   activeCountdown = null;
 }
 
-function showHelp(instruction) {
+function showHelp(instruction, safety) {
+  const bullets = [instruction, safety, t("helpNotice")].filter(Boolean);
   const modal = el(
     "div",
     { class: "modal help-modal", role: "dialog", "aria-modal": "true" },
@@ -38,8 +39,67 @@ function showHelp(instruction) {
       }),
       el("div", { class: "help-hand", text: "✋" }),
       el("h2", { text: t("helpTitle") }),
-      el("p", { class: "help-large-text", text: instruction }),
-      el("p", { class: "notice", text: t("helpNotice") }),
+      el(
+        "ul",
+        { class: "help-bullet-list" },
+        ...bullets.map((text) => el("li", { text })),
+      ),
+    ),
+  );
+  document.body.append(modal);
+}
+
+function showPauseDenied() {
+  const modal = el(
+    "div",
+    { class: "modal", role: "dialog", "aria-modal": "true" },
+    el(
+      "div",
+      { class: "card pause-denied" },
+      button("✕", "help-close", () => modal.remove(), {
+        "aria-label": t("closeHelp"),
+      }),
+      el("div", { class: "monster-strength", text: "⚡👾⚡" }),
+      el("h2", { text: t("pauseDeniedTitle") }),
+      el("p", { text: t("pauseDeniedText") }),
+    ),
+  );
+  document.body.append(modal);
+}
+
+function showTimeout(data, mission, actions) {
+  const previous = data.activeSession.stepTimer;
+  const modal = el(
+    "div",
+    { class: "modal timeout-flash", role: "dialog", "aria-modal": "true" },
+    el(
+      "div",
+      { class: "card timeout-card" },
+      el("div", { class: "timeout-alert", text: "⚠" }),
+      el("h2", { text: t("opportunityMissed") }),
+      el("p", { text: t("monsterDistracted") }),
+      el(
+        "div",
+        { class: "timeout-options" },
+        button(t("defeatByMonster"), "btn-danger", () => {
+          modal.remove();
+          actions.defeatBattle();
+        }),
+        button(t("tryAgain"), "btn-primary", async () => {
+          const retryDuration = retryDurationMs(
+            data.activeSession.stepDurationMs || previous.durationMs,
+          );
+          data.activeSession.stepTimer = {
+            ...newStepTimer(mission.id, Date.now(), retryDuration),
+            attempts: (previous.attempts || 0) + 1,
+            lastExpiredAt: Date.now(),
+            pauseUsed: previous.pauseUsed || false,
+          };
+          await actions.save(data);
+          modal.remove();
+          actions.go("mission");
+        }),
+      ),
     ),
   );
   document.body.append(modal);
@@ -119,6 +179,11 @@ export function renderMission(root, data, actions) {
     timerValue.textContent = formatDuration(remaining);
     const critical = isCriticalRemaining(remaining);
     timerBox.classList.toggle("critical", critical);
+    if (critical && !current.stepTimer.criticalAlerted) {
+      current.stepTimer.criticalAlerted = true;
+      await actions.save(data);
+      actions.sound("critical-siren");
+    }
 
     if (
       shouldAlertHalfway(current.stepTimer, remaining) &&
@@ -135,24 +200,9 @@ export function renderMission(root, data, actions) {
 
     if (remaining <= 0 && !current.pauseState?.paused && !expiryBusy) {
       expiryBusy = true;
-      current.stepTimer = expireStepTimer(current.stepTimer);
-      await actions.save(data);
+      stopCountdown();
       actions.sound("shotclock");
-      const message =
-        current.stepTimer.attempts > 1
-          ? t("timerExpiredAgain", {
-              minutes: Math.round(current.stepTimer.durationMs / 60000),
-            })
-          : t("timerExpired");
-      timerCoach.textContent = message;
-      timerCoach.classList.remove("hidden");
-      actions.notice(message);
-      actions.commandSpeak(message);
-      timerValue.textContent = formatDuration(
-        stepRemainingMs(current.stepTimer),
-      );
-      timerBox.classList.remove("critical");
-      expiryBusy = false;
+      showTimeout(data, mission, actions);
     }
   };
 
@@ -221,7 +271,7 @@ export function renderMission(root, data, actions) {
 
   const advance = missionReady(session, mission.id)
     ? button(
-        "▶",
+        "→",
         "team-advance",
         async () => {
           stopCountdown();
@@ -240,14 +290,22 @@ export function renderMission(root, data, actions) {
       "aria-label": t("repeatInstructions"),
       title: t("repeatInstructions"),
     }),
-    button("✋", "command-icon", () => showHelp(instruction), {
+    button("✋", "command-icon", () => showHelp(instruction, safety), {
       "aria-label": t("help"),
       title: t("help"),
     }),
-    button("⏸", "command-icon", () => actions.pause(), {
-      "aria-label": t("pause"),
-      title: t("pause"),
-    }),
+    button(
+      "⏸",
+      "command-icon",
+      async () => {
+        const started = await actions.pause30();
+        if (!started) showPauseDenied();
+      },
+      {
+        "aria-label": t("pause"),
+        title: t("pause"),
+      },
+    ),
     button("🛑", "command-icon danger", () => actions.requireParent("abort"), {
       "aria-label": t("abortMission"),
       title: t("abortMission"),

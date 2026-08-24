@@ -44,6 +44,8 @@ export function newStepTimer(
     attempts: 0,
     lastExpiredAt: null,
     halfwayAlerted: false,
+    criticalAlerted: false,
+    pauseUsed: false,
   };
 }
 
@@ -64,6 +66,10 @@ export function isCriticalRemaining(remainingMs) {
   return remainingMs > 0 && remainingMs < 2 * 60 * 1000;
 }
 
+export function retryDurationMs(originalDurationMs) {
+  return Math.max(30000, Math.ceil(originalDurationMs / 2));
+}
+
 export function expireStepTimer(stepTimer, now = Date.now()) {
   const durationMs = stepTimer?.durationMs || STEP_COUNTDOWN_MS;
   return {
@@ -74,6 +80,8 @@ export function expireStepTimer(stepTimer, now = Date.now()) {
     attempts: (stepTimer?.attempts || 0) + 1,
     lastExpiredAt: now,
     halfwayAlerted: false,
+    criticalAlerted: false,
+    pauseUsed: stepTimer?.pauseUsed || false,
   };
 }
 

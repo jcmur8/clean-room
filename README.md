@@ -1,4 +1,4 @@
-# Room Monster Battle
+# The Battle of the Room
 
 A static, installable PWA that turns a shared-bedroom cleanup into a cooperative battle against a silly monster. It uses vanilla HTML/CSS/JavaScript, IndexedDB, Web Crypto, speech synthesis and a service worker. No accounts, analytics, advertising, remote APIs, CDNs, package manager or cloud database are used.
 
@@ -75,3 +75,17 @@ Schema version 6 adds monster-rotation state and migrates active schema-version-
 - Increased original action-music output and ensures audio is reactivated from the Begin Mission gesture. Music pauses outside active cleaning phases.
 
 The service-worker cache is `room-monster-v1.5.0`. Schema version remains 6 because existing version-6 session objects accept the new narration marker without migration.
+
+## Version 1.6 comic campaign and tactical rules
+
+- Renamed the game to **The Battle of the Room** and removed the sound-mute control. Sound remains enabled and is activated from deliberate battle gestures required by Safari.
+- Added three-panel bilingual origin comics for every monster and animated comic impact/weakening scenes after each completed phase.
+- Enhanced command narration with continuous low-level radio transmission noise, squelch cues, and the device's slower/lower-pitched voice.
+- Parent → Modes now controls both the per-phase timer and exactly which active missions belong to Quick Rescue, Normal Battle, and Deep Clean.
+- Added a one-time 30-second tactical pause per phase. A second request opens a monster-strength warning.
+- Added a one-time critical siren below 2:00.
+- Timeout now opens a flashing decision screen: accept defeat or retry with half of the mode's original phase time.
+- Help uses large bullet points, command icons are larger/neon, and the team advance control is a right arrow.
+- Final inspection is a single whole-room approval button plus a dropdown/button for repeating exactly one prior step. Repeated steps clear old confirmations and restart only that task.
+
+Schema version 7 adds critical-alert and pause-use state while forcing sound on. The service-worker cache is `room-monster-v1.6.0`.

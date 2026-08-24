@@ -23,24 +23,16 @@ export function renderInspectionRequest(root, data, actions) {
 export function renderInspection(root, data, actions) {
   const session = data.activeSession;
 
-  const missionRows = session.missionSnapshots.map((mission) => {
-    const checkbox = el("input", {
-      type: "checkbox",
-      value: mission.id,
-    });
-
-    return el(
-      "label",
-      { class: "list-item" },
-      checkbox,
-      " ",
-      t("returnLook", {
-        mission: localized(mission, "title"),
+  const repeatMission = el(
+    "select",
+    { "aria-label": t("repeatPreviousStep") },
+    ...session.missionSnapshots.map((mission) =>
+      el("option", {
+        value: mission.id,
+        text: `${mission.icon} ${localized(mission, "title")}`,
       }),
-    );
-  });
-
-  const missionList = el("div", { class: "list" }, ...missionRows);
+    ),
+  );
 
   const note = el("textarea", {
     rows: "3",
@@ -51,24 +43,21 @@ export function renderInspection(root, data, actions) {
     actions.approveInspection(note.value),
   );
 
-  const returnButton = button(t("returnSelected"), "btn-gold", () => {
-    const selected = missionList.querySelectorAll("input:checked");
-    const ids = Array.from(selected).map((input) => input.value);
-
-    if (ids.length === 0) {
-      actions.notice(t("selectMission"));
-      return;
-    }
-
-    actions.returnMissions(ids, note.value);
-  });
+  const returnButton = button(t("repeatSelectedStep"), "btn-gold", () =>
+    actions.returnMissions([repeatMission.value], note.value),
+  );
 
   const panel = el(
     "section",
     { class: "card" },
     el("h1", { text: t("parentInspection") }),
-    el("p", { text: t("inspectionHelp") }),
-    missionList,
+    el("p", { text: t("simpleInspectionHelp") }),
+    el(
+      "label",
+      { class: "field" },
+      el("span", { text: t("repeatPreviousStep") }),
+      repeatMission,
+    ),
     el("label", { class: "field" }, el("span", { text: t("note") }), note),
     el("div", { class: "button-row" }, approveButton, returnButton),
   );

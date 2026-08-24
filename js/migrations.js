@@ -123,6 +123,19 @@ export function migrate(data) {
     d.schemaVersion = 6;
   }
 
+  if (d.schemaVersion === 6) {
+    d.appSettings = {
+      ...makeDefaultData().appSettings,
+      ...d.appSettings,
+      sound: true,
+    };
+    if (d.activeSession?.stepTimer) {
+      d.activeSession.stepTimer.criticalAlerted = false;
+      d.activeSession.stepTimer.pauseUsed = false;
+    }
+    d.schemaVersion = 7;
+  }
+
   if (d.schemaVersion !== SCHEMA_VERSION) {
     throw new Error("Unsupported schema version");
   }

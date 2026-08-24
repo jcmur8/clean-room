@@ -1,6 +1,6 @@
 const dictionaries = {
   en: {
-    appTitle: "Room Monster Battle",
+    appTitle: "The Battle of the Room",
     skip: "Skip to game",
     online: "Online",
     offline: "Offline",
@@ -97,7 +97,7 @@ const dictionaries = {
     offlineUnavailable: "Offline install is unavailable in this browser.",
     updateAfter: "Update ready after this battle.",
     updateReady: "Update ready. Reload when convenient.",
-    restartTitle: "Room Monster Battle needs a restart",
+    restartTitle: "The Battle of the Room needs a restart",
     restartText: "Local storage could not be opened. Try reloading Safari.",
     nav_dashboard: "Dashboard",
     nav_profiles: "Profiles",
@@ -136,6 +136,23 @@ const dictionaries = {
     monsterAttack: "⚠ MONSTER ATTACK IN PROGRESS ⚠",
     incomingMission: "Incoming mission: {mission}",
     deployNow: "Deploy now ▶",
+    classifiedFile: "CLASSIFIED MONSTER FILE",
+    beginBattle: "Begin the battle ▶",
+    monsterWeakening: "DIRECT HIT! The monster is getting weaker!",
+    pauseDeniedTitle: "TACTICAL PAUSE UNAVAILABLE",
+    pauseDeniedText:
+      "The monster is getting stronger. Another pause will not help—heroes must keep moving!",
+    opportunityMissed: "OPPORTUNITY MISSED!",
+    monsterDistracted:
+      "The monster blocked this attempt, but it is distracted. Choose your next move.",
+    defeatByMonster: "Defeat by the Monster",
+    tryAgain: "Try Again — Half Time",
+    defeatedNotice:
+      "The monster won this battle. The heroes can regroup and return.",
+    simpleInspectionHelp:
+      "Approve the whole room with one button, or send exactly one previous step back into battle.",
+    repeatPreviousStep: "Repeat one previous step",
+    repeatSelectedStep: "Repeat Selected Step",
     timerReset: "New chance! 5:00",
     timerExpired:
       "It looks like you missed the first chance, but the monster is distracted now. You can still make it — try again!",
@@ -150,6 +167,8 @@ const dictionaries = {
     copySuffix: " Copy",
     missionUpdated: "Mission updated.",
     minutesPerMission: "Minutes for each mission",
+    modeSteps: "Steps included in this mode",
+    selectAtLeastOneStep: "Choose at least one step for this mode.",
     modeTimerSaved: "{mode} timer saved at {minutes} minutes per mission.",
     restoreFactory: "Restore Factory Missions",
     restoreConfirm:
@@ -178,7 +197,7 @@ const dictionaries = {
       "Valid backup: {heroes} heroes, {missions} missions, {sessions} sessions. Replace current local data?",
     backupImported: "Backup imported.",
     importRejected: "Import rejected: {message}",
-    reset1: "First confirmation: delete all local Room Monster Battle data?",
+    reset1: "First confirmation: delete all local The Battle of the Room data?",
     reset2:
       "Second confirmation: this cannot be undone without a backup. Continue?",
     resetPhrase: "Type RESET ROOM MONSTER to finish:",
@@ -201,7 +220,7 @@ const dictionaries = {
     wholeRoom: "Whole Room",
   },
   es: {
-    appTitle: "Batalla contra el Monstruo del Cuarto",
+    appTitle: "La Batalla del Cuarto",
     skip: "Saltar al juego",
     online: "En línea",
     offline: "Sin conexión",
@@ -302,7 +321,7 @@ const dictionaries = {
       "La instalación sin conexión no está disponible en este navegador.",
     updateAfter: "Hay una actualización lista para después de esta batalla.",
     updateReady: "Hay una actualización lista. Recarga cuando sea conveniente.",
-    restartTitle: "Batalla contra el Monstruo del Cuarto necesita reiniciarse",
+    restartTitle: "La Batalla del Cuarto necesita reiniciarse",
     restartText:
       "No se pudo abrir el almacenamiento local. Intenta recargar Safari.",
     nav_dashboard: "Panel",
@@ -342,6 +361,23 @@ const dictionaries = {
     monsterAttack: "⚠ ATAQUE DEL MONSTRUO EN PROGRESO ⚠",
     incomingMission: "Misión entrante: {mission}",
     deployNow: "Desplegar ahora ▶",
+    classifiedFile: "ARCHIVO CLASIFICADO DEL MONSTRUO",
+    beginBattle: "Comenzar la batalla ▶",
+    monsterWeakening: "¡GOLPE DIRECTO! ¡El monstruo se está debilitando!",
+    pauseDeniedTitle: "PAUSA TÁCTICA NO DISPONIBLE",
+    pauseDeniedText:
+      "El monstruo se está fortaleciendo. Otra pausa no ayudará—¡los héroes deben seguir!",
+    opportunityMissed: "¡OPORTUNIDAD PERDIDA!",
+    monsterDistracted:
+      "El monstruo bloqueó este intento, pero está distraído. Elige el siguiente movimiento.",
+    defeatByMonster: "Derrota por el Monstruo",
+    tryAgain: "Intentar de nuevo — Mitad del tiempo",
+    defeatedNotice:
+      "El monstruo ganó esta batalla. Los héroes pueden reagruparse y volver.",
+    simpleInspectionHelp:
+      "Aprueba todo el cuarto con un botón o devuelve exactamente un paso anterior a la batalla.",
+    repeatPreviousStep: "Repetir un paso anterior",
+    repeatSelectedStep: "Repetir paso seleccionado",
     timerReset: "¡Nueva oportunidad! 5:00",
     timerExpired:
       "Parece que se les pasó la primera oportunidad, pero ahora el monstruo está distraído. Todavía pueden lograrlo — ¡inténtenlo otra vez!",
@@ -356,6 +392,8 @@ const dictionaries = {
     copySuffix: " Copia",
     missionUpdated: "Misión actualizada.",
     minutesPerMission: "Minutos para cada misión",
+    modeSteps: "Pasos incluidos en este modo",
+    selectAtLeastOneStep: "Elige al menos un paso para este modo.",
     modeTimerSaved:
       "El temporizador de {mode} se guardó en {minutes} minutos por misión.",
     restoreFactory: "Restaurar misiones originales",
@@ -387,7 +425,7 @@ const dictionaries = {
     backupImported: "Respaldo importado.",
     importRejected: "Importación rechazada: {message}",
     reset1:
-      "Primera confirmación: ¿eliminar todos los datos locales de Room Monster Battle?",
+      "Primera confirmación: ¿eliminar todos los datos locales de La Batalla del Cuarto?",
     reset2:
       "Segunda confirmación: esto no se puede deshacer sin un respaldo. ¿Continuar?",
     resetPhrase: "Escribe RESET ROOM MONSTER para terminar:",

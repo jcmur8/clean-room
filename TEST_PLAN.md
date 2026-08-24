@@ -73,3 +73,7 @@ Verify that the timer changes every second without any button press, remains leg
 ## Version 1.5 battle-console redesign
 
 Verify the monster attack screen automatically deploys the next mission, the automatic command narration runs once per phase, the instruction icon repeats it, and the action music scheduler starts after audio activation. Confirm the help icon opens a large modal with a working X, More Time is absent, icon controls remain on the left, and hero check fields remain on the right. Test the red flashing timer at 1:59 and the normal green timer at 2:00 with reduced-motion both enabled and disabled.
+
+## Version 1.6 comic campaign and tactical rules
+
+Verify all three bilingual origin comics, progressive weakening scales, radio-bed start/end callbacks, and absence of the mute control. Confirm mode mission composition persists and refuses an empty mode. Exercise the 30-second pause to automatic resume, then verify the second-pause modal. Test the 1:59 critical siren only once. At timeout, confirm defeat ends and records the battle; confirm retry restores exactly half the original mode time and preserves the used pause. At inspection, approve with one button or repeat one selected step and verify its confirmations are cleared.

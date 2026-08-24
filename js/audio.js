@@ -3,6 +3,7 @@ let enabled = false;
 let musicTimer = null;
 let musicStep = 0;
 let musicVolume = 0.4;
+let radioBedTimer = null;
 
 export async function activateAudio() {
   try {
@@ -137,6 +138,21 @@ export function beep(kind = "ok", volume = 0.4) {
     return;
   }
 
+  if (kind === "critical-siren") {
+    for (let cycle = 0; cycle < 4; cycle += 1) {
+      sweep(620, 1080, cycle * 0.42, 0.2, Math.min(0.32, v * 0.5), "square");
+      sweep(
+        1080,
+        620,
+        cycle * 0.42 + 0.2,
+        0.2,
+        Math.min(0.32, v * 0.5),
+        "square",
+      );
+    }
+    return;
+  }
+
   if (kind === "halfway") {
     sequence(
       [
@@ -268,6 +284,18 @@ export function stopBattleMusic() {
   if (musicTimer != null) window.clearInterval(musicTimer);
   musicTimer = null;
   musicStep = 0;
+}
+
+export function startRadioBed(volume = 0.4) {
+  stopRadioBed();
+  const pulse = () => noiseBurst(0, 0.14, Math.min(0.045, volume * 0.07));
+  pulse();
+  radioBedTimer = window.setInterval(pulse, 420);
+}
+
+export function stopRadioBed() {
+  if (radioBedTimer != null) window.clearInterval(radioBedTimer);
+  radioBedTimer = null;
 }
 
 export function isAudioEnabled() {

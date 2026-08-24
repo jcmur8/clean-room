@@ -7,6 +7,8 @@ import {
   beep,
   startBattleMusic,
   stopBattleMusic,
+  startRadioBed,
+  stopRadioBed,
 } from "./audio.js";
 import { monsters } from "./defaults.js";
 import { monsterSprite } from "./monsters.js";
@@ -31,6 +33,7 @@ import {
 } from "./views/inspection.js";
 import { renderVictory } from "./views/victory.js";
 import { renderBattleTransition } from "./views/battle-transition.js";
+import { renderMonsterOrigin } from "./views/monster-origin.js";
 import { renderParentDashboard } from "./views/parent-dashboard.js";
 import { el, button } from "./ui.js";
 import { t, setLanguage, modeName, localized } from "./i18n.js";
@@ -50,9 +53,6 @@ function refreshChrome() {
   document.querySelector(".skip-link").textContent = t("skip");
   document.querySelector(".topbar strong").textContent = t("appTitle");
   document.getElementById("parent-access").textContent = t("parent");
-  document
-    .getElementById("audio-toggle")
-    .setAttribute("aria-label", t("toggleSound"));
   const lb = document.getElementById("language-toggle");
   if (lb) {
     lb.textContent = (d?.appSettings?.language || "en") === "es" ? "EN" : "ES";
@@ -87,7 +87,15 @@ const actions = {
     if (!d.appSettings.speech) return;
     beep("radio", d.appSettings.soundVolume);
     window.setTimeout(() => {
-      if (!speakCommand(text, true, d.appSettings.language))
+      if (
+        !speakCommand(text, true, d.appSettings.language, {
+          onStart: () => startRadioBed(d.appSettings.soundVolume),
+          onEnd: () => {
+            stopRadioBed();
+            beep("radio", d.appSettings.soundVolume);
+          },
+        })
+      )
         announce(t("spokenUnavailable"));
     }, 280);
   },
@@ -98,14 +106,17 @@ const actions = {
   notice: announce,
   applyAccessibility: () => applyAccessibility(getState().appSettings),
   refreshChrome,
-  pause: async () => {
+  pause30: async () => {
     const d = getState();
+    if (d.activeSession.stepTimer?.pauseUsed) return false;
     stopBattleMusic();
+    d.activeSession.stepTimer.pauseUsed = true;
     d.activeSession.pauseState.paused = true;
     d.activeSession.timer = pauseTimer(d.activeSession.timer);
     d.activeSession.stepTimer = pauseStepTimer(d.activeSession.stepTimer);
     await persist(d);
-    showPause();
+    showPause30();
+    return true;
   },
   requireParent: (purpose) => showPin(purpose),
   goParent: (s) => {
@@ -134,7 +145,7 @@ const actions = {
     d.activeSession = returnMissions(d.activeSession, ids, note);
     await persist(d);
     parentAuth.close();
-    route = "mission";
+    route = "battle-transition";
     render();
   },
   finishSession: async () => {
@@ -207,6 +218,21 @@ const actions = {
     render();
     announce(t("battleAborted"));
   },
+  defeatBattle: async () => {
+    const d = getState();
+    const defeated = {
+      ...d.activeSession,
+      status: "defeated",
+      completedAt: new Date().toISOString(),
+      outcome: "monster",
+    };
+    d.sessionHistory = [...d.sessionHistory, defeated].slice(-100);
+    d.activeSession = null;
+    await persist(d);
+    route = "home";
+    render();
+    announce(t("defeatedNotice"));
+  },
 };
 function render() {
   const d = getState();
@@ -224,6 +250,7 @@ function render() {
   else if (route === "mission") renderMission(root, d, actions);
   else if (route === "battle-transition")
     renderBattleTransition(root, d, actions);
+  else if (route === "monster-origin") renderMonsterOrigin(root, d, actions);
   else if (route === "celebration") renderCelebration(root, d, actions);
   else if (route === "inspection-request")
     renderInspectionRequest(root, d, actions);
@@ -346,13 +373,16 @@ async function startBattle(modeId) {
     d.appSettings.lastModeId = modeId;
     await persist(d);
   }
-  route = "battle-transition";
+  route = "monster-origin";
   actions.sound("mission-warning");
   actions.notice(t("missionAlarm"));
   render();
 }
-function showPause() {
+function showPause30() {
   const d = getState();
+  let seconds = 30;
+  let resumed = false;
+  const counter = el("strong", { class: "pause-countdown", text: "0:30" });
   const modal = el(
     "div",
     { class: "modal" },
@@ -361,17 +391,27 @@ function showPause() {
       { class: "card", style: "text-align:center" },
       el("h2", { text: t("paused") }),
       el("p", { text: t("pauseText") }),
-      button(t("resumeBattle"), "btn-primary", async () => {
-        d.activeSession.pauseState.paused = false;
-        d.activeSession.timer = resumeTimer(d.activeSession.timer);
-        d.activeSession.stepTimer = resumeStepTimer(d.activeSession.stepTimer);
-        await persist(d);
-        modal.remove();
-        route = "mission";
-        render();
-      }),
+      counter,
+      button(t("resumeBattle"), "btn-primary", () => resume()),
     ),
   );
+  const resume = async () => {
+    if (resumed) return;
+    resumed = true;
+    clearInterval(interval);
+    d.activeSession.pauseState.paused = false;
+    d.activeSession.timer = resumeTimer(d.activeSession.timer);
+    d.activeSession.stepTimer = resumeStepTimer(d.activeSession.stepTimer);
+    await persist(d);
+    modal.remove();
+    route = "mission";
+    render();
+  };
+  const interval = setInterval(() => {
+    seconds -= 1;
+    counter.textContent = `0:${String(Math.max(0, seconds)).padStart(2, "0")}`;
+    if (seconds <= 0) resume();
+  }, 1000);
   document.body.append(modal);
 }
 function showPin(purpose = "parent:dashboard") {
@@ -459,16 +499,6 @@ document.getElementById("language-toggle").onclick = async () => {
   refreshChrome();
   render();
 };
-document.getElementById("audio-toggle").onclick = async () => {
-  const d = getState();
-  d.appSettings.sound = !d.appSettings.sound;
-  await persist(d);
-  document.getElementById("audio-toggle").textContent = d.appSettings.sound
-    ? "🔊"
-    : "🔇";
-  if (d.appSettings.sound) await activateAudio();
-  if (!d.appSettings.sound) stopBattleMusic();
-};
 document.getElementById("parent-access").onclick = () =>
   showPin("parent:dashboard");
 document.addEventListener("visibilitychange", async () => {
@@ -527,9 +557,7 @@ async function init() {
             : "home";
     }
     refreshChrome();
-    document.getElementById("audio-toggle").textContent = d.appSettings.sound
-      ? "🔊"
-      : "🔇";
+    d.appSettings.sound = true;
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("./sw.js")

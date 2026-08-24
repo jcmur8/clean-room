@@ -18,7 +18,12 @@ export function speak(text, enabled = true, language = "en") {
   }
 }
 
-export function speakCommand(text, enabled = true, language = "en") {
+export function speakCommand(
+  text,
+  enabled = true,
+  language = "en",
+  { onStart, onEnd } = {},
+) {
   if (!enabled || !("speechSynthesis" in window) || !text) return false;
   try {
     speechSynthesis.cancel();
@@ -36,6 +41,9 @@ export function speakCommand(text, enabled = true, language = "en") {
     );
     if (preferred || candidates[0])
       utterance.voice = preferred || candidates[0];
+    utterance.onstart = () => onStart?.();
+    utterance.onend = () => onEnd?.();
+    utterance.onerror = () => onEnd?.();
     speechSynthesis.speak(utterance);
     return true;
   } catch {

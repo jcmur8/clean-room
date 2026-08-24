@@ -474,11 +474,219 @@
 .help-hand {
   font-size: 80px;
 }
-.help-large-text {
-  font-size: clamp(28px, 4vw, 54px);
-  line-height: 1.16;
+.help-bullet-list {
+  display: grid;
+  gap: 18px;
+  text-align: left;
+  font-size: clamp(25px, 3.3vw, 45px);
+  line-height: 1.18;
   color: #dcffe2;
   font-weight: 800;
+}
+.help-bullet-list li::marker {
+  color: #6eff99;
+  font-size: 1.2em;
+}
+.pause-countdown {
+  display: block;
+  font-size: clamp(90px, 16vw, 190px);
+  color: #baffc6;
+  text-shadow: 0 0 20px #45db73;
+}
+.pause-denied,
+.timeout-card {
+  position: relative;
+  text-align: center;
+  max-width: 820px;
+}
+.monster-strength,
+.timeout-alert {
+  font-size: clamp(70px, 12vw, 150px);
+}
+.timeout-flash {
+  animation: timeout-screen-flash 0.55s steps(2, end) infinite;
+}
+.timeout-card {
+  border: 3px solid #ff4d4d;
+  background: #260607;
+}
+.timeout-card h2 {
+  font-size: clamp(42px, 6vw, 82px);
+  color: #ff6969;
+}
+.timeout-card p {
+  font-size: clamp(22px, 3vw, 38px);
+}
+.timeout-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.timeout-options button {
+  min-height: 90px;
+  font-size: clamp(20px, 2.3vw, 30px);
+}
+.mode-mission-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(190px, 1fr));
+  gap: 7px;
+  margin: 10px 0;
+}
+.mode-mission-choice {
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0a211e;
+}
+.comic-cutscene {
+  min-height: calc(100vh - 110px);
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  padding: 18px;
+  border: 1px solid #479968;
+  background: #020b0c;
+}
+.comic-title {
+  text-align: center;
+}
+.comic-title > span {
+  color: #ff6b6b;
+  letter-spacing: 0.16em;
+  font-weight: 900;
+}
+.comic-title h1 {
+  font-size: clamp(34px, 5vw, 68px);
+  margin: 5px;
+}
+.comic-panels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.comic-panel {
+  position: relative;
+  min-height: 390px;
+  display: grid;
+  align-content: end;
+  overflow: hidden;
+  border: 5px solid #d7fbe0;
+  background: radial-gradient(circle at top, #16452f, #061311 68%);
+  box-shadow: 8px 8px 0 #173f2e;
+  padding: 14px;
+}
+.comic-panel p {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.78);
+  color: #fff;
+  font-size: clamp(17px, 1.8vw, 24px);
+  font-weight: 800;
+}
+.panel-number {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  z-index: 3;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffdf5a;
+  color: #151006;
+  font-weight: 950;
+}
+.comic-monster {
+  position: absolute;
+  inset: 10px 0 auto;
+  width: 100%;
+  height: 270px;
+}
+.pose-1 {
+  transform: translateX(-18%) scale(0.82) rotate(-5deg);
+}
+.pose-2 {
+  transform: scale(0.98) rotate(4deg);
+  filter: drop-shadow(0 0 24px #8effa7);
+}
+.pose-3 {
+  transform: translateX(12%) scale(1.14);
+}
+.comic-deploy {
+  justify-self: center;
+  min-width: 280px;
+}
+.weakening-scene {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.weakening-monster {
+  transition:
+    transform 0.4s,
+    filter 0.4s;
+}
+.weakness-1 .weakening-monster {
+  transform: scale(0.9) rotate(-3deg);
+}
+.weakness-2 .weakening-monster {
+  transform: scale(0.75) rotate(4deg);
+  filter: grayscale(0.25) brightness(0.82);
+}
+.weakness-3 .weakening-monster {
+  transform: scale(0.62) rotate(-6deg);
+  filter: grayscale(0.5) brightness(0.7);
+}
+.comic-impact {
+  position: absolute;
+  z-index: 3;
+  right: 18%;
+  top: 5%;
+  padding: 12px;
+  background: #ffdf45;
+  color: #251600;
+  font-size: clamp(30px, 5vw, 72px);
+  font-weight: 950;
+  transform: rotate(10deg);
+  clip-path: polygon(
+    50% 0,
+    61% 28%,
+    88% 12%,
+    75% 40%,
+    100% 50%,
+    72% 61%,
+    88% 88%,
+    60% 75%,
+    50% 100%,
+    39% 73%,
+    12% 88%,
+    26% 60%,
+    0 50%,
+    29% 39%,
+    12% 12%,
+    40% 27%
+  );
+}
+.weakening-copy {
+  color: #9cffad;
+  font-size: clamp(24px, 3.5vw, 48px);
+}
+@media (max-width: 850px) {
+  .comic-panels {
+    grid-template-columns: 1fr;
+  }
+  .comic-panel {
+    min-height: 310px;
+  }
+  .timeout-options {
+    grid-template-columns: 1fr;
+  }
+  .mode-mission-list {
+    grid-template-columns: 1fr;
+  }
 }
 .battle-interlude {
   position: relative;

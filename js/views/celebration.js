@@ -7,6 +7,7 @@ export function renderCelebration(root, data, actions) {
   const session = data.activeSession;
   const completedIndex = Math.max(0, (session.rewards?.length || 1) - 1);
   const mission = session.missionSnapshots[completedIndex];
+  const weakness = Math.min(3, Math.max(1, session.rewards?.length || 1));
 
   root.replaceChildren(
     el(
@@ -18,7 +19,16 @@ export function renderCelebration(root, data, actions) {
           class: "card celebrate celebration-stage",
           style: "text-align:center",
         },
-        monsterSprite(session, "monster-sprite celebration-monster"),
+        el(
+          "div",
+          { class: `weakening-scene weakness-${weakness}` },
+          el("div", { class: "comic-impact", text: "POW!" }),
+          monsterSprite(
+            session,
+            "monster-sprite celebration-monster weakening-monster",
+          ),
+        ),
+        el("h2", { class: "weakening-copy", text: t("monsterWeakening") }),
         el("h1", { text: t("zoneRescued") }),
         el("p", {
           text: t("missionComplete", {

@@ -168,6 +168,23 @@ function renderModes(content, data, actions) {
     duration.value = String(
       Math.round((mode.missionDurationSeconds || 300) / 60),
     );
+    const missionChoices = data.missions
+      .filter((mission) => !mission.archived)
+      .map((mission) => {
+        const checkbox = el("input", { type: "checkbox", value: mission.id });
+        checkbox.checked = mode.missionIds.includes(mission.id);
+        return el(
+          "label",
+          { class: "mode-mission-choice" },
+          checkbox,
+          ` ${mission.icon} ${localized(mission, "title")}`,
+        );
+      });
+    const missionList = el(
+      "div",
+      { class: "mode-mission-list" },
+      ...missionChoices,
+    );
     content.append(
       el(
         "div",
@@ -182,6 +199,8 @@ function renderModes(content, data, actions) {
             el("span", { text: t("minutesPerMission") }),
             duration,
           ),
+          el("strong", { text: t("modeSteps") }),
+          missionList,
         ),
         button(t("save"), "btn-primary", async () => {
           const minutes = Math.max(
@@ -190,6 +209,15 @@ function renderModes(content, data, actions) {
           );
           mode.childSelectable = selectable.checked;
           mode.missionDurationSeconds = Math.round(minutes * 60);
+          const selectedIds = Array.from(
+            missionList.querySelectorAll("input:checked"),
+            (input) => input.value,
+          );
+          if (!selectedIds.length) {
+            actions.notice(t("selectAtLeastOneStep"));
+            return;
+          }
+          mode.missionIds = selectedIds;
           duration.value = String(minutes);
           await actions.save(data);
           actions.notice(

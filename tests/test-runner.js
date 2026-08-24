@@ -6,6 +6,7 @@ import {
   createSession,
   confirmChild,
   missionReady,
+  returnMissions,
 } from "../js/game-engine.js";
 import {
   pauseTimer,
@@ -18,6 +19,7 @@ import {
   resumeStepTimer,
   shouldAlertHalfway,
   isCriticalRemaining,
+  retryDurationMs,
 } from "../js/timers.js";
 import { migrate } from "../js/migrations.js";
 import { validateRoot } from "../js/validation.js";
@@ -98,7 +100,7 @@ test("Migration from older fixture", () => {
   const d = base();
   d.schemaVersion = 1;
   delete d.rewards;
-  equal(migrate(d).schemaVersion, 6);
+  equal(migrate(d).schemaVersion, 7);
 });
 test("Mode timer defaults and session snapshot", () => {
   const d = base();
@@ -129,6 +131,35 @@ test("Two-minute critical timer threshold", () => {
   assert(!isCriticalRemaining(120000));
   assert(isCriticalRemaining(119999));
   assert(!isCriticalRemaining(0));
+});
+test("Retry grants half the original time", () => {
+  equal(retryDurationMs(300000), 150000);
+  equal(retryDurationMs(60000), 30000);
+});
+test("One tactical pause per phase", () => {
+  let timer = newStepTimer("m1", 1000, 300000);
+  equal(timer.pauseUsed, false);
+  timer.pauseUsed = true;
+  timer = pauseStepTimer(timer, 2000);
+  timer = resumeStepTimer(timer, 3000);
+  equal(timer.pauseUsed, true);
+});
+test("Returned inspection step clears confirmations", () => {
+  let session = createSession(base(), "quick", 1000);
+  const mission = session.missionSnapshots[0];
+  session.confirmations[mission.id] = session.participants.slice();
+  session = returnMissions(session, [mission.id], "repeat", 2000);
+  equal(session.confirmations[mission.id], undefined);
+  equal(session.stepTimer.pauseUsed, false);
+});
+test("Modes support editable step lists", () => {
+  const d = base();
+  const quick = d.gameModes.find((mode) => mode.id === "quick");
+  quick.missionIds = ["trash", "books"];
+  equal(
+    selectMissions(d, "quick").map((mission) => mission.id),
+    ["trash", "books"],
+  );
 });
 test("Monster rotation and avatar choices", () => {
   const d = base();
@@ -193,5 +224,5 @@ for (const [n, f] of tests) {
 }
 document.getElementById("summary").textContent =
   `${pass}/${tests.length} tests passed`;
-document.title = `${pass === tests.length ? "PASS" : "FAIL"} ${pass}/${tests.length} Room Monster Tests`;
+document.title = `${pass === tests.length ? "PASS" : "FAIL"} ${pass}/${tests.length} Battle of the Room Tests`;
 window.__TEST_RESULT__ = { pass, total: tests.length };

@@ -177,3 +177,12 @@ body.reduce-motion .confetti-layer {
     opacity: 0.28;
   }
 }
+@keyframes timeout-screen-flash {
+  0%,
+  100% {
+    background: rgba(105, 0, 0, 0.86);
+  }
+  50% {
+    background: rgba(8, 0, 0, 0.9);
+  }
+}

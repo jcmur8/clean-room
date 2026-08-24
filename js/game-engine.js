@@ -139,11 +139,15 @@ export function returnMissions(session, ids, note = "", now = Date.now()) {
     .filter((index) => index >= 0);
   const index = indexes.length ? Math.min(...indexes) : 0;
   const mission = session.missionSnapshots[index];
+  const confirmations = { ...session.confirmations };
+  for (const id of ids) delete confirmations[id];
 
   return {
     ...session,
     currentMissionIndex: index,
     status: "active",
+    confirmations,
+    lastAutoSpokenMissionId: null,
     stepTimer: mission
       ? newStepTimer(mission.id, now, session.stepDurationMs)
       : null,
