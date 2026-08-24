@@ -77,3 +77,7 @@ Verify the monster attack screen automatically deploys the next mission, the aut
 ## Version 1.6 comic campaign and tactical rules
 
 Verify all three bilingual origin comics, progressive weakening scales, radio-bed start/end callbacks, and absence of the mute control. Confirm mode mission composition persists and refuses an empty mode. Exercise the 30-second pause to automatic resume, then verify the second-pause modal. Test the 1:59 critical siren only once. At timeout, confirm defeat ends and records the battle; confirm retry restores exactly half the original mode time and preserves the used pause. At inspection, approve with one button or repeat one selected step and verify its confirmations are cleared.
+
+## Version 1.7 mission matrix and case files
+
+Verify Parent → Missions shows one row per mission and one assignment column per mode. Save different combinations, reload, and confirm each battle uses the matching ordered tasks; verify an empty mode is rejected. Confirm Parent → Modes no longer duplicates task checkboxes. Test Settings at desktop, tablet, and phone widths in English and Spanish and confirm labels never overlap. Complete at least three phases against each monster and confirm the between-phase black-and-white detective archive rotates through all three localized origin facts while showing the monster's weakened state.

@@ -75,3 +75,7 @@ The original countdown regression was caused by starting `tick()` before the tim
 ## Version 1.6 comic campaign and tactical rules
 
 Monster lore is authored in `monster-stories.js` and rendered as semantic HTML/CSS panels by `monster-origin.js`. Radio noise follows Web Speech lifecycle callbacks. Step timers now carry `criticalAlerted` and `pauseUsed`; retries derive from the immutable session `stepDurationMs`. Mode mission membership remains an ordered `missionIds` array. Inspection repetition calls `returnMissions`, which now deletes confirmations for returned IDs before creating a fresh timer. Schema version 7 migrates these states and enforces sound enabled.
+
+## Version 1.7 mission matrix and detective archive
+
+The Missions editor treats the existing ordered `mode.missionIds` arrays as a task-by-mode matrix, so no data migration is needed. The Modes editor retains only availability and duration. Settings use responsive cards instead of inline list labels. The completion cutscene reuses locally cached monster art with CSS grayscale, contrast, paper, stamp, and scan-line treatments; it reveals the current monster's authored story panels in phase order without adding remote assets.

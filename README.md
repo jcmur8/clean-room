@@ -1,5 +1,13 @@
 # The Battle of the Room
 
+## v1.7.0 — Mission matrix and detective archives
+
+- Parent → Missions now uses one task-by-mode matrix for Quick Rescue, Normal Battle, and Deep Clean assignments.
+- Parent → Modes now focuses on whether a mode is available and its per-mission timer.
+- Parent → Settings uses responsive control cards that remain readable in English and Spanish.
+- Every completed phase reveals a different black-and-white detective case-file scene with the current monster's origin story and evidence.
+- The service-worker cache is `room-monster-v1.7.0`; schema version remains 7.
+
 A static, installable PWA that turns a shared-bedroom cleanup into a cooperative battle against a silly monster. It uses vanilla HTML/CSS/JavaScript, IndexedDB, Web Crypto, speech synthesis and a service worker. No accounts, analytics, advertising, remote APIs, CDNs, package manager or cloud database are used.
 
 ## Local use

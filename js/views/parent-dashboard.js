@@ -110,45 +110,87 @@ function renderProfiles(content, data, actions) {
 }
 
 function renderMissions(content, data, actions) {
-  for (const mission of data.missions) {
-    const active = el("input", { type: "checkbox" });
-    active.checked = mission.active && !mission.archived;
-    content.append(
+  const missions = data.missions.filter((mission) => !mission.archived);
+  const controls = new Map();
+  const header = el(
+    "tr",
+    {},
+    el("th", { text: t("missionTask") }),
+    el("th", { text: t("active") }),
+    ...data.gameModes.map((mode) => el("th", { text: modeName(mode) })),
+    el("th", { text: t("actions") }),
+  );
+  const body = missions.map((mission) => {
+    const active = el("input", {
+      type: "checkbox",
+      "aria-label": `${localized(mission, "title")} — ${t("active")}`,
+    });
+    active.checked = mission.active !== false;
+    const modes = new Map();
+    for (const mode of data.gameModes) {
+      const checkbox = el("input", {
+        type: "checkbox",
+        "aria-label": `${localized(mission, "title")} — ${modeName(mode)}`,
+      });
+      checkbox.checked = mode.missionIds.includes(mission.id);
+      modes.set(mode.id, checkbox);
+    }
+    controls.set(mission.id, { active, modes });
+    return el(
+      "tr",
+      {},
       el(
-        "div",
-        { class: "list-item editor-row" },
-        el(
-          "div",
-          {},
-          el("strong", {
-            text: `${mission.icon} ${localized(mission, "title")}`,
-          }),
-          el("div", { text: localized(mission, "childInstruction") }),
-        ),
-        el(
-          "div",
-          {},
-          active,
-          button(t("duplicate"), "btn-secondary", async () => {
-            const duplicate = structuredClone(mission);
-            duplicate.id = crypto.randomUUID();
-            duplicate.title +=
-              getLanguage() === "en" ? t("copySuffix") : " Copy";
-            duplicate.titleEs +=
-              getLanguage() === "es" ? t("copySuffix") : " Copia";
-            data.missions.push(duplicate);
-            await actions.save(data);
-            actions.goParent("missions");
-          }),
-          button(t("save"), "btn-primary", async () => {
-            mission.active = active.checked;
-            await actions.save(data);
-            actions.notice(t("missionUpdated"));
-          }),
-        ),
+        "td",
+        { class: "mission-matrix-task" },
+        el("strong", { text: `${mission.icon} ${localized(mission, "title")}` }),
+        el("small", { text: localized(mission, "childInstruction") }),
+      ),
+      el("td", { class: "matrix-check" }, active),
+      ...data.gameModes.map((mode) =>
+        el("td", { class: "matrix-check" }, modes.get(mode.id)),
+      ),
+      el(
+        "td",
+        {},
+        button(t("duplicate"), "btn-secondary matrix-action", async () => {
+          const duplicate = structuredClone(mission);
+          duplicate.id = crypto.randomUUID();
+          duplicate.title += " Copy";
+          duplicate.titleEs += " Copia";
+          data.missions.push(duplicate);
+          await actions.save(data);
+          actions.goParent("missions");
+        }),
       ),
     );
-  }
+  });
+  content.append(
+    el("p", { class: "notice", text: t("missionMatrixHelp") }),
+    el(
+      "div",
+      { class: "mission-matrix-wrap" },
+      el("table", { class: "mission-matrix" }, el("thead", {}, header), el("tbody", {}, ...body)),
+    ),
+    button(t("saveMissionMatrix"), "btn-primary", async () => {
+      for (const mode of data.gameModes) {
+        const selected = missions.filter(
+          (mission) => controls.get(mission.id).modes.get(mode.id).checked,
+        );
+        if (!selected.length) {
+          actions.notice(t("modeNeedsMission", { mode: modeName(mode) }));
+          return;
+        }
+      }
+      for (const mission of missions) mission.active = controls.get(mission.id).active.checked;
+      for (const mode of data.gameModes) {
+        mode.missionIds = missions
+          .filter((mission) => controls.get(mission.id).modes.get(mode.id).checked)
+          .map((mission) => mission.id);
+      }
+      await actions.save(data);
+      actions.notice(t("missionMatrixSaved"));
+    }),
+  );
   content.append(
     button(t("restoreFactory"), "btn-gold", () => actions.restoreMissions()),
   );
@@ -168,23 +210,6 @@ function renderModes(content, data, actions) {
     duration.value = String(
       Math.round((mode.missionDurationSeconds || 300) / 60),
     );
-    const missionChoices = data.missions
-      .filter((mission) => !mission.archived)
-      .map((mission) => {
-        const checkbox = el("input", { type: "checkbox", value: mission.id });
-        checkbox.checked = mode.missionIds.includes(mission.id);
-        return el(
-          "label",
-          { class: "mode-mission-choice" },
-          checkbox,
-          ` ${mission.icon} ${localized(mission, "title")}`,
-        );
-      });
-    const missionList = el(
-      "div",
-      { class: "mode-mission-list" },
-      ...missionChoices,
-    );
     content.append(
       el(
         "div",
@@ -199,8 +224,7 @@ function renderModes(content, data, actions) {
             el("span", { text: t("minutesPerMission") }),
             duration,
           ),
-          el("strong", { text: t("modeSteps") }),
-          missionList,
+          el("small", { text: t("modeAssignmentsMoved") }),
         ),
         button(t("save"), "btn-primary", async () => {
           const minutes = Math.max(
@@ -209,15 +233,6 @@ function renderModes(content, data, actions) {
           );
           mode.childSelectable = selectable.checked;
           mode.missionDurationSeconds = Math.round(minutes * 60);
-          const selectedIds = Array.from(
-            missionList.querySelectorAll("input:checked"),
-            (input) => input.value,
-          );
-          if (!selectedIds.length) {
-            actions.notice(t("selectAtLeastOneStep"));
-            return;
-          }
-          mode.missionIds = selectedIds;
           duration.value = String(minutes);
           await actions.save(data);
           actions.notice(
@@ -266,14 +281,26 @@ function renderSettings(content, data, actions) {
     el("option", { value: "es", text: "Español" }),
   );
   language.value = data.appSettings.language || "en";
-  content.append(
-    el("label", { class: "list-item" }, speech, ` ${t("spokenSetting")}`),
-    el("label", { class: "list-item" }, inspection, ` ${t("inspectSetting")}`),
-    el("label", { class: "list-item" }, reducedMotion, ` ${t("reduceMotion")}`),
+  const settingCard = (icon, input, title, help) =>
     el(
       "label",
-      { class: "field" },
-      el("span", { text: t("interfaceLanguage") }),
+      { class: "setting-card" },
+      el("span", { class: "setting-icon", text: icon }),
+      el("span", { class: "setting-copy" }, el("strong", { text: title }), el("small", { text: help })),
+      el("span", { class: "setting-switch" }, input),
+    );
+  content.append(
+    el(
+      "div",
+      { class: "settings-grid" },
+      settingCard("📡", speech, t("spokenSetting"), t("spokenSettingHelp")),
+      settingCard("🔍", inspection, t("inspectSetting"), t("inspectSettingHelp")),
+      settingCard("◌", reducedMotion, t("reduceMotion"), t("reduceMotionHelp")),
+    ),
+    el(
+      "label", { class: "setting-language" },
+      el("span", { class: "setting-icon", text: "🌐" }),
+      el("strong", { text: t("interfaceLanguage") }),
       language,
     ),
     button(t("saveSettings"), "btn-primary", async () => {

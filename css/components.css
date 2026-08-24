@@ -538,6 +538,167 @@
   border-radius: 8px;
   background: #0a211e;
 }
+.mission-matrix-wrap {
+  overflow-x: auto;
+  margin: 16px 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.mission-matrix {
+  width: 100%;
+  min-width: 820px;
+  border-collapse: collapse;
+  background: #041411;
+}
+.mission-matrix th,
+.mission-matrix td {
+  padding: 14px 12px;
+  border-right: 1px solid #225b45;
+  border-bottom: 1px solid #225b45;
+  text-align: center;
+}
+.mission-matrix th {
+  position: sticky;
+  top: 0;
+  background: #0b2a20;
+  color: #baffc8;
+  font-size: 16px;
+}
+.mission-matrix-task {
+  min-width: 260px;
+  text-align: left !important;
+}
+.mission-matrix-task strong,
+.mission-matrix-task small {
+  display: block;
+}
+.mission-matrix-task small {
+  margin-top: 5px;
+  color: var(--muted);
+}
+.matrix-check input,
+.setting-switch input {
+  width: 28px;
+  height: 28px;
+  accent-color: #34e67a;
+}
+.matrix-action {
+  min-height: 44px;
+  padding: 8px 12px;
+}
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.setting-card,
+.setting-language {
+  display: grid;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid #2b7658;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #09221b, #04110f);
+}
+.setting-card {
+  grid-template-columns: auto 1fr auto;
+  min-height: 120px;
+}
+.setting-icon {
+  font-size: 34px;
+  filter: drop-shadow(0 0 8px #2cff78);
+}
+.setting-copy strong,
+.setting-copy small {
+  display: block;
+}
+.setting-copy strong {
+  color: #caffd5;
+  font-size: 19px;
+}
+.setting-copy small {
+  margin-top: 7px;
+  color: #9bcdb0;
+}
+.setting-language {
+  grid-template-columns: auto minmax(180px, 1fr) minmax(200px, 0.8fr);
+  margin-bottom: 18px;
+}
+.setting-language select {
+  width: 100%;
+  padding: 12px;
+}
+.detective-dossier {
+  width: min(100%, 980px);
+  margin: 0 auto 18px;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.85fr) 1.15fr;
+  overflow: hidden;
+  border: 10px solid #d7d3c8;
+  background: #d8d4c8;
+  color: #171717;
+  text-align: left;
+  box-shadow: 0 14px 35px #000;
+  transform: rotate(-0.3deg);
+}
+.dossier-header {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 18px;
+  border-bottom: 4px solid #171717;
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.12em;
+}
+.dossier-photo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 390px;
+  padding: 20px;
+  border-right: 4px solid #171717;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(0, 0, 0, 0.09) 4px),
+    radial-gradient(circle, #eee 0, #999 100%);
+  overflow: hidden;
+}
+.dossier-photo .monster-sprite {
+  filter: grayscale(1) contrast(1.35) drop-shadow(0 10px 3px #222);
+}
+.photo-stamp {
+  position: absolute;
+  right: 12px;
+  bottom: 20px;
+  padding: 5px 10px;
+  border: 5px double #3c3c3c;
+  color: #333;
+  font: 950 25px ui-monospace, monospace;
+  transform: rotate(-10deg);
+}
+.dossier-copy {
+  padding: 30px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(0, 0, 0, 0.09) 32px),
+    #e1ded3;
+}
+.dossier-copy h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(28px, 4vw, 52px);
+  color: #111;
+}
+.dossier-copy h2 {
+  color: #222;
+}
+.evidence-label {
+  font: 900 14px ui-monospace, monospace;
+  letter-spacing: 0.16em;
+}
+.archive-fact {
+  font: 700 clamp(19px, 2.2vw, 28px) Georgia, serif;
+  line-height: 1.45;
+}
 .comic-cutscene {
   min-height: calc(100vh - 110px);
   display: grid;
@@ -686,6 +847,23 @@
   }
   .mode-mission-list {
     grid-template-columns: 1fr;
+  }
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+  .setting-language {
+    grid-template-columns: auto 1fr;
+  }
+  .setting-language select {
+    grid-column: 1 / -1;
+  }
+  .detective-dossier {
+    grid-template-columns: 1fr;
+  }
+  .dossier-photo {
+    min-height: 270px;
+    border-right: 0;
+    border-bottom: 4px solid #171717;
   }
 }
 .battle-interlude {
