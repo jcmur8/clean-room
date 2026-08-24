@@ -1,5 +1,7 @@
 import { el, button } from "../ui.js";
 import { t } from "../i18n.js";
+import { monsters } from "../defaults.js";
+import { monsterSprite } from "../monsters.js";
 
 export function renderHome(root, data, actions) {
   const active = Boolean(
@@ -59,10 +61,17 @@ export function renderHome(root, data, actions) {
         el(
           "div",
           {},
-          el("div", {
-            class: "monster messy",
-            text: active ? "😮" : "👾",
-          }),
+          monsterSprite(
+            active
+              ? data.activeSession
+              : {
+                  monsterId:
+                    monsters[
+                      (data.appSettings.nextMonsterIndex || 0) % monsters.length
+                    ].id,
+                },
+            "monster-sprite home-monster messy",
+          ),
           el("p", {
             style: "text-align:center",
             text: active ? t("monsterActive") : t("monsterIdle"),

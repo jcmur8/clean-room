@@ -52,3 +52,14 @@ Corrected malformed nested calls in `js/views/parent-dashboard.js`, reformatted 
 - Children can request **Abort Battle**, but the existing adult PIN and a final confirmation are required before current progress is discarded.
 
 Schema version 5 adds per-mode mission durations and migrates existing schema-version-4 data without clearing profiles, history, settings, or a running battle. The service-worker cache is `room-monster-v1.3.0`.
+
+## Version 1.4 live mission experience
+
+- Fixed the visible countdown loop so seconds update continuously without requiring a completion-button rerender.
+- Enlarged the timer to a high-contrast, tabular display designed to be read across a room.
+- Added an original synthesized action-music loop during active cleaning phases, with rhythmic battle pulses, wordless team shouts, and friendly monster-growl punctuation. Music stops for celebrations, inspection, pauses, and non-mission screens.
+- Added three transparent monster characters derived from the supplied concept sheet: The Mess Gobbler, The Clutter Crawler, and The Chaos Slime. New battles rotate through them cyclically and retain the selected monster for the entire session.
+- Preserved the applause, jingle, monster growl, confetti, and final fanfare celebrations.
+- Added twelve child-selectable hero avatars during family setup and avatar editing under Parent → Profiles.
+
+Schema version 6 adds monster-rotation state and migrates active schema-version-5 battles to The Mess Gobbler. The service-worker cache is `room-monster-v1.4.0` and includes all three monster images for offline play.

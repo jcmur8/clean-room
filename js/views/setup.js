@@ -2,8 +2,8 @@ import { el, button, field, input } from "../ui.js";
 import { hashPin } from "../security.js";
 import { safeText, validPin } from "../validation.js";
 import { t, setLanguage } from "../i18n.js";
+import { heroAvatars } from "../defaults.js";
 
-const avatars = ["🦸", "🦸‍♀️", "🧑‍🚀", "🧙", "🥷", "🦹‍♀️", "🧑‍🔧", "🧑‍🎤"];
 const titles = [
   "Room Ranger",
   "Cleanup Captain",
@@ -18,8 +18,8 @@ const titles = [
 export function renderSetup(root, data, actions) {
   let step = 0;
   let heroes = [
-    { name: "Hero One", avatar: avatars[0] },
-    { name: "Hero Two", avatar: avatars[1] },
+    { name: "Hero One", avatar: heroAvatars[0] },
+    { name: "Hero Two", avatar: heroAvatars[1] },
   ];
   let pin = "";
   let confirmation = "";
@@ -68,11 +68,33 @@ export function renderSetup(root, data, actions) {
         name.oninput = () => {
           hero.name = name.value;
         };
+        const avatarPicker = el(
+          "div",
+          { class: "avatar-picker", "aria-label": t("chooseAvatar") },
+          ...heroAvatars.map((avatar) =>
+            button(
+              avatar,
+              avatar === hero.avatar
+                ? "avatar-option selected"
+                : "avatar-option",
+              () => {
+                hero.avatar = avatar;
+                draw();
+              },
+              { "aria-label": `${t("chooseAvatar")} ${avatar}` },
+            ),
+          ),
+        );
         const row = el(
           "div",
           { class: "setup-hero-row" },
           el("span", { class: "hero-avatar", text: hero.avatar }),
-          field(`${t("heroName")} ${index + 1}`, name),
+          el(
+            "div",
+            {},
+            field(`${t("heroName")} ${index + 1}`, name),
+            avatarPicker,
+          ),
         );
         if (heroes.length > 2) {
           row.append(
@@ -92,7 +114,7 @@ export function renderSetup(root, data, actions) {
             const index = heroes.length;
             heroes.push({
               name: `${t("newHero")} ${index + 1}`,
-              avatar: avatars[index % avatars.length],
+              avatar: heroAvatars[index % heroAvatars.length],
             });
             draw();
           }),

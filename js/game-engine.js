@@ -1,5 +1,6 @@
 import { fairRotation } from "./roles.js";
 import { newStepTimer } from "./timers.js";
+import { monsters } from "./defaults.js";
 
 export function selectMissions(data, modeId) {
   const mode =
@@ -21,6 +22,8 @@ export function createSession(data, modeId, now = Date.now()) {
   const firstMission = missions[0];
   const selectedMode = data.gameModes.find((mode) => mode.id === modeId);
   const stepDurationMs = (selectedMode?.missionDurationSeconds || 300) * 1000;
+  const monster =
+    monsters[(data.appSettings.nextMonsterIndex || 0) % monsters.length];
 
   return {
     id: crypto.randomUUID?.() || `session-${now}`,
@@ -36,6 +39,7 @@ export function createSession(data, modeId, now = Date.now()) {
     pauseState: { paused: false },
     timer: { runningSince: now, accumulatedMs: 0, pausedAt: null },
     stepDurationMs,
+    monsterId: monster.id,
     stepTimer: firstMission
       ? newStepTimer(firstMission.id, now, stepDurationMs)
       : null,

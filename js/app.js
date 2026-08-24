@@ -2,7 +2,14 @@ import { makeDefaultData, factoryMissions } from "./defaults.js";
 import { migrate } from "./migrations.js";
 import { loadData, saveData, clearData } from "./storage.js";
 import { setState, getState } from "./state.js";
-import { activateAudio, beep } from "./audio.js";
+import {
+  activateAudio,
+  beep,
+  startBattleMusic,
+  stopBattleMusic,
+} from "./audio.js";
+import { monsters } from "./defaults.js";
+import { monsterSprite } from "./monsters.js";
 import { speak } from "./speech.js";
 import { applyAccessibility, announce, focusMain } from "./accessibility.js";
 import { createSession } from "./game-engine.js";
@@ -79,6 +86,7 @@ const actions = {
   refreshChrome,
   pause: async () => {
     const d = getState();
+    stopBattleMusic();
     d.activeSession.pauseState.paused = true;
     d.activeSession.timer = pauseTimer(d.activeSession.timer);
     d.activeSession.stepTimer = pauseStepTimer(d.activeSession.stepTimer);
@@ -188,6 +196,11 @@ const actions = {
 };
 function render() {
   const d = getState();
+  if (route === "mission" && d.appSettings.sound) {
+    startBattleMusic(d.appSettings.soundVolume);
+  } else {
+    stopBattleMusic();
+  }
   setLanguage(d.appSettings.language || "en");
   refreshChrome();
   applyAccessibility(d.appSettings);
@@ -253,7 +266,15 @@ function renderIntro(modeId) {
         el(
           "div",
           {},
-          el("div", { class: "monster messy", text: "👾" }),
+          monsterSprite(
+            {
+              monsterId:
+                monsters[
+                  (d.appSettings.nextMonsterIndex || 0) % monsters.length
+                ].id,
+            },
+            "monster-sprite intro-monster messy",
+          ),
           el(
             "div",
             { class: "zone-strip" },
@@ -305,6 +326,8 @@ async function startBattle(modeId) {
   const d = getState();
   if (!d.activeSession) {
     d.activeSession = createSession(d, modeId);
+    d.appSettings.nextMonsterIndex =
+      ((d.appSettings.nextMonsterIndex || 0) + 1) % monsters.length;
     d.appSettings.lastModeId = modeId;
     await persist(d);
   }
@@ -429,6 +452,7 @@ document.getElementById("audio-toggle").onclick = async () => {
     ? "🔊"
     : "🔇";
   if (d.appSettings.sound) await activateAudio();
+  if (!d.appSettings.sound) stopBattleMusic();
 };
 document.getElementById("parent-access").onclick = () =>
   showPin("parent:dashboard");

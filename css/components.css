@@ -1,15 +1,384 @@
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(16px,3vw,30px)}.hero-card{display:grid;grid-template-columns:minmax(240px,1fr) 1.4fr;gap:var(--space);align-items:center}.btn-primary{background:var(--green);color:white}.btn-secondary{background:#ece8de;color:var(--ink)}.btn-danger{background:var(--red);color:white}.btn-gold{background:var(--gold);color:#382b10}.button-row{display:flex;gap:12px;flex-wrap:wrap}.icon-btn{min-width:var(--touch);padding:8px;background:#f0eadc}.parent-link{min-height:44px;background:transparent;color:var(--muted);font-size:14px}.badge{display:inline-flex;padding:5px 10px;border-radius:999px;background:#e8f2e8;font-size:13px;font-weight:700}.badge.offline{background:#f5dfd0}.progress-track{height:22px;border-radius:999px;background:#ece8de;overflow:hidden}.progress-fill{height:100%;background:var(--green);transition:width .35s}.grid{display:grid;gap:var(--space)}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.choice{border:3px solid transparent;background:white}.choice[aria-pressed=true]{border-color:var(--blue);background:#eef3ff}.monster{font-size:clamp(80px,14vw,180px);text-align:center;filter:drop-shadow(0 12px 10px rgba(0,0,0,.13))}.monster.messy{animation:wobble 2s infinite}.mission-icon{font-size:72px}.hero-chip{display:flex;align-items:center;gap:10px;padding:12px;border-radius:18px;background:#f6f2e9}.hero-avatar{font-size:44px}.confirm-btn{width:100%;min-height:72px;font-size:clamp(18px,2.6vw,28px)}.confirmed{background:#dff3e4!important;color:#1f5b32}.warning{padding:12px 16px;border-left:6px solid var(--orange);background:#fff1e4;border-radius:12px}.notice{padding:12px 16px;background:#edf3ff;border-radius:12px}.modal{position:fixed;inset:0;background:rgba(29,25,34,.55);display:grid;place-items:center;padding:20px;z-index:50}.modal>.card{width:min(560px,100%);max-height:90vh;overflow:auto}.field{display:grid;gap:6px;margin:12px 0}.field input,.field select,.field textarea{min-height:52px;border:2px solid var(--line);border-radius:12px;padding:10px;background:white}.error{color:#9b3030;font-weight:700}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{min-height:48px}.list{display:grid;gap:10px}.list-item{padding:14px;border:1px solid var(--line);border-radius:14px;background:white}.loading-card{padding:40px;text-align:center}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#25243a;color:white;padding:12px 18px;border-radius:12px;z-index:70}.health{display:flex;gap:5px}.heart{font-size:26px;filter:grayscale(1);opacity:.25}.heart.alive{filter:none;opacity:1}.collectibles{font-size:28px;letter-spacing:4px}.mode-card{min-height:170px;text-align:left}.setup-step{max-width:760px;margin:auto}.pin-dots{display:flex;gap:12px;justify-content:center;font-size:42px}.keypad{display:grid;grid-template-columns:repeat(3,90px);gap:10px;justify-content:center}.keypad button{font-size:28px}.zone-strip{display:flex;gap:8px;flex-wrap:wrap}.zone{padding:8px 12px;background:#eee;border-radius:999px}.zone.restored{background:#dff3e4}@media(max-width:800px){.hero-card,.grid.two,.grid.three{grid-template-columns:1fr}.monster{font-size:90px}}
-.hero-preview-grid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
-.setup-heroes{display:grid;gap:12px;margin:14px 0}
-.setup-hero-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:end;padding:10px;border:1px solid var(--line);border-radius:14px;background:#fff}
-.setup-hero-row .field{margin:0}
-.mission-countdown{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0;padding:12px 16px;border:2px solid var(--line);border-radius:16px;background:#fff}
-.countdown-value{font-size:clamp(34px,5vw,56px);font-variant-numeric:tabular-nums;letter-spacing:.03em}
-.mission-countdown.urgent{border-color:var(--orange);background:#fff1e4}
-.timer-coach{font-weight:700}
-.hidden{display:none!important}
-.hero-confirm-card{display:grid;gap:8px}
-.hero-chip.compact{padding:8px 10px}
-.hero-chip.compact .hero-avatar{font-size:34px}
-.victory-stage,.celebration-stage{position:relative;overflow:hidden}
-@media(max-width:700px){.setup-hero-row{grid-template-columns:auto 1fr}.setup-hero-row button{grid-column:1/-1}.countdown-value{font-size:38px}}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: clamp(16px, 3vw, 30px);
+}
+.hero-card {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) 1.4fr;
+  gap: var(--space);
+  align-items: center;
+}
+.btn-primary {
+  background: var(--green);
+  color: white;
+}
+.btn-secondary {
+  background: #ece8de;
+  color: var(--ink);
+}
+.btn-danger {
+  background: var(--red);
+  color: white;
+}
+.btn-gold {
+  background: var(--gold);
+  color: #382b10;
+}
+.button-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.icon-btn {
+  min-width: var(--touch);
+  padding: 8px;
+  background: #f0eadc;
+}
+.parent-link {
+  min-height: 44px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+}
+.badge {
+  display: inline-flex;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #e8f2e8;
+  font-size: 13px;
+  font-weight: 700;
+}
+.badge.offline {
+  background: #f5dfd0;
+}
+.progress-track {
+  height: 22px;
+  border-radius: 999px;
+  background: #ece8de;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--green);
+  transition: width 0.35s;
+}
+.grid {
+  display: grid;
+  gap: var(--space);
+}
+.grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.choice {
+  border: 3px solid transparent;
+  background: white;
+}
+.choice[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: #eef3ff;
+}
+.monster {
+  font-size: clamp(80px, 14vw, 180px);
+  text-align: center;
+  filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.13));
+}
+.monster.messy {
+  animation: wobble 2s infinite;
+}
+.mission-icon {
+  font-size: 72px;
+}
+.hero-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 18px;
+  background: #f6f2e9;
+}
+.hero-avatar {
+  font-size: 44px;
+}
+.confirm-btn {
+  width: 100%;
+  min-height: 72px;
+  font-size: clamp(18px, 2.6vw, 28px);
+}
+.confirmed {
+  background: #dff3e4 !important;
+  color: #1f5b32;
+}
+.warning {
+  padding: 12px 16px;
+  border-left: 6px solid var(--orange);
+  background: #fff1e4;
+  border-radius: 12px;
+}
+.notice {
+  padding: 12px 16px;
+  background: #edf3ff;
+  border-radius: 12px;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(29, 25, 34, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 50;
+}
+.modal > .card {
+  width: min(560px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+}
+.field {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0;
+}
+.field input,
+.field select,
+.field textarea {
+  min-height: 52px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  background: white;
+}
+.error {
+  color: #9b3030;
+  font-weight: 700;
+}
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tabs button {
+  min-height: 48px;
+}
+.list {
+  display: grid;
+  gap: 10px;
+}
+.list-item {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: white;
+}
+.loading-card {
+  padding: 40px;
+  text-align: center;
+}
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #25243a;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 12px;
+  z-index: 70;
+}
+.health {
+  display: flex;
+  gap: 5px;
+}
+.heart {
+  font-size: 26px;
+  filter: grayscale(1);
+  opacity: 0.25;
+}
+.heart.alive {
+  filter: none;
+  opacity: 1;
+}
+.collectibles {
+  font-size: 28px;
+  letter-spacing: 4px;
+}
+.mode-card {
+  min-height: 170px;
+  text-align: left;
+}
+.setup-step {
+  max-width: 760px;
+  margin: auto;
+}
+.pin-dots {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  font-size: 42px;
+}
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 90px);
+  gap: 10px;
+  justify-content: center;
+}
+.keypad button {
+  font-size: 28px;
+}
+.zone-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.zone {
+  padding: 8px 12px;
+  background: #eee;
+  border-radius: 999px;
+}
+.zone.restored {
+  background: #dff3e4;
+}
+@media (max-width: 800px) {
+  .hero-card,
+  .grid.two,
+  .grid.three {
+    grid-template-columns: 1fr;
+  }
+  .monster {
+    font-size: 90px;
+  }
+}
+.hero-preview-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+.setup-heroes {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0;
+}
+.setup-hero-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.setup-hero-row .field {
+  margin: 0;
+}
+.mission-countdown {
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  margin: 14px 0;
+  padding: 16px;
+  border: 4px solid var(--line);
+  border-radius: 24px;
+  background: #fff;
+  text-align: center;
+}
+.countdown-label {
+  font-size: clamp(18px, 2.3vw, 30px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.countdown-value {
+  font-size: clamp(76px, 12vw, 164px);
+  line-height: 0.9;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  color: #25243a;
+  text-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
+}
+.soundtrack-status {
+  font-size: clamp(14px, 1.8vw, 22px);
+  font-weight: 700;
+  color: var(--muted);
+}
+.mission-countdown.urgent {
+  border-color: var(--orange);
+  background: #fff1e4;
+}
+.timer-coach {
+  font-weight: 700;
+}
+.hidden {
+  display: none !important;
+}
+.hero-confirm-card {
+  display: grid;
+  gap: 8px;
+}
+.hero-chip.compact {
+  padding: 8px 10px;
+}
+.hero-chip.compact .hero-avatar {
+  font-size: 34px;
+}
+.victory-stage,
+.celebration-stage {
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 700px) {
+  .setup-hero-row {
+    grid-template-columns: auto 1fr;
+  }
+  .setup-hero-row > button {
+    grid-column: 1/-1;
+  }
+  .countdown-value {
+    font-size: clamp(68px, 20vw, 112px);
+  }
+}
+.monster-sprite {
+  display: block;
+  width: min(100%, 360px);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  margin: auto;
+  filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.16));
+}
+.mission-monster {
+  width: min(100%, 250px);
+}
+.celebration-monster,
+.victory-monster {
+  width: min(70vw, 360px);
+}
+.monster-name {
+  display: block;
+  text-align: center;
+  font-size: clamp(18px, 2.2vw, 28px);
+  margin-top: -8px;
+}
+.avatar-picker {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(44px, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+.avatar-option {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px;
+  background: #f6f2e9;
+  font-size: 25px;
+  border: 2px solid transparent;
+}
+.avatar-option.selected {
+  border-color: var(--blue);
+  background: #eef3ff;
+  transform: scale(1.06);
+}

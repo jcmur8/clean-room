@@ -1,6 +1,7 @@
 import { el, button } from "../ui.js";
 import { t, getLanguage } from "../i18n.js";
 import { confettiBurst } from "../effects.js";
+import { monsterSprite } from "../monsters.js";
 
 export function renderVictory(root, data, actions) {
   const message =
@@ -16,7 +17,7 @@ export function renderVictory(root, data, actions) {
         "div",
         { class: "card celebrate victory-stage", style: "text-align:center" },
         el("div", { class: "victory-rays", "aria-hidden": "true" }),
-        el("div", { class: "monster victory-monster", text: "🥳" }),
+        monsterSprite(data.activeSession, "monster-sprite victory-monster"),
         el("h1", { text: t("victory") }),
         el("p", { text: t("victoryText") }),
         el("div", {

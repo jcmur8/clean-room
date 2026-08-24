@@ -120,7 +120,9 @@ const dictionaries = {
     removeHero: "Remove",
     participantLimit: "Up to {count} heroes can join a battle.",
     heroName: "Hero name",
+    chooseAvatar: "Choose avatar",
     timerLabel: "Mission timer",
+    battleMusicActive: "Battle music active",
     timerReset: "New chance! 5:00",
     timerExpired:
       "It looks like you missed the first chance, but the monster is distracted now. You can still make it — try again!",
@@ -311,7 +313,9 @@ const dictionaries = {
     removeHero: "Quitar",
     participantLimit: "Hasta {count} héroes pueden participar en una batalla.",
     heroName: "Nombre del héroe",
+    chooseAvatar: "Elegir avatar",
     timerLabel: "Temporizador de misión",
+    battleMusicActive: "Música de batalla activa",
     timerReset: "¡Nueva oportunidad! 5:00",
     timerExpired:
       "Parece que se les pasó la primera oportunidad, pero ahora el monstruo está distraído. Todavía pueden lograrlo — ¡inténtenlo otra vez!",

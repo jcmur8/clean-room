@@ -1,5 +1,5 @@
 import { assert, equal } from "./assertions.js";
-import { makeDefaultData } from "../js/defaults.js";
+import { makeDefaultData, monsters, heroAvatars } from "../js/defaults.js";
 import { assignRoles } from "../js/roles.js";
 import {
   selectMissions,
@@ -97,7 +97,7 @@ test("Migration from older fixture", () => {
   const d = base();
   d.schemaVersion = 1;
   delete d.rewards;
-  equal(migrate(d).schemaVersion, 5);
+  equal(migrate(d).schemaVersion, 6);
 });
 test("Mode timer defaults and session snapshot", () => {
   const d = base();
@@ -123,6 +123,19 @@ test("Halfway warning fires once per countdown", () => {
   assert(shouldAlertHalfway(timer, 210000));
   timer.halfwayAlerted = true;
   assert(!shouldAlertHalfway(timer, 200000));
+});
+test("Monster rotation and avatar choices", () => {
+  const d = base();
+  const chosen = [];
+  for (let index = 0; index < monsters.length; index += 1) {
+    d.appSettings.nextMonsterIndex = index;
+    chosen.push(createSession(d, "quick", 1000 + index).monsterId);
+  }
+  equal(
+    chosen,
+    monsters.map((monster) => monster.id),
+  );
+  assert(heroAvatars.length >= 8);
 });
 test("Export/import round trip", async () => {
   const a = await memoryAdapter(),

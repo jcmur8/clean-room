@@ -63,3 +63,7 @@ Replaced the malformed compressed `js/views/parent-dashboard.js` implementation 
 ## Version 1.3 engagement and timer controls
 
 Schema version 5 stores `missionDurationSeconds` on each game mode. Sessions snapshot this as `stepDurationMs`, so later parent edits do not mutate an active battle. Midpoint alerts are persisted on the step timer and reset with each new chance. All new sounds use Web Audio oscillators and generated noise, keeping the PWA offline and avoiding bundled third-party recordings. The abort action reuses the PBKDF2-backed adult PIN verifier and clears only the active session after a separate confirmation.
+
+## Version 1.4 live mission experience
+
+The original countdown regression was caused by starting `tick()` before the timer element was connected; its connection guard immediately cleared the interval. The interval now starts after `root.replaceChildren`. Action music is generated entirely through Web Audio and shares the existing sound-volume setting. Monster rotation uses `appSettings.nextMonsterIndex`, while each session snapshots `monsterId`. Generated RGBA sprites are resized to 700×700 and cached locally. Schema version 6 adds these fields without clearing existing family data.

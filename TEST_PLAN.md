@@ -65,3 +65,7 @@ Verify that the site starts without a `parent-dashboard.js` parse error, all 14 
 ## Version 1.3 engagement and timer controls
 
 Verify the 5/7/8-minute mode defaults, parent duration editing, schema 4→5 migration, continuous countdown, one-time halfway warning, timer reset using the selected mode duration, emergency start siren, mission-complete applause/growl, and adult-PIN-protected abort flow. Confirm that canceling the final abort prompt preserves the active battle.
+
+## Version 1.4 live mission experience
+
+Verify that the timer changes every second without any button press, remains legible at landscape iPad distance, and retains the selected mode duration. Confirm that action music begins only after audio activation, continues across mission rerenders, and stops outside the active mission. Run four new battles to verify the monster sequence Gobbler → Crawler → Slime → Gobbler. Verify all three images work offline and each child can select and later edit an avatar.

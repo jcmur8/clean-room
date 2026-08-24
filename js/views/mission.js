@@ -16,6 +16,7 @@ import {
   shouldAlertHalfway,
 } from "../timers.js";
 import { t, localized, roleName } from "../i18n.js";
+import { monsterSprite, monsterForSession, monsterName } from "../monsters.js";
 
 let activeCountdown = null;
 
@@ -73,8 +74,12 @@ export function renderMission(root, data, actions) {
   const timerBox = el(
     "div",
     { class: "mission-countdown", "aria-live": "polite" },
-    el("span", { text: `⏱ ${t("timerLabel")}` }),
+    el("span", { class: "countdown-label", text: `⏱ ${t("timerLabel")}` }),
     timerValue,
+    el("span", {
+      class: "soundtrack-status",
+      text: `🎵 ${t("battleMusicActive")}`,
+    }),
   );
   const timerCoach = el("p", {
     class: `timer-coach notice${session.stepTimer.attempts ? "" : " hidden"}`,
@@ -135,9 +140,6 @@ export function renderMission(root, data, actions) {
       expiryBusy = false;
     }
   };
-  activeCountdown = setInterval(tick, 250);
-  tick();
-
   const confirms = el(
     "div",
     { class: "heroes-confirm" },
@@ -225,7 +227,11 @@ export function renderMission(root, data, actions) {
         el(
           "div",
           {},
-          el("div", { class: "monster messy", text: "👾" }),
+          monsterSprite(session, "monster-sprite mission-monster messy"),
+          el("strong", {
+            class: "monster-name",
+            text: monsterName(monsterForSession(session)),
+          }),
           health,
           el(
             "div",
@@ -297,4 +303,8 @@ export function renderMission(root, data, actions) {
       ),
     ),
   );
+
+  // The loop must begin after the display is attached to the page.
+  activeCountdown = setInterval(tick, 200);
+  tick();
 }

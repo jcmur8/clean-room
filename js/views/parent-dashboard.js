@@ -1,5 +1,6 @@
 import { el, button } from "../ui.js";
 import { t, setLanguage, localized, modeName, getLanguage } from "../i18n.js";
+import { heroAvatars } from "../defaults.js";
 
 export function renderParentDashboard(
   root,
@@ -67,14 +68,21 @@ function renderProfiles(content, data, actions) {
     name.value = child.displayName;
     const active = el("input", { type: "checkbox" });
     active.checked = child.active !== false;
+    const avatar = el(
+      "select",
+      { "aria-label": t("chooseAvatar") },
+      ...heroAvatars.map((item) => el("option", { value: item, text: item })),
+    );
+    avatar.value = child.avatar || heroAvatars[0];
     content.append(
       el(
         "div",
         { class: "list-item editor-row" },
-        el("div", {}, name, el("label", {}, active, ` ${t("active")}`)),
+        el("div", {}, avatar, name, el("label", {}, active, ` ${t("active")}`)),
         button(t("save"), "btn-primary", async () => {
           child.displayName =
             name.value.trim().slice(0, 24) || child.displayName;
+          child.avatar = avatar.value;
           child.active = active.checked;
           await actions.save(data);
           actions.notice(t("profileSaved"));

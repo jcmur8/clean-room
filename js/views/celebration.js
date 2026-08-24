@@ -1,6 +1,7 @@
 import { el, button } from "../ui.js";
 import { t, localized } from "../i18n.js";
 import { confettiBurst } from "../effects.js";
+import { monsterSprite } from "../monsters.js";
 
 export function renderCelebration(root, data, actions) {
   const session = data.activeSession;
@@ -17,7 +18,7 @@ export function renderCelebration(root, data, actions) {
           class: "card celebrate celebration-stage",
           style: "text-align:center",
         },
-        el("div", { class: "monster celebration-monster", text: "😲" }),
+        monsterSprite(session, "monster-sprite celebration-monster"),
         el("h1", { text: t("zoneRescued") }),
         el("p", {
           text: t("missionComplete", {

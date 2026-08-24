@@ -1,5 +1,8 @@
 let ctx = null;
 let enabled = false;
+let musicTimer = null;
+let musicStep = 0;
+let musicVolume = 0.4;
 
 export async function activateAudio() {
   try {
@@ -191,6 +194,54 @@ export function beep(kind = "ok", volume = 0.4) {
       ok: 440,
     }[kind] || 440;
   tone(frequency, 0, 0.2, Math.min(0.18, v * 0.25));
+}
+
+function scheduleBattleBar() {
+  if (!enabled || !ctx || musicTimer == null) return;
+  const v = Math.max(0.03, Math.min(0.16, musicVolume * 0.18));
+  const roots = [110, 123.47, 98, 146.83];
+  const root = roots[musicStep % roots.length];
+  const pattern = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5];
+  for (const at of pattern) {
+    tone(root, at, 0.18, v, "sawtooth");
+    tone(root * 2, at + 0.02, 0.1, v * 0.55, "square");
+    noiseBurst(at, 0.055, v * 1.7);
+  }
+  for (const at of [0, 1, 2, 3]) tone(root / 2, at, 0.34, v * 1.2, "triangle");
+  sequence(
+    [
+      { f: root * 4, at: 0.25, d: 0.12, v: 0.45, type: "square" },
+      { f: root * 5, at: 1.25, d: 0.12, v: 0.42, type: "square" },
+      { f: root * 6, at: 2.25, d: 0.16, v: 0.5, type: "square" },
+      { f: root * 5, at: 3.25, d: 0.14, v: 0.42, type: "square" },
+    ],
+    musicVolume * 0.38,
+  );
+
+  if (musicStep % 2 === 1) {
+    // A short, wordless heroic team shout made from filtered noise and pitch.
+    noiseBurst(1.62, 0.28, Math.min(0.16, musicVolume * 0.24));
+    sweep(330, 510, 1.62, 0.25, Math.min(0.11, musicVolume * 0.18), "triangle");
+  }
+  if (musicStep % 3 === 2) {
+    // Friendly monster growl punctuation.
+    sweep(135, 68, 2.85, 0.62, Math.min(0.14, musicVolume * 0.24), "sawtooth");
+  }
+  musicStep += 1;
+}
+
+export function startBattleMusic(volume = 0.4) {
+  musicVolume = volume;
+  if (musicTimer != null || !enabled || !ctx) return;
+  musicStep = 0;
+  musicTimer = window.setInterval(scheduleBattleBar, 4000);
+  scheduleBattleBar();
+}
+
+export function stopBattleMusic() {
+  if (musicTimer != null) window.clearInterval(musicTimer);
+  musicTimer = null;
+  musicStep = 0;
 }
 
 export function isAudioEnabled() {

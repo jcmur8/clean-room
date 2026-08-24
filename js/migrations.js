@@ -111,6 +111,18 @@ export function migrate(data) {
     d.schemaVersion = 5;
   }
 
+  if (d.schemaVersion === 5) {
+    d.appSettings = {
+      ...makeDefaultData().appSettings,
+      ...d.appSettings,
+      nextMonsterIndex: d.appSettings?.nextMonsterIndex || 0,
+    };
+    if (d.activeSession && !d.activeSession.monsterId) {
+      d.activeSession.monsterId = "mess-gobbler";
+    }
+    d.schemaVersion = 6;
+  }
+
   if (d.schemaVersion !== SCHEMA_VERSION) {
     throw new Error("Unsupported schema version");
   }

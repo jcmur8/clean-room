@@ -1,4 +1,38 @@
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
+export const heroAvatars = [
+  "🦸",
+  "🦸‍♀️",
+  "🧑‍🚀",
+  "🧙",
+  "🥷",
+  "🦹‍♀️",
+  "🧑‍🔧",
+  "🧑‍🎤",
+  "🧚",
+  "🧝",
+  "🤖",
+  "🐲",
+];
+export const monsters = [
+  {
+    id: "mess-gobbler",
+    name: "The Mess Gobbler",
+    nameEs: "El Devorador del Desorden",
+    image: "./assets/images/monsters/mess-gobbler.png",
+  },
+  {
+    id: "clutter-crawler",
+    name: "The Clutter Crawler",
+    nameEs: "El Trepador del Desorden",
+    image: "./assets/images/monsters/clutter-crawler.png",
+  },
+  {
+    id: "chaos-slime",
+    name: "The Chaos Slime",
+    nameEs: "El Slime del Caos",
+    image: "./assets/images/monsters/chaos-slime.png",
+  },
+];
 export const factoryMissions = [
   {
     id: "clothes",
@@ -269,6 +303,7 @@ export function makeDefaultData() {
       lastModeId: "normal",
       maxParticipants: 8,
       stepCountdownSeconds: 300,
+      nextMonsterIndex: 0,
     },
     parentSecurity: {
       salt: null,
