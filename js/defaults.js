@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 export const factoryMissions = [
   {
     id: "clothes",
@@ -222,6 +222,7 @@ export const defaultModes = [
     defaultMode: false,
     timerPolicy: "elapsed",
     reminderInterval: 5,
+    missionDurationSeconds: 300,
   },
   {
     id: "normal",
@@ -232,6 +233,7 @@ export const defaultModes = [
     defaultMode: true,
     timerPolicy: "elapsed",
     reminderInterval: 7,
+    missionDurationSeconds: 420,
   },
   {
     id: "deep",
@@ -242,6 +244,7 @@ export const defaultModes = [
     defaultMode: false,
     timerPolicy: "target",
     reminderInterval: 8,
+    missionDurationSeconds: 480,
   },
 ];
 export function makeDefaultData() {

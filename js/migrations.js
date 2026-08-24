@@ -87,6 +87,30 @@ export function migrate(data) {
     d.schemaVersion = 4;
   }
 
+  if (d.schemaVersion === 4) {
+    const durationDefaults = { quick: 300, normal: 420, deep: 480 };
+    d.gameModes = (d.gameModes || defaultModes).map((mode) => ({
+      ...mode,
+      missionDurationSeconds:
+        mode.missionDurationSeconds || durationDefaults[mode.id] || 300,
+    }));
+    if (d.activeSession) {
+      const durationSeconds =
+        d.activeSession.modeSnapshot?.missionDurationSeconds ||
+        d.activeSession.stepTimer?.durationMs / 1000 ||
+        durationDefaults[d.activeSession.modeSnapshot?.id] ||
+        300;
+      d.activeSession.stepDurationMs = durationSeconds * 1000;
+      if (d.activeSession.modeSnapshot) {
+        d.activeSession.modeSnapshot.missionDurationSeconds = durationSeconds;
+      }
+      if (d.activeSession.stepTimer) {
+        d.activeSession.stepTimer.halfwayAlerted = false;
+      }
+    }
+    d.schemaVersion = 5;
+  }
+
   if (d.schemaVersion !== SCHEMA_VERSION) {
     throw new Error("Unsupported schema version");
   }

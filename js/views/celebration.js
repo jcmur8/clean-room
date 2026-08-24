@@ -41,6 +41,6 @@ export function renderCelebration(root, data, actions) {
     ),
   );
 
-  actions.sound("celebrate");
+  actions.sound("step-complete");
   confettiBurst({ count: 52, duration: 1900 });
 }

@@ -1,4 +1,4 @@
-const CACHE = "room-monster-v1.2.2";
+const CACHE = "room-monster-v1.3.0";
 const ASSETS = [
   "./",
   "./index.html",

@@ -175,6 +175,16 @@ const actions = {
     await clearData();
     location.reload();
   },
+  abortBattle: async () => {
+    const d = getState();
+    d.activeSession = null;
+    await persist(d);
+    parentAuth.close();
+    route = "home";
+    params = {};
+    render();
+    announce(t("battleAborted"));
+  },
 };
 function render() {
   const d = getState();
@@ -247,14 +257,12 @@ function renderIntro(modeId) {
           el(
             "div",
             { class: "zone-strip" },
-            ...missions
-              .slice(0, 6)
-              .map((m) =>
-                el("span", {
-                  class: "zone",
-                  text: m.icon + " " + localized(m, "title"),
-                }),
-              ),
+            ...missions.slice(0, 6).map((m) =>
+              el("span", {
+                class: "zone",
+                text: m.icon + " " + localized(m, "title"),
+              }),
+            ),
           ),
         ),
         el(
@@ -301,7 +309,7 @@ async function startBattle(modeId) {
     await persist(d);
   }
   route = "mission";
-  actions.sound("start");
+  actions.sound("mission-warning");
   actions.notice(t("missionAlarm"));
   render();
 }
@@ -371,7 +379,10 @@ function showPin(purpose = "parent:dashboard") {
       if (result.ok) {
         parentAuth.open();
         modal.remove();
-        if (purpose === "inspection") {
+        if (purpose === "abort") {
+          if (confirm(t("abortConfirm"))) actions.abortBattle();
+          else parentAuth.close();
+        } else if (purpose === "inspection") {
           route = "inspection";
           render();
         } else {

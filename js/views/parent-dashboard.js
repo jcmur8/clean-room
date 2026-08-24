@@ -150,12 +150,45 @@ function renderModes(content, data, actions) {
   for (const mode of data.gameModes) {
     const selectable = el("input", { type: "checkbox" });
     selectable.checked = mode.childSelectable;
-    selectable.onchange = async () => {
-      mode.childSelectable = selectable.checked;
-      await actions.save(data);
-    };
+    const duration = el("input", {
+      type: "number",
+      min: "1",
+      max: "30",
+      step: "1",
+      value: String(Math.round((mode.missionDurationSeconds || 300) / 60)),
+    });
+    duration.value = String(
+      Math.round((mode.missionDurationSeconds || 300) / 60),
+    );
     content.append(
-      el("label", { class: "list-item" }, selectable, ` ${modeName(mode)}`),
+      el(
+        "div",
+        { class: "list-item editor-row" },
+        el(
+          "div",
+          {},
+          el("label", {}, selectable, ` ${modeName(mode)}`),
+          el(
+            "label",
+            { class: "field" },
+            el("span", { text: t("minutesPerMission") }),
+            duration,
+          ),
+        ),
+        button(t("save"), "btn-primary", async () => {
+          const minutes = Math.max(
+            1,
+            Math.min(30, Number(duration.value) || 1),
+          );
+          mode.childSelectable = selectable.checked;
+          mode.missionDurationSeconds = Math.round(minutes * 60);
+          duration.value = String(minutes);
+          await actions.save(data);
+          actions.notice(
+            t("modeTimerSaved", { mode: modeName(mode), minutes }),
+          );
+        }),
+      ),
     );
   }
 }

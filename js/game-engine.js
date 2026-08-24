@@ -19,15 +19,15 @@ export function createSession(data, modeId, now = Date.now()) {
     .map((child) => child.id);
   const assignments = fairRotation(data.children, missions, data.roles);
   const firstMission = missions[0];
+  const selectedMode = data.gameModes.find((mode) => mode.id === modeId);
+  const stepDurationMs = (selectedMode?.missionDurationSeconds || 300) * 1000;
 
   return {
     id: crypto.randomUUID?.() || `session-${now}`,
     startedAt: new Date(now).toISOString(),
     updatedAt: new Date(now).toISOString(),
     completedAt: null,
-    modeSnapshot: structuredClone(
-      data.gameModes.find((mode) => mode.id === modeId),
-    ),
+    modeSnapshot: structuredClone(selectedMode),
     missionSnapshots: missions,
     participants,
     assignments,
@@ -35,7 +35,10 @@ export function createSession(data, modeId, now = Date.now()) {
     currentMissionIndex: 0,
     pauseState: { paused: false },
     timer: { runningSince: now, accumulatedMs: 0, pausedAt: null },
-    stepTimer: firstMission ? newStepTimer(firstMission.id, now) : null,
+    stepDurationMs,
+    stepTimer: firstMission
+      ? newStepTimer(firstMission.id, now, stepDurationMs)
+      : null,
     rewards: [],
     inspection: {
       required: data.appSettings.inspectionRequired,
@@ -119,7 +122,7 @@ export function advanceMission(session, now = Date.now()) {
     ...session,
     rewards,
     currentMissionIndex: nextIndex,
-    stepTimer: newStepTimer(nextMission.id, now),
+    stepTimer: newStepTimer(nextMission.id, now, session.stepDurationMs),
     updatedAt: new Date(now).toISOString(),
   };
 }
@@ -137,7 +140,9 @@ export function returnMissions(session, ids, note = "", now = Date.now()) {
     ...session,
     currentMissionIndex: index,
     status: "active",
-    stepTimer: mission ? newStepTimer(mission.id, now) : null,
+    stepTimer: mission
+      ? newStepTimer(mission.id, now, session.stepDurationMs)
+      : null,
     inspection: {
       ...session.inspection,
       inspectedAt: new Date(now).toISOString(),

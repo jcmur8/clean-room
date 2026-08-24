@@ -16,6 +16,7 @@ import {
   expireStepTimer,
   pauseStepTimer,
   resumeStepTimer,
+  shouldAlertHalfway,
 } from "../js/timers.js";
 import { migrate } from "../js/migrations.js";
 import { validateRoot } from "../js/validation.js";
@@ -67,12 +68,13 @@ test("Pause and timer calculations", () => {
   t = resumeTimer(t, 9000);
   equal(elapsedMs(t, 10000), 5000);
 });
-test("Five-minute step countdown reset", () => {
+test("Configurable mission countdown reset", () => {
   let st = newStepTimer("m1", 1000);
   equal(stepRemainingMs(st, 1000), 300000);
   equal(stepRemainingMs(st, 61000), 240000);
   st = expireStepTimer(st, 301000);
   equal(st.attempts, 1);
+  equal(st.halfwayAlerted, false);
   equal(stepRemainingMs(st, 301000), 300000);
   st = pauseStepTimer(st, 361000);
   equal(stepRemainingMs(st, 500000), 240000);
@@ -95,7 +97,32 @@ test("Migration from older fixture", () => {
   const d = base();
   d.schemaVersion = 1;
   delete d.rewards;
-  equal(migrate(d).schemaVersion, 4);
+  equal(migrate(d).schemaVersion, 5);
+});
+test("Mode timer defaults and session snapshot", () => {
+  const d = base();
+  equal(
+    d.gameModes.find((mode) => mode.id === "quick").missionDurationSeconds,
+    300,
+  );
+  equal(
+    d.gameModes.find((mode) => mode.id === "normal").missionDurationSeconds,
+    420,
+  );
+  equal(
+    d.gameModes.find((mode) => mode.id === "deep").missionDurationSeconds,
+    480,
+  );
+  const session = createSession(d, "normal", 1000);
+  equal(session.stepDurationMs, 420000);
+  equal(session.stepTimer.durationMs, 420000);
+});
+test("Halfway warning fires once per countdown", () => {
+  const timer = newStepTimer("m1", 1000, 420000);
+  assert(!shouldAlertHalfway(timer, 210001));
+  assert(shouldAlertHalfway(timer, 210000));
+  timer.halfwayAlerted = true;
+  assert(!shouldAlertHalfway(timer, 200000));
 });
 test("Export/import round trip", async () => {
   const a = await memoryAdapter(),

@@ -41,3 +41,14 @@ Reformatted `js/views/inspection.js` into Safari-friendly multi-line JavaScript 
 ## v1.2.2 Safari parent dashboard fix
 
 Corrected malformed nested calls in `js/views/parent-dashboard.js`, reformatted the JavaScript sources for easier browser diagnostics, restored the required `.nojekyll` marker, and bumped the service-worker cache to `room-monster-v1.2.2`. No data-schema change is required.
+
+## Version 1.3 engagement and timer controls
+
+- Battle start now uses a locally synthesized rising-and-falling emergency mission siren.
+- Every completed mission plays synthesized applause, a cheerful jingle, and a friendly monster growl.
+- Mission countdowns run continuously and use per-mode defaults: Quick Rescue 5 minutes, Normal Battle 7 minutes, and Deep Clean 8 minutes.
+- A one-time bell sounds when each countdown reaches its halfway point.
+- Parents can set each mode to 1–30 minutes per mission under Parent → Modes. A running battle retains the duration captured when it started.
+- Children can request **Abort Battle**, but the existing adult PIN and a final confirmation are required before current progress is discarded.
+
+Schema version 5 adds per-mode mission durations and migrates existing schema-version-4 data without clearing profiles, history, settings, or a running battle. The service-worker cache is `room-monster-v1.3.0`.

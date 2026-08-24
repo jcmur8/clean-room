@@ -59,3 +59,7 @@ Reformatted `js/views/inspection.js` into Safari-friendly multi-line JavaScript 
 ## v1.2.2 Safari parent dashboard fix
 
 Replaced the malformed compressed `js/views/parent-dashboard.js` implementation with equivalent readable control flow. The service-worker cache is now `room-monster-v1.2.2`; the application data schema remains version 4.
+
+## Version 1.3 engagement and timer controls
+
+Schema version 5 stores `missionDurationSeconds` on each game mode. Sessions snapshot this as `stepDurationMs`, so later parent edits do not mutate an active battle. Midpoint alerts are persisted on the step timer and reset with each new chance. All new sounds use Web Audio oscillators and generated noise, keeping the PWA offline and avoiding bundled third-party recordings. The abort action reuses the PBKDF2-backed adult PIN verifier and clears only the active session after a separate confirmation.

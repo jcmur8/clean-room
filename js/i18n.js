@@ -56,6 +56,9 @@ const dictionaries = {
     help: "🙋 Need Help",
     moreTime: "⏱ More Time",
     pause: "⏸ Pause",
+    abortMission: "🛑 Abort Battle",
+    abortConfirm: "End this battle and discard its current progress?",
+    battleAborted: "Battle aborted by a grown-up.",
     helpNotice: "Put unsure items in the Ask a Grown-Up basket.",
     timeNotice: "You have all the time you need.",
     undoNotice: "Confirmation undone.",
@@ -122,7 +125,8 @@ const dictionaries = {
     timerExpired:
       "It looks like you missed the first chance, but the monster is distracted now. You can still make it — try again!",
     timerExpiredAgain:
-      "The monster is still distracted! You have another five minutes. Keep going!",
+      "The monster is still distracted! You have another {minutes} minutes. Keep going!",
+    halfwayWarning: "Halfway warning! Keep working together, heroes!",
     missionAlarm: "Important mission starting!",
     moreHeroes: "Add another hero",
     newHero: "New Hero",
@@ -130,6 +134,8 @@ const dictionaries = {
     duplicate: "Duplicate",
     copySuffix: " Copy",
     missionUpdated: "Mission updated.",
+    minutesPerMission: "Minutes for each mission",
+    modeTimerSaved: "{mode} timer saved at {minutes} minutes per mission.",
     restoreFactory: "Restore Factory Missions",
     restoreConfirm:
       "Restore the original eight missions? Custom missions stay.",
@@ -237,6 +243,9 @@ const dictionaries = {
     help: "🙋 Necesito ayuda",
     moreTime: "⏱ Más tiempo",
     pause: "⏸ Pausa",
+    abortMission: "🛑 Abortar batalla",
+    abortConfirm: "¿Terminar esta batalla y descartar el progreso actual?",
+    battleAborted: "La batalla fue abortada por un adulto.",
     helpNotice:
       "Coloca los objetos dudosos en la canasta “Pregúntale a un adulto”.",
     timeNotice: "Tienen todo el tiempo que necesiten.",
@@ -307,7 +316,8 @@ const dictionaries = {
     timerExpired:
       "Parece que se les pasó la primera oportunidad, pero ahora el monstruo está distraído. Todavía pueden lograrlo — ¡inténtenlo otra vez!",
     timerExpiredAgain:
-      "¡El monstruo sigue distraído! Tienen otros cinco minutos. ¡Sigan adelante!",
+      "¡El monstruo sigue distraído! Tienen otros {minutes} minutos. ¡Sigan adelante!",
+    halfwayWarning: "¡Aviso de medio tiempo! ¡Sigan trabajando juntos, héroes!",
     missionAlarm: "¡Comienza una misión importante!",
     moreHeroes: "Agregar otro héroe",
     newHero: "Nuevo héroe",
@@ -315,6 +325,9 @@ const dictionaries = {
     duplicate: "Duplicar",
     copySuffix: " Copia",
     missionUpdated: "Misión actualizada.",
+    minutesPerMission: "Minutos para cada misión",
+    modeTimerSaved:
+      "El temporizador de {mode} se guardó en {minutes} minutos por misión.",
     restoreFactory: "Restaurar misiones originales",
     restoreConfirm:
       "¿Restaurar las ocho misiones originales? Las misiones personalizadas se conservan.",

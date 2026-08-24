@@ -13,6 +13,7 @@ import {
   stepRemainingMs,
   expireStepTimer,
   newStepTimer,
+  shouldAlertHalfway,
 } from "../timers.js";
 import { t, localized, roleName } from "../i18n.js";
 
@@ -35,7 +36,11 @@ export function renderMission(root, data, actions) {
   }
 
   if (!session.stepTimer || session.stepTimer.missionId !== mission.id) {
-    session.stepTimer = newStepTimer(mission.id);
+    session.stepTimer = newStepTimer(
+      mission.id,
+      Date.now(),
+      session.stepDurationMs || 300000,
+    );
     actions.save(data);
   }
 
@@ -75,11 +80,14 @@ export function renderMission(root, data, actions) {
     class: `timer-coach notice${session.stepTimer.attempts ? "" : " hidden"}`,
     text:
       session.stepTimer.attempts > 1
-        ? t("timerExpiredAgain")
+        ? t("timerExpiredAgain", {
+            minutes: Math.round(session.stepTimer.durationMs / 60000),
+          })
         : t("timerExpired"),
   });
 
   let expiryBusy = false;
+  let halfwayBusy = false;
   const tick = async () => {
     if (!timerValue.isConnected) {
       stopCountdown();
@@ -92,6 +100,19 @@ export function renderMission(root, data, actions) {
     timerValue.textContent = formatDuration(remaining);
     timerBox.classList.toggle("urgent", remaining <= 30000 && remaining > 0);
 
+    if (
+      shouldAlertHalfway(current.stepTimer, remaining) &&
+      !current.pauseState?.paused &&
+      !halfwayBusy
+    ) {
+      halfwayBusy = true;
+      current.stepTimer.halfwayAlerted = true;
+      await actions.save(data);
+      actions.sound("halfway");
+      actions.notice(t("halfwayWarning"));
+      halfwayBusy = false;
+    }
+
     if (remaining <= 0 && !current.pauseState?.paused && !expiryBusy) {
       expiryBusy = true;
       current.stepTimer = expireStepTimer(current.stepTimer);
@@ -99,7 +120,9 @@ export function renderMission(root, data, actions) {
       actions.sound("shotclock");
       const message =
         current.stepTimer.attempts > 1
-          ? t("timerExpiredAgain")
+          ? t("timerExpiredAgain", {
+              minutes: Math.round(current.stepTimer.durationMs / 60000),
+            })
           : t("timerExpired");
       timerCoach.textContent = message;
       timerCoach.classList.remove("hidden");
@@ -248,18 +271,25 @@ export function renderMission(root, data, actions) {
             ),
             button(t("moreTime"), "btn-secondary", async () => {
               const attempts = data.activeSession.stepTimer?.attempts || 0;
+              const durationMs =
+                data.activeSession.stepTimer?.durationMs ||
+                data.activeSession.stepDurationMs ||
+                300000;
               data.activeSession.stepTimer = {
-                ...newStepTimer(mission.id),
+                ...newStepTimer(mission.id, Date.now(), durationMs),
                 attempts,
                 lastExpiredAt:
                   data.activeSession.stepTimer?.lastExpiredAt || null,
               };
               await actions.save(data);
-              timerValue.textContent = "5:00";
+              timerValue.textContent = formatDuration(durationMs);
               timerBox.classList.remove("urgent");
               actions.notice(t("timeNotice"));
             }),
             button(t("pause"), "btn-secondary", () => actions.pause()),
+            button(t("abortMission"), "btn-danger", () =>
+              actions.requireParent("abort"),
+            ),
           ),
           confirms,
           advance,

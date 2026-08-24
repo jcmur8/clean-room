@@ -43,6 +43,7 @@ export function newStepTimer(
     pausedRemainingMs: null,
     attempts: 0,
     lastExpiredAt: null,
+    halfwayAlerted: false,
   };
 }
 
@@ -54,6 +55,11 @@ export function stepRemainingMs(stepTimer, now = Date.now()) {
   return Math.max(0, (stepTimer.deadlineAt || now) - now);
 }
 
+export function shouldAlertHalfway(stepTimer, remainingMs) {
+  if (!stepTimer || stepTimer.halfwayAlerted || remainingMs <= 0) return false;
+  return remainingMs <= (stepTimer.durationMs || STEP_COUNTDOWN_MS) / 2;
+}
+
 export function expireStepTimer(stepTimer, now = Date.now()) {
   const durationMs = stepTimer?.durationMs || STEP_COUNTDOWN_MS;
   return {
@@ -63,6 +69,7 @@ export function expireStepTimer(stepTimer, now = Date.now()) {
     pausedRemainingMs: null,
     attempts: (stepTimer?.attempts || 0) + 1,
     lastExpiredAt: now,
+    halfwayAlerted: false,
   };
 }
 

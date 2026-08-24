@@ -61,3 +61,7 @@ Reformatted `js/views/inspection.js` into Safari-friendly multi-line JavaScript 
 ## v1.2.2 Safari parent dashboard fix
 
 Verify that the site starts without a `parent-dashboard.js` parse error, all 14 browser tests pass, all service-worker assets resolve, and a previous schema-version-4 installation retains its family data after the cache advances to `room-monster-v1.2.2`.
+
+## Version 1.3 engagement and timer controls
+
+Verify the 5/7/8-minute mode defaults, parent duration editing, schema 4→5 migration, continuous countdown, one-time halfway warning, timer reset using the selected mode duration, emergency start siren, mission-complete applause/growl, and adult-PIN-protected abort flow. Confirm that canceling the final abort prompt preserves the active battle.
