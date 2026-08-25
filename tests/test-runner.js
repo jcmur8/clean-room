@@ -7,6 +7,9 @@ import {
   confirmChild,
   missionReady,
   returnMissions,
+  phaseAssignments,
+  confirmPhaseChild,
+  phaseReady,
 } from "../js/game-engine.js";
 import {
   pauseTimer,
@@ -54,14 +57,15 @@ test("Session snapshot stability", () => {
   d.missions[0].title = "Changed";
   equal(s.missionSnapshots[0].title, title);
 });
-test("Child confirmation rules", () => {
-  let s = createSession(base(), "quick", 1000),
-    m = s.missionSnapshots[0];
-  const ids = s.assignments[0].assignments.map((x) => x.childId);
-  s = confirmChild(s, m.id, ids[0], 1100);
-  assert(!missionReady(s, m.id));
-  s = confirmChild(s, m.id, ids[1], 1200);
-  assert(missionReady(s, m.id));
+test("Concurrent phase assignments and confirmations", () => {
+  let s = createSession(base(), "quick", 1000);
+  const heroes = phaseAssignments(s);
+  equal(heroes.length, 2);
+  assert(heroes[0].tasks[0].missionId !== heroes[1].tasks[0].missionId);
+  s = confirmPhaseChild(s, heroes[0].childId, 1100);
+  assert(!phaseReady(s));
+  s = confirmPhaseChild(s, heroes[1].childId, 1200);
+  assert(phaseReady(s));
 });
 test("Pause and timer calculations", () => {
   let t = { runningSince: 1000, accumulatedMs: 0, pausedAt: null };
@@ -100,7 +104,7 @@ test("Migration from older fixture", () => {
   const d = base();
   d.schemaVersion = 1;
   delete d.rewards;
-  equal(migrate(d).schemaVersion, 7);
+  equal(migrate(d).schemaVersion, 8);
 });
 test("Mode timer defaults and session snapshot", () => {
   const d = base();

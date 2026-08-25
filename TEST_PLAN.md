@@ -81,3 +81,7 @@ Verify all three bilingual origin comics, progressive weakening scales, radio-be
 ## Version 1.7 mission matrix and case files
 
 Verify Parent → Missions shows one row per mission and one assignment column per mode. Save different combinations, reload, and confirm each battle uses the matching ordered tasks; verify an empty mode is rejected. Confirm Parent → Modes no longer duplicates task checkboxes. Test Settings at desktop, tablet, and phone widths in English and Spanish and confirm labels never overlap. Complete at least three phases against each monster and confirm the between-phase black-and-white detective archive rotates through all three localized origin facts while showing the monster's weakened state.
+
+## Version 1.8 concurrent hero phases
+
+Assign two or more tasks to the same numbered phase in each mode and verify active children receive concurrent orders. Confirm automatic radio narration names each hero and task, the countdown remains at its full value during speech, and the first decrement occurs only after speech ends. Tap each hero card to open and close its bulleted task list, complete all hero checks, and verify the whole phase advances once. Confirm the opening sequence shows only the current monster and name. Rotate through thirteen battles and verify all monsters and bilingual archive stories. Take and remove profile photos during setup and Parent → Profiles; confirm photos appear on home, briefing, and mission screens, survive reload/export/import, and remain local/offline.

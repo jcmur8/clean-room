@@ -6,9 +6,13 @@ import { monsterStory } from "../monster-stories.js";
 
 export function renderCelebration(root, data, actions) {
   const session = data.activeSession;
-  const completedIndex = Math.max(0, (session.rewards?.length || 1) - 1);
-  const mission = session.missionSnapshots[completedIndex];
-  const weakness = Math.min(3, Math.max(1, session.rewards?.length || 1));
+  const completedIndex = Math.max(0, session.lastCompletedPhaseIndex || 0);
+  const completedPhase = session.phaseSnapshots?.[completedIndex];
+  const completedMissions = (completedPhase?.missionIds || [])
+    .map((id) => session.missionSnapshots.find((mission) => mission.id === id))
+    .filter(Boolean);
+  const mission = completedMissions[0] || session.missionSnapshots[completedIndex];
+  const weakness = Math.min(3, completedIndex + 1);
   const story = monsterStory(session.monsterId);
   const evidenceIndex = completedIndex % story.panels.length;
 
@@ -47,7 +51,9 @@ export function renderCelebration(root, data, actions) {
             el("h2", { text: t("monsterWeakening") }),
             el("p", {
               text: t("missionComplete", {
-                mission: mission ? localized(mission, "title") : t("missionsWord"),
+                mission: completedMissions.length
+                  ? completedMissions.map((item) => localized(item, "title")).join(" + ")
+                  : mission ? localized(mission, "title") : t("missionsWord"),
               }),
             }),
           ),

@@ -79,3 +79,7 @@ Monster lore is authored in `monster-stories.js` and rendered as semantic HTML/C
 ## Version 1.7 mission matrix and detective archive
 
 The Missions editor treats the existing ordered `mode.missionIds` arrays as a task-by-mode matrix, so no data migration is needed. The Modes editor retains only availability and duration. Settings use responsive cards instead of inline list labels. The completion cutscene reuses locally cached monster art with CSS grayscale, contrast, paper, stamp, and scan-line treatments; it reveals the current monster's authored story panels in phase order without adding remote assets.
+
+## Version 1.8 concurrent hero phases
+
+Schema 8 adds `missionPhases` to modes and `phaseSnapshots/currentPhaseIndex` to sessions. Each phase snapshots its task IDs and distributes active children across those tasks; confirmations remain keyed by mission ID for inspection compatibility. New step timers begin paused with `awaitingInstructions` and resume from the speech lifecycle callback. Profile photos use the device file/camera picker, are center-cropped to a 480px JPEG locally, and are stored with the child profile. The ten-character roster is a single offline sprite atlas generated from the supplied concept reference and addressed through CSS background positions.

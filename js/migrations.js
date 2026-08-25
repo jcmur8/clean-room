@@ -136,6 +136,27 @@ export function migrate(data) {
     d.schemaVersion = 7;
   }
 
+  if (d.schemaVersion === 7) {
+    d.gameModes = (d.gameModes || defaultModes).map((mode) => ({
+      ...mode,
+      missionPhases:
+        mode.missionPhases ||
+        Object.fromEntries(
+          (mode.missionIds || []).map((id, index) => [id, Math.floor(index / 2) + 1]),
+        ),
+    }));
+    d.children = (d.children || []).map((child) => ({ ...child, photo: child.photo || null }));
+    if (d.activeSession && !d.activeSession.phaseSnapshots) {
+      d.activeSession.phaseSnapshots = (d.activeSession.missionSnapshots || []).map((mission, index) => ({
+        id: `phase-${index + 1}`,
+        number: index + 1,
+        missionIds: [mission.id],
+      }));
+      d.activeSession.currentPhaseIndex = d.activeSession.currentMissionIndex || 0;
+    }
+    d.schemaVersion = 8;
+  }
+
   if (d.schemaVersion !== SCHEMA_VERSION) {
     throw new Error("Unsupported schema version");
   }

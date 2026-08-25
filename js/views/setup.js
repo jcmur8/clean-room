@@ -3,6 +3,7 @@ import { hashPin } from "../security.js";
 import { safeText, validPin } from "../validation.js";
 import { t, setLanguage } from "../i18n.js";
 import { heroAvatars } from "../defaults.js";
+import { heroPortrait, choosePhotoInput } from "../profile-photo.js";
 
 const titles = [
   "Room Ranger",
@@ -18,8 +19,8 @@ const titles = [
 export function renderSetup(root, data, actions) {
   let step = 0;
   let heroes = [
-    { name: "Hero One", avatar: heroAvatars[0] },
-    { name: "Hero Two", avatar: heroAvatars[1] },
+    { name: "Hero One", avatar: heroAvatars[0], photo: null },
+    { name: "Hero Two", avatar: heroAvatars[1], photo: null },
   ];
   let pin = "";
   let confirmation = "";
@@ -85,15 +86,26 @@ export function renderSetup(root, data, actions) {
             ),
           ),
         );
+        const photoInput = choosePhotoInput(t("takeProfilePhoto"), async (photo) => {
+          hero.photo = photo;
+          draw();
+        });
         const row = el(
           "div",
           { class: "setup-hero-row" },
-          el("span", { class: "hero-avatar", text: hero.avatar }),
+          heroPortrait(hero),
           el(
             "div",
             {},
             field(`${t("heroName")} ${index + 1}`, name),
             avatarPicker,
+            el("label", { class: "photo-capture-button" }, `📷 ${t("takeProfilePhoto")}`, photoInput),
+            hero.photo
+              ? button(t("removeProfilePhoto"), "btn-secondary", () => {
+                  hero.photo = null;
+                  draw();
+                })
+              : null,
           ),
         );
         if (heroes.length > 2) {
@@ -115,6 +127,7 @@ export function renderSetup(root, data, actions) {
             heroes.push({
               name: `${t("newHero")} ${index + 1}`,
               avatar: heroAvatars[index % heroAvatars.length],
+              photo: null,
             });
             draw();
           }),
@@ -169,7 +182,7 @@ export function renderSetup(root, data, actions) {
             el(
               "div",
               { class: "hero-chip" },
-              el("span", { class: "hero-avatar", text: hero.avatar }),
+              heroPortrait(hero),
               hero.name,
             ),
           ),
@@ -181,6 +194,7 @@ export function renderSetup(root, data, actions) {
             id: `child-${index + 1}`,
             displayName: hero.name,
             avatar: hero.avatar,
+            photo: hero.photo,
             color: "#5577c8",
             heroTitle: titles[index % titles.length],
             active: true,

@@ -1,4 +1,5 @@
 import { el, button } from "../ui.js";
+import { heroPortrait } from "../profile-photo.js";
 import { t } from "../i18n.js";
 import { monsters } from "../defaults.js";
 import { monsterSprite } from "../monsters.js";
@@ -17,7 +18,7 @@ export function renderHome(root, data, actions) {
         el(
           "div",
           { class: "hero-chip" },
-          el("span", { class: "hero-avatar", text: child.avatar }),
+          heroPortrait(child),
           el(
             "div",
             {},

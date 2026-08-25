@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 7;
+export const SCHEMA_VERSION = 8;
 export const heroAvatars = [
   "🦸",
   "🦸‍♀️",
@@ -32,6 +32,24 @@ export const monsters = [
     nameEs: "El Slime del Caos",
     image: "./assets/images/monsters/chaos-slime.png",
   },
+  ...[
+    ["dust-devourer", "The Dust Devourer", "El Devorador de Polvo"],
+    ["sock-stealer", "The Sock Stealer", "El Ladrón de Calcetines"],
+    ["toy-tumbler", "The Toy Tumbler", "El Volteador de Juguetes"],
+    ["book-basher", "The Book Basher", "El Destructor de Libros"],
+    ["crumb-cruncher", "The Crumb Cruncher", "El Triturador de Migas"],
+    ["laundry-lurker", "The Laundry Lurker", "El Acechador de la Ropa"],
+    ["drawer-digger", "The Drawer Digger", "El Excavador de Cajones"],
+    ["backpack-burrower", "The Backpack Burrower", "El Intruso de la Mochila"],
+    ["wall-doodler", "The Wall Doodler", "El Garabateador de Paredes"],
+    ["nighttime-ninja", "The Nighttime Ninja", "El Ninja Nocturno"],
+  ].map(([id, name, nameEs], atlasIndex) => ({
+    id,
+    name,
+    nameEs,
+    image: "./assets/images/monsters/monster-roster-v2.png",
+    atlasIndex,
+  })),
 ];
 export const factoryMissions = [
   {
@@ -252,6 +270,7 @@ export const defaultModes = [
     name: "Quick Rescue",
     nameEs: "Rescate Rápido",
     missionIds: ["trash", "clothes", "toys", "floor"],
+    missionPhases: { trash: 1, clothes: 1, toys: 2, floor: 2 },
     childSelectable: true,
     defaultMode: false,
     timerPolicy: "elapsed",
@@ -263,6 +282,9 @@ export const defaultModes = [
     name: "Normal Battle",
     nameEs: "Batalla Normal",
     missionIds: factoryMissions.map((m) => m.id),
+    missionPhases: Object.fromEntries(
+      factoryMissions.map((mission, index) => [mission.id, Math.floor(index / 2) + 1]),
+    ),
     childSelectable: true,
     defaultMode: true,
     timerPolicy: "elapsed",
@@ -274,6 +296,9 @@ export const defaultModes = [
     name: "Deep Clean",
     nameEs: "Limpieza Profunda",
     missionIds: factoryMissions.map((m) => m.id),
+    missionPhases: Object.fromEntries(
+      factoryMissions.map((mission, index) => [mission.id, Math.floor(index / 2) + 1]),
+    ),
     childSelectable: true,
     defaultMode: false,
     timerPolicy: "target",

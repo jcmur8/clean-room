@@ -1,6 +1,7 @@
 import { el, button } from "../ui.js";
 import { t, setLanguage, localized, modeName, getLanguage } from "../i18n.js";
 import { heroAvatars } from "../defaults.js";
+import { heroPortrait, choosePhotoInput } from "../profile-photo.js";
 
 export function renderParentDashboard(
   root,
@@ -74,11 +75,31 @@ function renderProfiles(content, data, actions) {
       ...heroAvatars.map((item) => el("option", { value: item, text: item })),
     );
     avatar.value = child.avatar || heroAvatars[0];
+    const photoInput = choosePhotoInput(t("takeProfilePhoto"), async (photo) => {
+      child.photo = photo;
+      await actions.save(data);
+      actions.goParent("profiles");
+    });
     content.append(
       el(
         "div",
         { class: "list-item editor-row" },
-        el("div", {}, avatar, name, el("label", {}, active, ` ${t("active")}`)),
+        el("div", { class: "profile-photo-preview" }, heroPortrait(child)),
+        el(
+          "div",
+          { class: "profile-editor-fields" },
+          avatar,
+          name,
+          el("label", {}, active, ` ${t("active")}`),
+          el("label", { class: "photo-capture-button" }, `📷 ${t("takeProfilePhoto")}`, photoInput),
+          child.photo
+            ? button(t("removeProfilePhoto"), "btn-secondary", async () => {
+                child.photo = null;
+                await actions.save(data);
+                actions.goParent("profiles");
+              })
+            : null,
+        ),
         button(t("save"), "btn-primary", async () => {
           child.displayName =
             name.value.trim().slice(0, 24) || child.displayName;
@@ -97,6 +118,7 @@ function renderProfiles(content, data, actions) {
           id: crypto.randomUUID(),
           displayName: t("newHero"),
           avatar: "🦸",
+          photo: null,
           heroTitle: t("roomRanger"),
           active: true,
           roleRestrictions: [],
@@ -128,12 +150,20 @@ function renderMissions(content, data, actions) {
     active.checked = mission.active !== false;
     const modes = new Map();
     for (const mode of data.gameModes) {
-      const checkbox = el("input", {
-        type: "checkbox",
+      const phase = el(
+        "select",
+        {
         "aria-label": `${localized(mission, "title")} — ${modeName(mode)}`,
-      });
-      checkbox.checked = mode.missionIds.includes(mission.id);
-      modes.set(mode.id, checkbox);
+        },
+        el("option", { value: "", text: t("notIncluded") }),
+        ...Array.from({ length: 8 }, (_, index) =>
+          el("option", { value: String(index + 1), text: t("phaseNumber", { number: index + 1 }) }),
+        ),
+      );
+      phase.value = mode.missionIds.includes(mission.id)
+        ? String(mode.missionPhases?.[mission.id] || mode.missionIds.indexOf(mission.id) + 1)
+        : "";
+      modes.set(mode.id, phase);
     }
     controls.set(mission.id, { active, modes });
     return el(
@@ -174,7 +204,7 @@ function renderMissions(content, data, actions) {
     button(t("saveMissionMatrix"), "btn-primary", async () => {
       for (const mode of data.gameModes) {
         const selected = missions.filter(
-          (mission) => controls.get(mission.id).modes.get(mode.id).checked,
+          (mission) => controls.get(mission.id).modes.get(mode.id).value,
         );
         if (!selected.length) {
           actions.notice(t("modeNeedsMission", { mode: modeName(mode) }));
@@ -184,8 +214,11 @@ function renderMissions(content, data, actions) {
       for (const mission of missions) mission.active = controls.get(mission.id).active.checked;
       for (const mode of data.gameModes) {
         mode.missionIds = missions
-          .filter((mission) => controls.get(mission.id).modes.get(mode.id).checked)
+          .filter((mission) => controls.get(mission.id).modes.get(mode.id).value)
           .map((mission) => mission.id);
+        mode.missionPhases = Object.fromEntries(
+          mode.missionIds.map((id) => [id, Number(controls.get(id).modes.get(mode.id).value)]),
+        );
       }
       await actions.save(data);
       actions.notice(t("missionMatrixSaved"));

@@ -1,5 +1,15 @@
 # The Battle of the Room
 
+## v1.8.0 — Concurrent hero phases
+
+- Parents assign each mode's tasks to numbered phases from the Missions matrix. Tasks sharing a phase run concurrently.
+- Each hero receives a phase-specific task; tapping a hero on the right opens a bulleted list of that child's orders.
+- Command narration names every hero and their assigned task. The phase countdown remains stopped until automatic narration ends.
+- Ten additional rotating monsters and bilingual detective-archive storylines join the original three.
+- The opening origin comic is removed; the pre-mission alert shows only the monster image and name, while story evidence remains between phases.
+- Child profiles can use a camera or photo-library image. Photos are resized on-device and remain in local app data/backups.
+- Schema version is 8 and the service-worker cache is `room-monster-v1.8.0`.
+
 ## v1.7.0 — Mission matrix and detective archives
 
 - Parent → Missions now uses one task-by-mode matrix for Quick Rescue, Normal Battle, and Deep Clean assignments.

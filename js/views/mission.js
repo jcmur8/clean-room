@@ -1,9 +1,11 @@
 import { el, button } from "../ui.js";
 import {
   currentMission,
-  missionAssignments,
-  confirmChild,
-  missionReady,
+  currentPhase,
+  phaseMissions,
+  phaseAssignments,
+  confirmPhaseChild,
+  phaseReady,
   advanceMission,
   undoChild,
 } from "../game-engine.js";
@@ -15,9 +17,11 @@ import {
   shouldAlertHalfway,
   isCriticalRemaining,
   retryDurationMs,
+  resumeStepTimer,
 } from "../timers.js";
-import { t, localized, roleName } from "../i18n.js";
+import { t, localized } from "../i18n.js";
 import { monsterSprite, monsterForSession, monsterName } from "../monsters.js";
+import { heroPortrait } from "../profile-photo.js";
 
 let activeCountdown = null;
 
@@ -90,7 +94,7 @@ function showTimeout(data, mission, actions) {
             data.activeSession.stepDurationMs || previous.durationMs,
           );
           data.activeSession.stepTimer = {
-            ...newStepTimer(mission.id, Date.now(), retryDuration),
+            ...newStepTimer(previous.missionId, Date.now(), retryDuration),
             attempts: (previous.attempts || 0) + 1,
             lastExpiredAt: Date.now(),
             pauseUsed: previous.pauseUsed || false,
@@ -109,29 +113,30 @@ export function renderMission(root, data, actions) {
   stopCountdown();
   const session = data.activeSession;
   const mission = currentMission(session);
+  const phase = currentPhase(session);
+  const missions = phaseMissions(session);
   if (!mission) return actions.go("home");
 
-  if (!session.stepTimer || session.stepTimer.missionId !== mission.id) {
+  if (!session.stepTimer || session.stepTimer.missionId !== phase.id) {
     session.stepTimer = newStepTimer(
-      mission.id,
+      phase.id,
       Date.now(),
       session.stepDurationMs || 300000,
     );
     actions.save(data);
   }
 
-  const assignments = missionAssignments(session, mission.id);
-  const confirmed = session.confirmations[mission.id] || [];
-  const completed = session.currentMissionIndex;
-  const total = session.missionSnapshots.length;
+  const assignments = phaseAssignments(session);
+  const completed = session.currentPhaseIndex || 0;
+  const total = session.phaseSnapshots?.length || session.missionSnapshots.length;
   const pct = Math.round((completed / total) * 100);
   const healthCount = Math.max(5, Math.min(10, total));
   const alive = Math.max(
     0,
     healthCount - Math.round((completed / total) * healthCount),
   );
-  const instruction = localized(mission, "childInstruction");
-  const safety = localized(mission, "safetyNote");
+  const instruction = missions.map((item) => localized(item, "childInstruction")).join(" ");
+  const safety = [...new Set(missions.map((item) => localized(item, "safetyNote")).filter(Boolean))].join(" ");
 
   const health = el(
     "div",
@@ -173,7 +178,7 @@ export function renderMission(root, data, actions) {
   const tick = async () => {
     if (!timerValue.isConnected) return stopCountdown();
     const current = data.activeSession;
-    if (!current?.stepTimer || current.stepTimer.missionId !== mission.id)
+    if (!current?.stepTimer || current.stepTimer.missionId !== phase.id)
       return;
     const remaining = stepRemainingMs(current.stepTimer);
     timerValue.textContent = formatDuration(remaining);
@@ -214,18 +219,16 @@ export function renderMission(root, data, actions) {
         (item) => item.id === assignment.childId,
       );
       if (!child) return null;
-      const done = confirmed.includes(assignment.childId);
+      const done = assignment.tasks.every((task) =>
+        (session.confirmations[task.missionId] || []).includes(assignment.childId),
+      );
       let holdTimer;
       const check = button(
         done ? "✓" : "",
         `hero-check ${done ? "checked" : ""}`,
         async () => {
           if (done) return;
-          data.activeSession = confirmChild(
-            data.activeSession,
-            mission.id,
-            child.id,
-          );
+          data.activeSession = confirmPhaseChild(data.activeSession, child.id);
           await actions.save(data);
           actions.sound("confirm");
           actions.go("mission");
@@ -239,11 +242,9 @@ export function renderMission(root, data, actions) {
       if (done) {
         check.addEventListener("pointerdown", () => {
           holdTimer = setTimeout(async () => {
-            data.activeSession = undoChild(
-              data.activeSession,
-              mission.id,
-              child.id,
-            );
+            for (const task of assignment.tasks) {
+              data.activeSession = undoChild(data.activeSession, task.missionId, child.id);
+            }
             await actions.save(data);
             actions.notice(t("undoNotice"));
             actions.go("mission");
@@ -254,22 +255,49 @@ export function renderMission(root, data, actions) {
         );
       }
 
-      return el(
-        "div",
-        { class: `hero-check-card ${done ? "complete" : ""}` },
-        el("span", { class: "hero-avatar", text: child.avatar }),
+      const taskList = el(
+        "ul",
+        { class: "hero-task-list hidden" },
+        ...assignment.tasks.map((task) => {
+          const assignedMission = session.missionSnapshots.find((item) => item.id === task.missionId);
+          return el(
+            "li",
+            {},
+            el("strong", { text: `${assignedMission.icon} ${localized(assignedMission, "title")}` }),
+            el("span", { text: localized(assignedMission, "childInstruction") }),
+          );
+        }),
+      );
+      const heroToggle = button(
+        "",
+        "hero-task-toggle",
+        () => {
+          taskList.classList.toggle("hidden");
+          heroToggle.setAttribute("aria-expanded", taskList.classList.contains("hidden") ? "false" : "true");
+        },
+        { "aria-label": t("showHeroTasks", { hero: child.displayName }), "aria-expanded": "false" },
+      );
+      heroToggle.append(
+        heroPortrait(child),
         el(
           "div",
           { class: "hero-check-copy" },
           el("strong", { text: child.displayName }),
-          el("span", { text: roleName(assignment.role) }),
+          el("span", { text: t("taskCount", { count: assignment.tasks.length }) }),
         ),
+        el("span", { class: "task-chevron", text: "▾" }),
+      );
+      return el(
+        "div",
+        { class: `hero-check-card ${done ? "complete" : ""}` },
+        heroToggle,
         check,
+        taskList,
       );
     }),
   );
 
-  const advance = missionReady(session, mission.id)
+  const advance = phaseReady(session)
     ? button(
         "→",
         "team-advance",
@@ -344,16 +372,17 @@ export function renderMission(root, data, actions) {
           ),
           timerBox,
           timerCoach,
+          el("span", { class: "hud-label phase-orders-label", text: t("currentOrders") }),
           el(
             "div",
-            { class: "mission-order" },
-            el("span", { class: "mission-icon", text: mission.icon }),
-            el(
-              "div",
-              {},
-              el("span", { class: "hud-label", text: t("currentOrders") }),
-              el("h1", { text: localized(mission, "title") }),
-              el("p", { text: instruction }),
+            { class: "phase-orders" },
+            ...missions.map((item) =>
+              el(
+                "div",
+                { class: "mission-order" },
+                el("span", { class: "mission-icon", text: item.icon }),
+                el("div", {}, el("h1", { text: localized(item, "title") }), el("p", { text: localized(item, "childInstruction") })),
+              ),
             ),
           ),
           safety
@@ -385,12 +414,28 @@ export function renderMission(root, data, actions) {
   activeCountdown = setInterval(tick, 200);
   tick();
 
-  if (session.lastAutoSpokenMissionId !== mission.id) {
-    session.lastAutoSpokenMissionId = mission.id;
+  if (session.lastAutoSpokenMissionId !== phase.id) {
+    session.lastAutoSpokenMissionId = phase.id;
     actions.save(data);
-    actions.commandSpeak(`${t("commandPrefix")} ${instruction}`);
-    window.setTimeout(() => actions.startMusic(), 1600);
+    const orders = assignments
+      .map((assignment) => {
+        const child = data.children.find((item) => item.id === assignment.childId);
+        const taskNames = assignment.tasks
+          .map((task) => localized(session.missionSnapshots.find((item) => item.id === task.missionId), "title"))
+          .join(", ");
+        return t("heroAssignmentVoice", { hero: child?.displayName || t("hero"), tasks: taskNames });
+      })
+      .join(" ");
+    actions.commandSpeak(`${t("commandPrefix")} ${orders}`, async () => {
+      const current = data.activeSession;
+      if (current?.awaitingInstructions && current.stepTimer?.missionId === phase.id) {
+        current.awaitingInstructions = false;
+        current.stepTimer = resumeStepTimer(current.stepTimer);
+        await actions.save(data);
+      }
+      actions.startMusic();
+    });
   } else {
-    actions.startMusic();
+    if (!session.awaitingInstructions) actions.startMusic();
   }
 }

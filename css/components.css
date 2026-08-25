@@ -350,6 +350,63 @@
   margin: auto;
   filter: drop-shadow(0 12px 10px rgba(0, 0, 0, 0.16));
 }
+.monster-atlas-sprite {
+  aspect-ratio: 1 / 1;
+  background-image: url("../assets/images/monsters/monster-roster-v2.png");
+  background-size: 500% 200%;
+  background-position: calc(var(--monster-x) * 25%) calc(var(--monster-y) * 100%);
+  background-repeat: no-repeat;
+}
+.hero-photo {
+  width: 58px;
+  height: 58px;
+  border: 2px solid #70ff96;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #061512;
+}
+.photo-capture-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 9px 14px;
+  border: 1px solid #45bd75;
+  border-radius: 9px;
+  background: #0b3023;
+  color: #d5ffde;
+  font-weight: 800;
+  cursor: pointer;
+}
+.profile-photo-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.profile-photo-preview {
+  display: grid;
+  place-items: center;
+}
+.profile-photo-preview .hero-avatar {
+  width: 82px;
+  height: 82px;
+  font-size: 54px;
+}
+.profile-editor-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  align-items: center;
+}
+.mission-matrix select {
+  min-width: 112px;
+  padding: 8px;
+  border-color: #45a66d;
+  background: #071d1a;
+  color: #d5ffde;
+}
 .mission-monster {
   width: min(100%, 250px);
 }

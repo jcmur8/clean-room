@@ -1,4 +1,4 @@
-const CACHE = "room-monster-v1.7.0";
+const CACHE = "room-monster-v1.8.0";
 const ASSETS = [
   "./",
   "./index.html",
@@ -14,6 +14,7 @@ const ASSETS = [
   "./js/i18n.js",
   "./js/defaults.js",
   "./js/monsters.js",
+  "./js/profile-photo.js",
   "./js/monster-stories.js",
   "./js/storage.js",
   "./js/migrations.js",
@@ -45,6 +46,7 @@ const ASSETS = [
   "./assets/images/monsters/mess-gobbler.png",
   "./assets/images/monsters/clutter-crawler.png",
   "./assets/images/monsters/chaos-slime.png",
+  "./assets/images/monsters/monster-roster-v2.png",
 ];
 self.addEventListener("install", (e) =>
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS))),

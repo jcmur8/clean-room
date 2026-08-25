@@ -14,6 +14,16 @@ export function monsterName(monster) {
 
 export function monsterSprite(session, className = "monster-sprite") {
   const monster = monsterForSession(session);
+  if (Number.isInteger(monster.atlasIndex)) {
+    const column = monster.atlasIndex % 5;
+    const row = Math.floor(monster.atlasIndex / 5);
+    return el("div", {
+      class: `${className} monster-atlas-sprite`,
+      role: "img",
+      "aria-label": monsterName(monster),
+      style: `--monster-x:${column};--monster-y:${row}`,
+    });
+  }
   return el("img", {
     class: className,
     src: monster.image,

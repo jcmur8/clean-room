@@ -36,6 +36,7 @@ import { renderBattleTransition } from "./views/battle-transition.js";
 import { renderMonsterOrigin } from "./views/monster-origin.js";
 import { renderParentDashboard } from "./views/parent-dashboard.js";
 import { el, button } from "./ui.js";
+import { heroPortrait } from "./profile-photo.js";
 import { t, setLanguage, modeName, localized } from "./i18n.js";
 const root = document.getElementById("app"),
   parentAuth = parentSession();
@@ -82,9 +83,12 @@ const actions = {
     if (!speak(tText, d.appSettings.speech, d.appSettings.language))
       announce(t("spokenUnavailable"));
   },
-  commandSpeak: (text) => {
+  commandSpeak: (text, onComplete) => {
     const d = getState();
-    if (!d.appSettings.speech) return;
+    if (!d.appSettings.speech) {
+      onComplete?.();
+      return false;
+    }
     beep("radio", d.appSettings.soundVolume);
     window.setTimeout(() => {
       if (
@@ -93,11 +97,15 @@ const actions = {
           onEnd: () => {
             stopRadioBed();
             beep("radio", d.appSettings.soundVolume);
+            onComplete?.();
           },
         })
-      )
+      ) {
         announce(t("spokenUnavailable"));
+        onComplete?.();
+      }
     }, 280);
+    return true;
   },
   startMusic: () => {
     const d = getState();
@@ -346,7 +354,7 @@ function renderIntro(modeId) {
                 el(
                   "div",
                   { class: "hero-chip" },
-                  el("span", { class: "hero-avatar", text: c.avatar }),
+                  heroPortrait(c),
                   el(
                     "div",
                     {},
@@ -373,7 +381,7 @@ async function startBattle(modeId) {
     d.appSettings.lastModeId = modeId;
     await persist(d);
   }
-  route = "monster-origin";
+  route = "battle-transition";
   actions.sound("mission-warning");
   actions.notice(t("missionAlarm"));
   render();
