@@ -83,3 +83,7 @@ The Missions editor treats the existing ordered `mode.missionIds` arrays as a ta
 ## Version 1.8 concurrent hero phases
 
 Schema 8 adds `missionPhases` to modes and `phaseSnapshots/currentPhaseIndex` to sessions. Each phase snapshots its task IDs and distributes active children across those tasks; confirmations remain keyed by mission ID for inspection compatibility. New step timers begin paused with `awaitingInstructions` and resume from the speech lifecycle callback. Profile photos use the device file/camera picker, are center-cropped to a 480px JPEG locally, and are stored with the child profile. The ten-character roster is a single offline sprite atlas generated from the supplied concept reference and addressed through CSS background positions.
+
+## Version 1.9 menu and comic library
+
+Schema 9 adds `appSettings.defeatedMonsterIds`, deriving initial unlocks from completed session history during migration. Finishing a victory adds the session monster ID; defeats and aborted sessions never unlock comics. Quick Rescue supplements its configured missions from active factory/custom tasks until it has at least one distinct task per active hero and groups them into one fast concurrent phase. Comic assets are optimized page renders from the supplied bilingual PDFs and displayed through deterministic CSS scene crops with accessible localized summaries. Low-volume comic music is synthesized through Web Audio and uses a monster-ID-derived motif; no audio files or network calls are required.

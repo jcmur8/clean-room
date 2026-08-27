@@ -1,5 +1,15 @@
 # The Battle of the Room
 
+## v1.9.0 — Monster comic library
+
+- The home screen is now a child-friendly menu for Battle, Comic Book, Player Settings, and Parent Access.
+- Quick Rescue expands its task pool when needed and assigns every active hero a distinct task in one concurrent phase.
+- Players can change emoji avatars or take/choose local profile photos without entering the parent area.
+- Victories unlock monsters in a thirteen-character mosaic. Locked monsters remain grayscale, unnamed, disabled, and inaccessible.
+- Each unlocked monster opens a one-scene-at-a-time comic reader with Previous/Next controls and a quiet synthesized character theme.
+- The ten supplied English and Spanish PDF comics provide localized scene art, dialogue adaptations, and hero lessons. The original three monsters retain their in-app origin stories.
+- Schema version is 9 and the service-worker cache is `room-monster-v1.9.0`.
+
 ## v1.8.0 — Concurrent hero phases
 
 - Parents assign each mode's tasks to numbered phases from the Missions matrix. Tasks sharing a phase run concurrently.

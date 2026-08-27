@@ -6,9 +6,17 @@ export function selectMissions(data, modeId) {
   const mode =
     data.gameModes.find((item) => item.id === modeId) ||
     data.gameModes.find((item) => item.defaultMode);
-  return (mode?.missionIds || [])
+  const selected = (mode?.missionIds || [])
     .map((id) => data.missions.find((mission) => mission.id === id))
     .filter((mission) => mission?.active && !mission.archived);
+  if (mode?.id === "quick") {
+    const heroCount = data.children.filter((child) => child.active !== false).length;
+    const extras = data.missions.filter(
+      (mission) => mission.active && !mission.archived && !selected.some((item) => item.id === mission.id),
+    );
+    while (selected.length < heroCount && extras.length) selected.push(extras.shift());
+  }
+  return selected;
 }
 
 export function createSession(data, modeId, now = Date.now()) {
@@ -22,7 +30,9 @@ export function createSession(data, modeId, now = Date.now()) {
   const phaseMap = selectedMode?.missionPhases || {};
   const grouped = new Map();
   for (const mission of missions) {
-    const phaseNumber = Math.max(1, Number(phaseMap[mission.id]) || missions.indexOf(mission) + 1);
+    const phaseNumber = selectedMode?.id === "quick"
+      ? 1
+      : Math.max(1, Number(phaseMap[mission.id]) || missions.indexOf(mission) + 1);
     if (!grouped.has(phaseNumber)) grouped.set(phaseNumber, []);
     grouped.get(phaseNumber).push(mission.id);
   }

@@ -157,6 +157,17 @@ export function migrate(data) {
     d.schemaVersion = 8;
   }
 
+  if (d.schemaVersion === 8) {
+    d.appSettings = {
+      ...makeDefaultData().appSettings,
+      ...d.appSettings,
+      defeatedMonsterIds:
+        d.appSettings?.defeatedMonsterIds ||
+        [...new Set((d.sessionHistory || []).filter((session) => session.status === "complete").map((session) => session.monsterId).filter(Boolean))],
+    };
+    d.schemaVersion = 9;
+  }
+
   if (d.schemaVersion !== SCHEMA_VERSION) {
     throw new Error("Unsupported schema version");
   }

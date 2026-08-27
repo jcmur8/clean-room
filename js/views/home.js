@@ -88,10 +88,20 @@ export function renderHome(root, data, actions) {
           el("p", {
             text: active ? t("progressSafe") : t("homeStory"),
           }),
-          button(
-            active ? t("resume") : t("start"),
-            "btn-primary",
-            startOrResume,
+          el(
+            "div",
+            { class: "main-menu-grid" },
+            button(
+              `⚔ ${active ? t("resume") : t("start")}`,
+              "btn-primary main-menu-action",
+              startOrResume,
+            ),
+            button(`📚 ${t("comicBook")}`, "btn-secondary main-menu-action", async () => {
+              await actions.audio();
+              actions.go("comicbook");
+            }),
+            button(`🎭 ${t("playerSettings")}`, "btn-secondary main-menu-action", () => actions.go("player-settings")),
+            button(`🔐 ${t("parentAccess")}`, "btn-secondary main-menu-action", () => actions.goParent("dashboard")),
           ),
         ),
       ),

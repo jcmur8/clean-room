@@ -4,6 +4,8 @@ let musicTimer = null;
 let musicStep = 0;
 let musicVolume = 0.4;
 let radioBedTimer = null;
+let comicMusicTimer = null;
+let comicMusicStep = 0;
 
 export async function activateAudio() {
   try {
@@ -284,6 +286,35 @@ export function stopBattleMusic() {
   if (musicTimer != null) window.clearInterval(musicTimer);
   musicTimer = null;
   musicStep = 0;
+}
+
+export function startComicMusic(monsterId = "monster", volume = 0.4) {
+  stopBattleMusic();
+  stopComicMusic();
+  if (!enabled || !ctx) return;
+  const seed = [...monsterId].reduce((sum, character) => sum + character.charCodeAt(0), 0);
+  const roots = [196, 220, 246.94, 261.63, 293.66];
+  const root = roots[seed % roots.length];
+  const low = Math.max(0.018, Math.min(0.055, volume * 0.09));
+  const playPage = () => {
+    if (comicMusicTimer == null) return;
+    const pattern = [0, 0.75, 1.5, 2.25];
+    for (const at of pattern) {
+      const note = [1, 1.25, 1.5, 2][(comicMusicStep + Math.round(at / 0.75)) % 4];
+      tone(root * note, at, 0.52, low, "triangle");
+      tone((root / 2) * (comicMusicStep % 2 ? 1.125 : 1), at, 0.7, low * 0.7, "sine");
+    }
+    comicMusicStep += 1;
+  };
+  comicMusicStep = 0;
+  comicMusicTimer = window.setInterval(playPage, 3000);
+  playPage();
+}
+
+export function stopComicMusic() {
+  if (comicMusicTimer != null) window.clearInterval(comicMusicTimer);
+  comicMusicTimer = null;
+  comicMusicStep = 0;
 }
 
 export function startRadioBed(volume = 0.4) {

@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 8;
+export const SCHEMA_VERSION = 9;
 export const heroAvatars = [
   "🦸",
   "🦸‍♀️",
@@ -270,7 +270,7 @@ export const defaultModes = [
     name: "Quick Rescue",
     nameEs: "Rescate Rápido",
     missionIds: ["trash", "clothes", "toys", "floor"],
-    missionPhases: { trash: 1, clothes: 1, toys: 2, floor: 2 },
+    missionPhases: { trash: 1, clothes: 1, toys: 1, floor: 1 },
     childSelectable: true,
     defaultMode: false,
     timerPolicy: "elapsed",
@@ -329,6 +329,7 @@ export function makeDefaultData() {
       maxParticipants: 8,
       stepCountdownSeconds: 300,
       nextMonsterIndex: 0,
+      defeatedMonsterIds: [],
     },
     parentSecurity: {
       salt: null,

@@ -1,1 +1,1 @@
-{"schemaVersion":8,"appSettings":{"language":"en","sound":true,"maxParticipants":8,"stepCountdownSeconds":300,"nextMonsterIndex":0},"parentSecurity":{},"children":[],"roles":[],"zones":[],"missions":[],"gameModes":[],"rewards":[],"activeSession":null,"sessionHistory":[]}
+{"schemaVersion":9,"appSettings":{"language":"en","sound":true,"maxParticipants":8,"stepCountdownSeconds":300,"nextMonsterIndex":0,"defeatedMonsterIds":[]},"parentSecurity":{},"children":[],"roles":[],"zones":[],"missions":[],"gameModes":[],"rewards":[],"activeSession":null,"sessionHistory":[]}

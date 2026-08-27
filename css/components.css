@@ -400,6 +400,182 @@
   gap: 9px;
   align-items: center;
 }
+.main-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.main-menu-action {
+  min-height: 76px;
+  font-size: clamp(17px, 2vw, 24px);
+}
+.screen-title-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+.screen-title-row h1,
+.screen-title-row p {
+  margin: 3px 0;
+}
+.player-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+}
+.player-settings-card {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.player-settings-portrait {
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  border: 3px solid #70ff96;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #102a22;
+  font-size: 70px;
+}
+.comic-library-screen,
+.comic-reader-screen,
+.player-settings-screen {
+  padding: 58px 22px 22px;
+}
+.monster-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+.monster-library-tile {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  min-height: 260px;
+  padding: 12px;
+  border: 2px solid #286447;
+  background: #071916;
+  color: #caffd5;
+}
+.monster-library-tile:disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+.monster-library-tile.locked .library-monster {
+  filter: grayscale(1) brightness(0.36) contrast(1.2);
+}
+.monster-library-tile.locked strong,
+.monster-library-tile.locked span {
+  color: #778b80;
+}
+.monster-library-tile.unlocked {
+  border-color: #70ff96;
+  box-shadow: 0 0 16px rgba(112, 255, 150, 0.2);
+}
+.library-monster {
+  width: min(100%, 170px);
+}
+.monster-library-tile strong {
+  font-size: 19px;
+}
+.monster-library-tile span {
+  font-size: 13px;
+}
+.comic-reader-card {
+  width: min(100%, 1040px);
+  margin: auto;
+  overflow: hidden;
+  border: 5px solid #d9f6df;
+  border-radius: 14px;
+  background: #f7f0dc;
+  color: #172019;
+  box-shadow: 0 15px 34px #000;
+}
+.comic-source-crop {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: #e9e1c9;
+}
+.comic-source-crop img {
+  position: absolute;
+  max-width: none;
+  height: auto;
+}
+.source-scene-0,
+.source-scene-1,
+.source-scene-2,
+.source-scene-3,
+.source-scene-4 {
+  aspect-ratio: 1.48 / 1;
+}
+.source-scene-1 img,
+.source-scene-0 img,
+.source-scene-2 img,
+.source-scene-3 img,
+.source-scene-4 img {
+  width: 200%;
+}
+.source-scene-0 img {
+  transform: translate(0, -8%);
+}
+.source-scene-1 img {
+  transform: translate(-50%, -8%);
+}
+.source-scene-2 img {
+  transform: translate(0, -38%);
+}
+.source-scene-3 img {
+  transform: translate(-50%, -38%);
+}
+.source-scene-4 img {
+  transform: translate(-50%, -61%);
+}
+.original-comic-scene {
+  display: grid;
+  place-items: center;
+  min-height: 460px;
+  background: radial-gradient(circle, #244b37, #06120f 70%);
+}
+.comic-reader-monster {
+  width: min(80%, 430px);
+}
+.comic-scene-copy {
+  padding: 20px 26px;
+  border-top: 4px solid #172019;
+  font: 800 clamp(20px, 2.6vw, 31px) Georgia, serif;
+  line-height: 1.4;
+}
+.comic-scene-copy > p {
+  margin: 0;
+}
+.hero-lesson {
+  display: grid;
+  gap: 5px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 3px solid #2c7a51;
+  background: #d9f5df;
+  font: 700 17px system-ui, sans-serif;
+}
+.comic-progress {
+  color: #70ff96;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+.comic-reader-controls {
+  width: min(100%, 1040px);
+  margin: 18px auto 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
 .mission-matrix select {
   min-width: 112px;
   padding: 8px;
@@ -921,6 +1097,12 @@
     min-height: 270px;
     border-right: 0;
     border-bottom: 4px solid #171717;
+  }
+  .main-menu-grid {
+    grid-template-columns: 1fr;
+  }
+  .monster-library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 .battle-interlude {

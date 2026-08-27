@@ -9,6 +9,8 @@ import {
   stopBattleMusic,
   startRadioBed,
   stopRadioBed,
+  startComicMusic,
+  stopComicMusic,
 } from "./audio.js";
 import { monsters } from "./defaults.js";
 import { monsterSprite } from "./monsters.js";
@@ -35,6 +37,8 @@ import { renderVictory } from "./views/victory.js";
 import { renderBattleTransition } from "./views/battle-transition.js";
 import { renderMonsterOrigin } from "./views/monster-origin.js";
 import { renderParentDashboard } from "./views/parent-dashboard.js";
+import { renderPlayerSettings } from "./views/player-settings.js";
+import { renderComicBook, renderComicReader } from "./views/comicbook.js";
 import { el, button } from "./ui.js";
 import { heroPortrait } from "./profile-photo.js";
 import { t, setLanguage, modeName, localized } from "./i18n.js";
@@ -111,6 +115,10 @@ const actions = {
     const d = getState();
     if (d.appSettings.sound) startBattleMusic(d.appSettings.soundVolume);
   },
+  startComicMusic: (monsterId) => {
+    const d = getState();
+    startComicMusic(monsterId, d.appSettings.soundVolume * 0.45);
+  },
   notice: announce,
   applyAccessibility: () => applyAccessibility(getState().appSettings),
   refreshChrome,
@@ -160,6 +168,9 @@ const actions = {
     const d = getState();
     const { finishSession } = await import("./game-engine.js");
     const s = finishSession(d.activeSession);
+    d.appSettings.defeatedMonsterIds = [
+      ...new Set([...(d.appSettings.defeatedMonsterIds || []), s.monsterId]),
+    ];
     d.sessionHistory = [...d.sessionHistory, s].slice(-100);
     d.activeSession = null;
     await persist(d);
@@ -247,6 +258,7 @@ function render() {
   if (route !== "mission") {
     stopBattleMusic();
   }
+  if (route !== "comic-reader") stopComicMusic();
   setLanguage(d.appSettings.language || "en");
   refreshChrome();
   applyAccessibility(d.appSettings);
@@ -264,6 +276,9 @@ function render() {
     renderInspectionRequest(root, d, actions);
   else if (route === "inspection") renderInspection(root, d, actions);
   else if (route === "victory") renderVictory(root, d, actions);
+  else if (route === "player-settings") renderPlayerSettings(root, d, actions);
+  else if (route === "comicbook") renderComicBook(root, d, actions);
+  else if (route === "comic-reader") renderComicReader(root, d, actions, params);
   else if (route === "parent")
     renderParentDashboard(root, d, actions, params.section || "dashboard");
   focusMain();
