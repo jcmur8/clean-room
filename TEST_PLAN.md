@@ -1,5 +1,12 @@
 # Test Plan
 
+## v1.10.0 landing menu checks
+
+- Confirm the home screen shows the Hero Cleaners shield and exactly four large primary choices in this order: Parent Zone, Battle, Setting, Comic Books.
+- Confirm Parent Zone opens the PIN gate, Battle starts/resumes the battle flow, Setting opens player settings, and Comic Books opens the monster library.
+- Tap the menu-music control and confirm a quiet game-menu theme plays; navigate away to confirm it stops, then return home to confirm it resumes.
+- Reload once online, switch offline, and confirm the logo and landing screen remain available.
+
 ## Automated browser tests
 Open `tests/test-runner.html` through the local server. Tests cover role restrictions, mode selection, session snapshot immutability, confirmations, timer pause/resume, lockout model, schema validation, rejected import immutability, v1→v2 migration, storage round-trip, and relative service-worker path construction.
 

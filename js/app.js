@@ -11,6 +11,8 @@ import {
   stopRadioBed,
   startComicMusic,
   stopComicMusic,
+  startMenuMusic,
+  stopMenuMusic,
 } from "./audio.js";
 import { monsters } from "./defaults.js";
 import { monsterSprite } from "./monsters.js";
@@ -119,6 +121,7 @@ const actions = {
     const d = getState();
     startComicMusic(monsterId, d.appSettings.soundVolume * 0.45);
   },
+  startMenuMusic,
   notice: announce,
   applyAccessibility: () => applyAccessibility(getState().appSettings),
   refreshChrome,
@@ -259,6 +262,7 @@ function render() {
     stopBattleMusic();
   }
   if (route !== "comic-reader") stopComicMusic();
+  if (route !== "home") stopMenuMusic();
   setLanguage(d.appSettings.language || "en");
   refreshChrome();
   applyAccessibility(d.appSettings);

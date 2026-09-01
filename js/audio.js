@@ -6,6 +6,8 @@ let musicVolume = 0.4;
 let radioBedTimer = null;
 let comicMusicTimer = null;
 let comicMusicStep = 0;
+let menuMusicTimer = null;
+let menuMusicStep = 0;
 
 export async function activateAudio() {
   try {
@@ -315,6 +317,48 @@ export function stopComicMusic() {
   if (comicMusicTimer != null) window.clearInterval(comicMusicTimer);
   comicMusicTimer = null;
   comicMusicStep = 0;
+}
+
+function scheduleMenuTheme() {
+  if (!enabled || !ctx || menuMusicTimer == null) return;
+  const chords = [
+    [130.81, 164.81, 196],
+    [110, 146.83, 174.61],
+    [98, 130.81, 164.81],
+    [116.54, 146.83, 196],
+  ];
+  const chord = chords[menuMusicStep % chords.length];
+  const melody = [2, 1, 2.5, 1.5];
+  chord.forEach((frequency, index) =>
+    tone(frequency, 0, 3.65, 0.018 - index * 0.002, "triangle"),
+  );
+  for (const at of [0, 0.75, 1.5, 2.25, 3]) {
+    tone(
+      chord[0] * melody[(menuMusicStep + Math.round(at / 0.75)) % 4],
+      at,
+      0.3,
+      0.022,
+      "sine",
+    );
+  }
+  tone(chord[0] / 2, 0, 0.48, 0.025, "triangle");
+  tone(chord[0] / 2, 2, 0.48, 0.022, "triangle");
+  menuMusicStep += 1;
+}
+
+export function startMenuMusic() {
+  if (menuMusicTimer != null || !enabled || !ctx) return;
+  stopBattleMusic();
+  stopComicMusic();
+  menuMusicStep = 0;
+  menuMusicTimer = window.setInterval(scheduleMenuTheme, 4000);
+  scheduleMenuTheme();
+}
+
+export function stopMenuMusic() {
+  if (menuMusicTimer != null) window.clearInterval(menuMusicTimer);
+  menuMusicTimer = null;
+  menuMusicStep = 0;
 }
 
 export function startRadioBed(volume = 0.4) {

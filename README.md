@@ -1,5 +1,12 @@
 # The Battle of the Room
 
+## v1.10.0 — Hero Cleaners landing menu
+
+- Replaced the story-heavy home view with a full-screen landing menu built around four large choices: Parent Zone, Battle, Setting, and Comic Books.
+- Added a custom shield-style Hero Cleaners logo and a responsive two-by-two game-menu layout sized for tablets and distance viewing.
+- Added an original low-volume synthesized video-game menu theme. Safari starts it after the first deliberate tap on the music control; returning to the menu resumes it automatically.
+- The service-worker cache is `room-monster-v1.10.0`; schema version remains 9.
+
 ## v1.9.0 — Monster comic library
 
 - The home screen is now a child-friendly menu for Battle, Comic Book, Player Settings, and Parent Access.

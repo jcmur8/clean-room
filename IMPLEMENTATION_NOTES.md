@@ -1,5 +1,9 @@
 # Implementation Notes
 
+## v1.10.0
+
+The home route is now a dedicated Hero Cleaners landing screen. Its menu music is synthesized locally with Web Audio and requires one user gesture on a fresh Safari session, after which the active audio context permits automatic playback when returning home. The logo is a bundled transparent PNG and is included in the offline cache.
+
 ## Architecture
 Static ES-module PWA. IndexedDB stores one versioned root record. Business logic is separated into storage, migration, validation, security, audio/speech, timers, roles, game-engine, backup and view modules. All application URLs are relative for GitHub Pages project-subdirectory hosting.
 

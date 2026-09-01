@@ -1,110 +1,58 @@
 import { el, button } from "../ui.js";
-import { heroPortrait } from "../profile-photo.js";
 import { t } from "../i18n.js";
-import { monsters } from "../defaults.js";
-import { monsterSprite } from "../monsters.js";
 
 export function renderHome(root, data, actions) {
-  const active = Boolean(
-    data.activeSession && data.activeSession.status !== "complete",
-  );
-
-  const heroes = el(
-    "div",
-    { class: "grid hero-preview-grid" },
-    ...data.children
-      .filter((child) => child.active !== false)
-      .map((child) =>
-        el(
-          "div",
-          { class: "hero-chip" },
-          heroPortrait(child),
-          el(
-            "div",
-            {},
-            el("strong", { text: child.displayName }),
-            el("div", { text: child.heroTitle || t("hero") }),
-          ),
-        ),
-      ),
-  );
-
+  const active = Boolean(data.activeSession && data.activeSession.status !== "complete");
   const startOrResume = async () => {
     await actions.audio();
-
-    let route;
-    let params = {};
-
     if (active) {
-      if (data.activeSession.status === "inspection") {
-        route = "inspection-request";
-      } else if (data.activeSession.status === "victory") {
-        route = "victory";
-      } else {
-        route = "mission";
-      }
-    } else {
-      route = data.appSettings.showModeSelection ? "modes" : "intro";
-      const defaultMode = data.gameModes.find((mode) => mode.defaultMode);
-      params = { modeId: defaultMode ? defaultMode.id : "normal" };
+      const status = data.activeSession.status;
+      actions.go(status === "inspection" ? "inspection-request" : status === "victory" ? "victory" : "mission");
+      return;
     }
-
-    actions.go(route, params);
+    const defaultMode = data.gameModes.find((mode) => mode.defaultMode);
+    actions.go(data.appSettings.showModeSelection ? "modes" : "intro", {
+      modeId: defaultMode ? defaultMode.id : "normal",
+    });
   };
+
+  const menu = el(
+    "div",
+    { class: "landing-menu-grid", "aria-label": t("mainMenu") },
+    button(`🔐 ${t("parentZone")}`, "landing-menu-card parent-zone", () => actions.goParent("dashboard")),
+    button(`⚔ ${active ? t("resume") : t("battleMenu")}`, "landing-menu-card battle-zone", startOrResume),
+    button(`⚙ ${t("settingMenu")}`, "landing-menu-card setting-zone", () => actions.go("player-settings")),
+    button(`📚 ${t("comicBooksMenu")}`, "landing-menu-card comics-zone", async () => {
+      await actions.audio();
+      actions.go("comicbook");
+    }),
+  );
+
+  const musicButton = button(`♫ ${t("menuMusicHint")}`, "menu-music-activation", async (event) => {
+    event?.stopPropagation?.();
+    await actions.audio();
+    actions.startMenuMusic();
+    musicButton.textContent = `♫ ${t("menuMusicPlaying")}`;
+    musicButton.classList.add("playing");
+  });
 
   root.replaceChildren(
     el(
       "section",
-      { class: "child-screen" },
+      { class: "landing-screen child-screen" },
       el(
         "div",
-        { class: "card hero-card" },
-        el(
-          "div",
-          {},
-          monsterSprite(
-            active
-              ? data.activeSession
-              : {
-                  monsterId:
-                    monsters[
-                      (data.appSettings.nextMonsterIndex || 0) % monsters.length
-                    ].id,
-                },
-            "monster-sprite home-monster messy",
-          ),
-          el("p", {
-            style: "text-align:center",
-            text: active ? t("monsterActive") : t("monsterIdle"),
-          }),
-        ),
-        el(
-          "div",
-          {},
-          el("h1", {
-            text: active ? t("battleProgress") : t("heroesNeed"),
-          }),
-          heroes,
-          el("p", {
-            text: active ? t("progressSafe") : t("homeStory"),
-          }),
-          el(
-            "div",
-            { class: "main-menu-grid" },
-            button(
-              `⚔ ${active ? t("resume") : t("start")}`,
-              "btn-primary main-menu-action",
-              startOrResume,
-            ),
-            button(`📚 ${t("comicBook")}`, "btn-secondary main-menu-action", async () => {
-              await actions.audio();
-              actions.go("comicbook");
-            }),
-            button(`🎭 ${t("playerSettings")}`, "btn-secondary main-menu-action", () => actions.go("player-settings")),
-            button(`🔐 ${t("parentAccess")}`, "btn-secondary main-menu-action", () => actions.goParent("dashboard")),
-          ),
-        ),
+        { class: "landing-logo-wrap" },
+        el("img", {
+          class: "landing-logo",
+          src: "./assets/images/hero-cleaners-logo-v1.png",
+          alt: "Hero Cleaners",
+        }),
+        el("p", { class: "landing-tagline", text: t("landingTagline") }),
       ),
+      menu,
+      musicButton,
     ),
   );
+  actions.startMenuMusic();
 }
