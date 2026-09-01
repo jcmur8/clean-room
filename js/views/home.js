@@ -45,8 +45,14 @@ export function renderHome(root, data, actions) {
         { class: "landing-logo-wrap" },
         el("img", {
           class: "landing-logo",
-          src: "./assets/images/hero-cleaners-logo-v1.png",
-          alt: "Hero Cleaners",
+          src:
+            data.appSettings.language === "es"
+              ? "./assets/images/heroes-de-limpieza-logo-v1.png"
+              : "./assets/images/hero-cleaners-logo-v1.png",
+          alt:
+            data.appSettings.language === "es"
+              ? "Héroes de Limpieza"
+              : "Hero Cleaners",
         }),
         el("p", { class: "landing-tagline", text: t("landingTagline") }),
       ),

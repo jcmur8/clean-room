@@ -55,7 +55,11 @@ export function createSession(data, modeId, now = Date.now()) {
   });
   const firstPhase = phaseSnapshots[0];
   const stepDurationMs = (selectedMode?.missionDurationSeconds || 300) * 1000;
+  const selectedMonster = monsters.find(
+    (item) => item.id === data.appSettings.selectedMonsterId,
+  );
   const monster =
+    selectedMonster ||
     monsters[(data.appSettings.nextMonsterIndex || 0) % monsters.length];
 
   return {

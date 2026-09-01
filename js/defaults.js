@@ -329,6 +329,7 @@ export function makeDefaultData() {
       maxParticipants: 8,
       stepCountdownSeconds: 300,
       nextMonsterIndex: 0,
+      selectedMonsterId: null,
       defeatedMonsterIds: [],
     },
     parentSecurity: {

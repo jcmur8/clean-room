@@ -395,6 +395,7 @@ async function startBattle(modeId) {
   await activateAudio();
   if (!d.activeSession) {
     d.activeSession = createSession(d, modeId);
+    d.appSettings.selectedMonsterId = null;
     d.appSettings.nextMonsterIndex =
       ((d.appSettings.nextMonsterIndex || 0) + 1) % monsters.length;
     d.appSettings.lastModeId = modeId;

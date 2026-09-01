@@ -110,6 +110,7 @@ function showTimeout(data, mission, actions) {
 }
 
 export function renderMission(root, data, actions) {
+  document.querySelector(".hero-responsibility-popover")?.remove();
   stopCountdown();
   const session = data.activeSession;
   const mission = currentMission(session);
@@ -255,27 +256,58 @@ export function renderMission(root, data, actions) {
         );
       }
 
-      const taskList = el(
-        "ul",
-        { class: "hero-task-list hidden" },
-        ...assignment.tasks.map((task) => {
-          const assignedMission = session.missionSnapshots.find((item) => item.id === task.missionId);
-          return el(
-            "li",
-            {},
-            el("strong", { text: `${assignedMission.icon} ${localized(assignedMission, "title")}` }),
-            el("span", { text: localized(assignedMission, "childInstruction") }),
-          );
-        }),
-      );
+      const showResponsibilities = (event) => {
+        event?.stopPropagation?.();
+        document.querySelector(".hero-responsibility-popover")?.remove();
+        const taskList = el(
+          "ul",
+          { class: "hero-responsibility-list" },
+          ...assignment.tasks.map((task) => {
+            const assignedMission = session.missionSnapshots.find(
+              (item) => item.id === task.missionId,
+            );
+            return el(
+              "li",
+              {},
+              el("strong", {
+                text: `${assignedMission.icon} ${localized(assignedMission, "title")}`,
+              }),
+              el("span", {
+                text: localized(assignedMission, "childInstruction"),
+              }),
+            );
+          }),
+        );
+        const popover = el(
+          "div",
+          {
+            class: "hero-responsibility-popover",
+            role: "dialog",
+            "aria-label": t("heroResponsibilities", {
+              hero: child.displayName,
+            }),
+          },
+          el(
+            "div",
+            { class: "hero-responsibility-card" },
+            heroPortrait(child),
+            el("h2", {
+              text: t("heroResponsibilities", { hero: child.displayName }),
+            }),
+            taskList,
+            el("p", { class: "popover-dismiss-hint", text: t("tapAwayClose") }),
+          ),
+        );
+        popover.addEventListener("pointerdown", (pointerEvent) => {
+          if (pointerEvent.target === popover) popover.remove();
+        });
+        document.body.append(popover);
+      };
       const heroToggle = button(
         "",
         "hero-task-toggle",
-        () => {
-          taskList.classList.toggle("hidden");
-          heroToggle.setAttribute("aria-expanded", taskList.classList.contains("hidden") ? "false" : "true");
-        },
-        { "aria-label": t("showHeroTasks", { hero: child.displayName }), "aria-expanded": "false" },
+        showResponsibilities,
+        { "aria-label": t("showHeroTasks", { hero: child.displayName }), "aria-haspopup": "dialog" },
       );
       heroToggle.append(
         heroPortrait(child),
@@ -285,14 +317,13 @@ export function renderMission(root, data, actions) {
           el("strong", { text: child.displayName }),
           el("span", { text: t("taskCount", { count: assignment.tasks.length }) }),
         ),
-        el("span", { class: "task-chevron", text: "▾" }),
+        el("span", { class: "task-chevron", text: "ⓘ" }),
       );
       return el(
         "div",
         { class: `hero-check-card ${done ? "complete" : ""}` },
         heroToggle,
         check,
-        taskList,
       );
     }),
   );
@@ -372,19 +403,6 @@ export function renderMission(root, data, actions) {
           ),
           timerBox,
           timerCoach,
-          el("span", { class: "hud-label phase-orders-label", text: t("currentOrders") }),
-          el(
-            "div",
-            { class: "phase-orders" },
-            ...missions.map((item) =>
-              el(
-                "div",
-                { class: "mission-order" },
-                el("span", { class: "mission-icon", text: item.icon }),
-                el("div", {}, el("h1", { text: localized(item, "title") }), el("p", { text: localized(item, "childInstruction") })),
-              ),
-            ),
-          ),
           safety
             ? el(
                 "div",

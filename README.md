@@ -1,5 +1,13 @@
 # The Battle of the Room
 
+## v1.11.0 — Selectable monsters and mission popovers
+
+- Comic Book now lets children select any monster as the target of their next battle, while comic stories remain locked until that monster is defeated.
+- The running clock is now the central mission display without the static Current Orders block. Tapping a hero opens a large responsibilities popover that closes when another screen area is tapped.
+- Parent Zone and Setting are visually smaller than the two child-focused landing choices.
+- The landing shield switches to “Héroes de Limpieza” in Spanish, and light-filled controls now enforce dark, readable text.
+- The service-worker cache is `room-monster-v1.11.0`; schema version remains 9.
+
 ## v1.10.0 — Hero Cleaners landing menu
 
 - Replaced the story-heavy home view with a full-screen landing menu built around four large choices: Parent Zone, Battle, Setting, and Comic Books.

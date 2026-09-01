@@ -9,23 +9,29 @@ export function renderComicBook(root, data, actions) {
   const unlocked = new Set(data.appSettings.defeatedMonsterIds || []);
   const tiles = monsters.map((monster) => {
     const defeated = unlocked.has(monster.id);
-    const tile = button(
-      "",
-      `monster-library-tile ${defeated ? "unlocked" : "locked"}`,
-      () => defeated && actions.go("comic-reader", { monsterId: monster.id, scene: 0 }),
-      {
-        disabled: !defeated,
-        "aria-label": defeated
-          ? t("openMonsterComic", { monster: monsterName(monster) })
-          : t("lockedMonster", { monster: monsterName(monster) }),
+    const selected = data.appSettings.selectedMonsterId === monster.id;
+    const selectMonster = button(
+      selected ? `✓ ${t("selectedForBattle")}` : `⚔ ${t("selectForBattle")}`,
+      `monster-select-button ${selected ? "selected" : ""}`,
+      async () => {
+        data.appSettings.selectedMonsterId = monster.id;
+        await actions.save(data);
+        actions.notice(t("monsterSelected", { monster: monsterName(monster) }));
+        actions.go("comicbook");
       },
+      { "aria-pressed": selected ? "true" : "false" },
     );
-    tile.append(
+    return el(
+      "article",
+      { class: `monster-library-tile ${defeated ? "unlocked" : "locked"} ${selected ? "selected" : ""}` },
       monsterSprite({ monsterId: monster.id }, "monster-sprite library-monster"),
-      el("strong", { text: defeated ? monsterName(monster) : "???" }),
+      el("strong", { text: monsterName(monster) }),
       el("span", { text: defeated ? t("defeatedUnlocked") : `🔒 ${t("notDefeated")}` }),
+      defeated
+        ? button(t("readComic"), "comic-read-button", () => actions.go("comic-reader", { monsterId: monster.id, scene: 0 }))
+        : el("span", { class: "comic-locked-note", text: t("defeatToRead") }),
+      selectMonster,
     );
-    return tile;
   });
 
   root.replaceChildren(

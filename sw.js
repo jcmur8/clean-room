@@ -1,4 +1,4 @@
-const CACHE = "room-monster-v1.10.0";
+const CACHE = "room-monster-v1.11.0";
 const ASSETS = [
   "./",
   "./index.html",
@@ -51,6 +51,7 @@ const ASSETS = [
   "./assets/images/monsters/chaos-slime.png",
   "./assets/images/monsters/monster-roster-v2.png",
   "./assets/images/hero-cleaners-logo-v1.png",
+  "./assets/images/heroes-de-limpieza-logo-v1.png",
   "./assets/comics/en/page-01.jpg",
   "./assets/comics/es/page-01.jpg",
   "./assets/comics/en/page-02.jpg",

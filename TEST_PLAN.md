@@ -1,5 +1,13 @@
 # Test Plan
 
+## v1.11.0 interaction checks
+
+- Verify Parent Zone and Setting are narrower than Battle and Comic Books on the landing screen.
+- Switch to Spanish and verify the shield reads “Héroes de Limpieza”; switch back and verify “Hero Cleaners.”
+- Select a locked monster in Comic Book, start a battle, and verify that monster is the battle target while its comic remains locked.
+- On the running clock screen, verify Current Orders/Órdenes actuales is absent. Tap each hero portrait to view that hero's responsibilities, then tap elsewhere to dismiss the popover.
+- Confirm text on white and pale controls is dark and readable.
+
 ## v1.10.0 landing menu checks
 
 - Confirm the home screen shows the Hero Cleaners shield and exactly four large primary choices in this order: Parent Zone, Battle, Setting, Comic Books.

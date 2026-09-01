@@ -36,6 +36,7 @@
   min-width: var(--touch);
   padding: 8px;
   background: #f0eadc;
+  color: #102019;
 }
 .parent-link {
   min-height: 44px;
@@ -48,6 +49,7 @@
   padding: 5px 10px;
   border-radius: 999px;
   background: #e8f2e8;
+  color: #102019;
   font-size: 13px;
   font-weight: 700;
 }
@@ -78,6 +80,7 @@
 .choice {
   border: 3px solid transparent;
   background: white;
+  color: #102019;
 }
 .choice[aria-pressed="true"] {
   border-color: var(--blue);
@@ -101,6 +104,7 @@
   padding: 12px;
   border-radius: 18px;
   background: #f6f2e9;
+  color: #102019;
 }
 .hero-avatar {
   font-size: 44px;
@@ -152,6 +156,7 @@
   border-radius: 12px;
   padding: 10px;
   background: white;
+  color: #102019;
 }
 .error {
   color: #9b3030;
@@ -174,6 +179,7 @@
   border: 1px solid var(--line);
   border-radius: 14px;
   background: white;
+  color: #102019;
 }
 .loading-card {
   padding: 40px;
@@ -270,6 +276,7 @@
   border: 1px solid var(--line);
   border-radius: 14px;
   background: #fff;
+  color: #102019;
 }
 .setup-hero-row .field {
   margin: 0;
@@ -283,6 +290,7 @@
   border: 4px solid var(--line);
   border-radius: 24px;
   background: #fff;
+  color: #102019;
   text-align: center;
 }
 .countdown-label {
@@ -451,7 +459,7 @@
 }
 .landing-menu-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(180px, 0.62fr) minmax(0, 1.38fr);
   grid-template-rows: repeat(2, minmax(150px, 1fr));
   gap: clamp(14px, 2vw, 24px);
   min-height: 0;
@@ -500,6 +508,11 @@
 }
 .landing-menu-card.setting-zone { border-color: #d7ba45; color: #fff4b4; }
 .landing-menu-card.comics-zone { border-color: #9d70ff; color: #eadfff; }
+.landing-menu-card.parent-zone,
+.landing-menu-card.setting-zone {
+  padding-inline: clamp(12px, 2vw, 24px);
+  font-size: clamp(22px, 3vw, 38px);
+}
 .menu-music-activation {
   justify-self: center;
   min-height: 42px;
@@ -574,10 +587,8 @@
   border: 2px solid #286447;
   background: #071916;
   color: #caffd5;
-}
-.monster-library-tile:disabled {
-  opacity: 1;
-  cursor: not-allowed;
+  border-radius: 18px;
+  text-align: center;
 }
 .monster-library-tile.locked .library-monster {
   filter: grayscale(1) brightness(0.36) contrast(1.2);
@@ -590,6 +601,10 @@
   border-color: #70ff96;
   box-shadow: 0 0 16px rgba(112, 255, 150, 0.2);
 }
+.monster-library-tile.selected {
+  border-color: #56d8ff;
+  box-shadow: 0 0 22px rgba(86, 216, 255, 0.32);
+}
 .library-monster {
   width: min(100%, 170px);
 }
@@ -598,6 +613,28 @@
 }
 .monster-library-tile span {
   font-size: 13px;
+}
+.monster-select-button,
+.comic-read-button {
+  width: 100%;
+  min-height: 48px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: #123b31;
+  color: #d8ffe2;
+  font-size: 14px;
+}
+.monster-select-button.selected {
+  background: #56d8ff;
+  color: #03161b;
+}
+.comic-read-button {
+  background: #7857bb;
+  color: #fff;
+}
+.comic-locked-note {
+  min-height: 38px;
+  color: #9ab0a2 !important;
 }
 .comic-reader-card {
   width: min(100%, 1040px);
@@ -762,6 +799,7 @@
   border: 3px solid #3b9c66;
   border-radius: 12px;
   background: radial-gradient(circle, #0b2f25, #020b0c 72%);
+  color: #caffd0;
   box-shadow:
     inset 0 0 40px rgba(53, 224, 111, 0.1),
     0 0 24px rgba(53, 224, 111, 0.12);

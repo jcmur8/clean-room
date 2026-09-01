@@ -1,5 +1,9 @@
 # Implementation Notes
 
+## v1.11.0
+
+`appSettings.selectedMonsterId` is an optional, backward-compatible next-battle override. Session creation consumes the selected monster and the app clears the override after creating that session. Hero responsibility details are rendered as an accessible non-blocking dialog and dismissed by the next pointer press outside it. Both language-specific logo PNGs are bundled in the offline cache.
+
 ## v1.10.0
 
 The home route is now a dedicated Hero Cleaners landing screen. Its menu music is synthesized locally with Web Audio and requires one user gesture on a fresh Safari session, after which the active audio context permits automatic playback when returning home. The logo is a bundled transparent PNG and is included in the offline cache.

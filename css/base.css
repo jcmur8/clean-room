@@ -48,6 +48,7 @@ textarea:focus-visible {
   top: 8px;
   z-index: 99;
   background: white;
+  color: #102019;
   padding: 10px;
 }
 .topbar {
