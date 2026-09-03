@@ -197,6 +197,8 @@
   list-style-position: inside;
   text-align: left;
 }
+.hero-responsibility-task { padding: 12px 0; border-bottom: 1px solid rgba(126,255,174,.25); }
+.hero-responsibility-task:last-child { border-bottom: 0; }
 .hero-responsibility-list li {
   margin: 14px 0;
   padding: 14px;

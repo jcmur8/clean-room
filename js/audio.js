@@ -203,6 +203,16 @@ export function beep(kind = "ok", volume = 0.4) {
     return;
   }
 
+  if (kind === "wrong-answer") {
+    noiseBurst(0, 0.16, Math.min(0.25, v * 0.42));
+    sequence([
+      { f: 240, at: 0, d: 0.38, v: 0.9, type: "square" },
+      { f: 185, at: 0.42, d: 0.5, v: 1, type: "sawtooth" },
+      { f: 135, at: 0.96, d: 0.72, v: 1, type: "square" },
+    ], v);
+    return;
+  }
+
   if (kind === "celebrate" || kind === "complete") {
     sequence(
       [

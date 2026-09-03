@@ -1,5 +1,15 @@
 # Test Plan
 
+## v1.14.0 interaction checks
+
+- [ ] Welcome logo glows briefly and then rests; reduced-motion mode suppresses animation.
+- [ ] Welcome and transmission controls use matching monochrome geometric icons.
+- [ ] Accept and Deny are equal size; Deny is red.
+- [ ] Hero popover title is only the child name; task headings have no bullet and subtasks do.
+- [ ] Safety Alerts opens a bulleted modal and no warning prose is permanently shown below the timer.
+- [ ] Timeout plays the wrong-answer buzzer and shows equal Try Again (left/green) and Exit (right/red) controls.
+- [ ] Parent PIN dialog has an upper-right exit control and numeric keypad digits only.
+
 ## v1.13.0 interaction checks
 
 - Tap a locked comic tile and verify a Quick Mission offer opens for that exact monster; complete it and verify the tile becomes an unlocked comic link.

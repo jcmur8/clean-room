@@ -348,7 +348,7 @@
 .mission-offer-actions {
   grid-area: actions;
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 .mission-offer-actions button { min-height: 82px; font-size: clamp(22px, 3vw, 34px); }
@@ -584,6 +584,23 @@
   max-height: 58vh;
   object-fit: contain;
   filter: drop-shadow(0 0 20px rgba(52, 231, 255, 0.28));
+  animation: logo-glow-rest 7s ease-in-out infinite;
+}
+
+.ui-icon { width: 1.15em; height: 1.15em; flex: 0 0 auto; }
+.icon-label { display: inline-flex; align-items: center; justify-content: center; gap: .48em; }
+.landing-menu-card .icon-label { flex-direction: column; }
+.landing-menu-card .ui-icon { width: 1.7em; height: 1.7em; }
+.deny-mission { background: #bd2434; border-color: #ff7885; color: #fff; }
+.pin-card { position: relative; }
+.pin-close { position: absolute; top: 12px; right: 12px; width: 48px; height: 48px; border: 2px solid #ff7c86; border-radius: 50%; background: #641923; color: #fff; font-size: 32px; line-height: 1; }
+.safety-alert-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: min(360px, 100%); margin: 0 auto 14px; padding: 12px 20px; border: 2px solid #ffca58; border-radius: 12px; background: #2d250d; color: #fff0a8; font-size: clamp(18px, 2vw, 25px); font-weight: 900; }
+.safety-alert-card { position: relative; }
+
+@keyframes logo-glow-rest {
+  0%, 9%, 100% { filter: drop-shadow(0 0 18px rgba(52, 231, 255, .25)); transform: scale(1); }
+  13% { filter: drop-shadow(0 0 42px rgba(112, 255, 174, .9)) brightness(1.2); transform: scale(1.025); }
+  18% { filter: drop-shadow(0 0 18px rgba(52, 231, 255, .25)); transform: scale(1); }
 }
 .landing-tagline {
   margin: -6px 0 0;

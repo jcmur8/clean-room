@@ -55,8 +55,8 @@ export function speakAssistant(text, enabled = true, language = "en") {
   try {
     speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(String(text));
-    utterance.rate = 0.9;
-    utterance.pitch = 1.18;
+    utterance.rate = 0.84;
+    utterance.pitch = 0.68;
     utterance.volume = 1;
     utterance.lang = language === "es" ? "es-US" : "en-US";
     const voices = speechSynthesis.getVoices();
@@ -64,7 +64,7 @@ export function speakAssistant(text, enabled = true, language = "en") {
       voice.lang?.toLowerCase().startsWith(language === "es" ? "es" : "en"),
     );
     const preferred = candidates.find((voice) =>
-      /samantha|victoria|monica|paulina|google|microsoft/i.test(voice.name),
+      /compact|daniel|alex|jorge|diego|google|microsoft/i.test(voice.name),
     );
     if (preferred || candidates[0]) utterance.voice = preferred || candidates[0];
     speechSynthesis.speak(utterance);

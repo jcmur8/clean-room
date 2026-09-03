@@ -1,5 +1,15 @@
 # The Battle of the Room
 
+## v1.14.0 - Interface consistency and App Store readiness
+
+- Standardized prominent controls around a monochrome, geometric icon system and consistent display-title casing.
+- Added a delayed pulse/glow to the bilingual welcome logo, with reduced-motion support inherited from the application accessibility settings.
+- Updated the incoming transmission with a lower robotic assistant voice profile and equal green/red decision controls.
+- Simplified the mission console: hero task popovers show only the hero name, task heading, and bulleted subtasks; Safety Alerts now opens its own bulleted dialog; redundant touch/music labels were removed.
+- Added a distinctive wrong-answer buzzer at timeout and reordered equal-size Try Again and Exit choices.
+- Moved the Parent PIN exit control to the upper-right of the dialog while keeping the PIN keypad numeric.
+- Schema version remains 11. The service-worker cache is `room-monster-v1.14.0`.
+
 ## v1.13.0 — Comic launches and balanced Quick Missions
 
 - Tapping a locked Comic Books character now immediately offers a Quick Mission against that monster; victory unlocks its comic. Unlocked characters still open their stories.

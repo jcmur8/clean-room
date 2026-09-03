@@ -2,6 +2,7 @@ import { el, button } from "../ui.js";
 import { heroAvatars } from "../defaults.js";
 import { heroPortrait, choosePhotoInput } from "../profile-photo.js";
 import { t } from "../i18n.js";
+import { icon } from "../icons.js";
 
 export function renderPlayerSettings(root, data, actions) {
   const cards = data.children
@@ -50,7 +51,7 @@ export function renderPlayerSettings(root, data, actions) {
     el(
       "section",
       { class: "child-screen player-settings-screen" },
-      el("div", { class: "screen-title-row" }, button("←", "btn-secondary", () => actions.go("home"), { "aria-label": t("backToMenu") }), el("h1", { text: t("playerSettings") })),
+      el("div", { class: "screen-title-row" }, button(icon("back"), "btn-secondary", () => actions.go("home"), { "aria-label": t("backToMenu") }), el("h1", { text: t("playerSettings") })),
       el("div", { class: "player-settings-grid" }, ...cards),
     ),
   );

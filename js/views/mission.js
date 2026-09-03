@@ -22,6 +22,7 @@ import {
 import { t, localized } from "../i18n.js";
 import { monsterSprite, monsterForSession, monsterName } from "../monsters.js";
 import { heroPortrait } from "../profile-photo.js";
+import { icon, iconLabel } from "../icons.js";
 
 let activeCountdown = null;
 
@@ -38,7 +39,7 @@ function showHelp(instruction, safety) {
     el(
       "div",
       { class: "card" },
-      button("✕", "help-close", () => modal.remove(), {
+      button(icon("close"), "help-close", () => modal.remove(), {
         "aria-label": t("closeHelp"),
       }),
       el("div", { class: "help-hand", text: "✋" }),
@@ -60,12 +61,24 @@ function showPauseDenied() {
     el(
       "div",
       { class: "card pause-denied" },
-      button("✕", "help-close", () => modal.remove(), {
+      button(icon("close"), "help-close", () => modal.remove(), {
         "aria-label": t("closeHelp"),
       }),
       el("div", { class: "monster-strength", text: "⚡👾⚡" }),
       el("h2", { text: t("pauseDeniedTitle") }),
       el("p", { text: t("pauseDeniedText") }),
+    ),
+  );
+  document.body.append(modal);
+}
+
+function showSafetyAlerts(safety) {
+  const warnings = (safety.match(/[^.!?]+[.!?]?/g) || [safety]).map((item) => item.trim()).filter(Boolean);
+  const modal = el("div", { class: "modal help-modal", role: "dialog", "aria-modal": "true" },
+    el("div", { class: "card safety-alert-card" },
+      button(icon("close"), "help-close", () => modal.remove(), { "aria-label": t("closeHelp") }),
+      el("h2", { text: t("safetyAlerts") }),
+      el("ul", { class: "help-bullet-list" }, ...warnings.map((warning) => el("li", { text: warning }))),
     ),
   );
   document.body.append(modal);
@@ -85,11 +98,7 @@ function showTimeout(data, mission, actions) {
       el(
         "div",
         { class: "timeout-options" },
-        button(t("defeatByMonster"), "btn-danger", () => {
-          modal.remove();
-          actions.defeatBattle();
-        }),
-        button(t("tryAgain"), "btn-primary", async () => {
+        button(iconLabel("arrow", t("tryAgain")), "btn-primary", async () => {
           const retryDuration = retryDurationMs(
             data.activeSession.stepDurationMs || previous.durationMs,
           );
@@ -102,6 +111,10 @@ function showTimeout(data, mission, actions) {
           await actions.save(data);
           modal.remove();
           actions.go("mission");
+        }),
+        button(iconLabel("close", t("exit")), "btn-danger", () => {
+          modal.remove();
+          actions.defeatBattle();
         }),
       ),
     ),
@@ -159,10 +172,6 @@ export function renderMission(root, data, actions) {
     { class: "mission-countdown", "aria-live": "polite" },
     el("span", { class: "countdown-label", text: t("timeToTarget") }),
     timerValue,
-    el("span", {
-      class: "soundtrack-status",
-      text: `◉ ${t("battleMusicActive")}`,
-    }),
   );
   const timerCoach = el("p", {
     class: `timer-coach notice${session.stepTimer.attempts ? "" : " hidden"}`,
@@ -207,7 +216,7 @@ export function renderMission(root, data, actions) {
     if (remaining <= 0 && !current.pauseState?.paused && !expiryBusy) {
       expiryBusy = true;
       stopCountdown();
-      actions.sound("shotclock");
+      actions.sound("wrong-answer");
       showTimeout(data, mission, actions);
     }
   };
@@ -260,7 +269,7 @@ export function renderMission(root, data, actions) {
         event?.stopPropagation?.();
         document.querySelector(".hero-responsibility-popover")?.remove();
         const taskList = el(
-          "ul",
+          "div",
           { class: "hero-responsibility-list" },
           ...assignment.tasks.map((task) => {
             const assignedMission = session.missionSnapshots.find(
@@ -269,8 +278,8 @@ export function renderMission(root, data, actions) {
             const instruction = localized(assignedMission, "childInstruction");
             const subtasks = instruction.match(/[^.!?]+[.!?]?/g) || [instruction];
             return el(
-              "li",
-              {},
+              "section",
+              { class: "hero-responsibility-task" },
               el("strong", {
                 text: `${assignedMission.icon} ${localized(assignedMission, "title")}`,
               }),
@@ -298,11 +307,8 @@ export function renderMission(root, data, actions) {
             "div",
             { class: "hero-responsibility-card" },
             heroPortrait(child),
-            el("h2", {
-              text: t("heroResponsibilities", { hero: child.displayName }),
-            }),
+            el("h2", { text: child.displayName }),
             taskList,
-            el("p", { class: "popover-dismiss-hint", text: t("tapAwayClose") }),
           ),
         );
         popover.addEventListener("pointerdown", (pointerEvent) => {
@@ -324,7 +330,7 @@ export function renderMission(root, data, actions) {
           el("strong", { text: child.displayName }),
           el("span", { text: t("taskCount", { count: assignment.tasks.length }) }),
         ),
-        el("span", { class: "task-chevron", text: "ⓘ" }),
+          icon("instructions", "task-chevron ui-icon"),
       );
       return el(
         "div",
@@ -352,16 +358,16 @@ export function renderMission(root, data, actions) {
   const commandRail = el(
     "aside",
     { class: "command-rail", "aria-label": t("missionControls") },
-    button("📋", "command-icon", () => actions.commandSpeak(instruction), {
+    button(icon("instructions"), "command-icon", () => actions.commandSpeak(instruction), {
       "aria-label": t("repeatInstructions"),
       title: t("repeatInstructions"),
     }),
-    button("✋", "command-icon", () => showHelp(instruction, safety), {
+    button(icon("help"), "command-icon", () => showHelp(instruction, safety), {
       "aria-label": t("help"),
       title: t("help"),
     }),
     button(
-      "⏸",
+      icon("pause"),
       "command-icon",
       async () => {
         const started = await actions.pause30();
@@ -372,7 +378,7 @@ export function renderMission(root, data, actions) {
         title: t("pause"),
       },
     ),
-    button("🛑", "command-icon danger", () => actions.requireParent("abort"), {
+    button(icon("stop"), "command-icon danger", () => actions.requireParent("abort"), {
       "aria-label": t("abortMission"),
       title: t("abortMission"),
     }),
@@ -411,12 +417,7 @@ export function renderMission(root, data, actions) {
           timerBox,
           timerCoach,
           safety
-            ? el(
-                "div",
-                { class: "warning" },
-                el("strong", { text: t("safety") }),
-                safety,
-              )
+            ? button(iconLabel("warning", t("safetyAlerts")), "safety-alert-button", () => showSafetyAlerts(safety))
             : null,
           el(
             "div",

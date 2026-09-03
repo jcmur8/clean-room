@@ -1,5 +1,6 @@
 import { el, button } from "../ui.js";
 import { t } from "../i18n.js";
+import { iconLabel } from "../icons.js";
 
 export function renderMissionOffer(root, data, actions, modeId) {
   const message = t("missionOfferMessage");
@@ -34,8 +35,8 @@ export function renderMissionOffer(root, data, actions, modeId) {
         el(
           "div",
           { class: "mission-offer-actions" },
-          button(t("acceptMission"), "btn-primary accept-mission", () => finish("intro")),
-          button(t("denyMission"), "btn-secondary deny-mission", () => finish("home")),
+          button(iconLabel("check", t("acceptMission")), "btn-primary accept-mission", () => finish("intro")),
+          button(iconLabel("close", t("denyMission")), "btn-danger deny-mission", () => finish("home")),
         ),
       ),
     ),

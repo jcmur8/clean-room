@@ -4,6 +4,7 @@ import { monsterSprite, monsterName } from "../monsters.js";
 import { monsterStory } from "../monster-stories.js";
 import { comicStory } from "../comic-stories.js";
 import { t } from "../i18n.js";
+import { icon } from "../icons.js";
 
 export function renderComicBook(root, data, actions) {
   const unlocked = new Set(data.appSettings.defeatedMonsterIds || []);
@@ -49,7 +50,7 @@ export function renderComicBook(root, data, actions) {
     el(
       "section",
       { class: "child-screen comic-library-screen" },
-      el("div", { class: "screen-title-row" }, button("←", "btn-secondary", () => actions.go("home"), { "aria-label": t("backToMenu") }), el("div", {}, el("h1", { text: t("comicBook") }), el("p", { text: t("comicBookHelp") }))),
+      el("div", { class: "screen-title-row" }, button(icon("back"), "btn-secondary", () => actions.go("home"), { "aria-label": t("backToMenu") }), el("div", {}, el("h1", { text: t("comicBook") }), el("p", { text: t("comicBookHelp") }))),
       el("div", { class: "monster-library-grid" }, ...tiles),
     ),
   );
@@ -83,7 +84,7 @@ export function renderComicReader(root, data, actions, params = {}) {
       el(
         "div",
         { class: "screen-title-row" },
-        button("←", "btn-secondary", () => actions.go("comicbook"), { "aria-label": t("backToComics") }),
+        button(icon("back"), "btn-secondary", () => actions.go("comicbook"), { "aria-label": t("backToComics") }),
         el("div", {}, el("span", { class: "comic-progress", text: t("comicScene", { current: scene + 1, total: scenes.length }) }), el("h1", { text: `${monsterName(monster)}: ${title}` })),
       ),
       el(

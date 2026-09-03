@@ -1,5 +1,6 @@
 import { el, button } from "../ui.js";
 import { t } from "../i18n.js";
+import { iconLabel } from "../icons.js";
 
 export function renderHome(root, data, actions) {
   const active = Boolean(data.activeSession && data.activeSession.status !== "complete");
@@ -35,14 +36,14 @@ export function renderHome(root, data, actions) {
     el(
       "div",
       { class: "landing-menu-grid", "aria-label": t("mainMenu") },
-      button(`⚔ ${active ? t("resume") : t("battleMenu")}`, "landing-menu-card battle-zone", startOrResume),
-      button(`📚 ${t("comicBooksMenu")}`, "landing-menu-card comics-zone", async () => {
+      button(iconLabel("battle", active ? t("resume") : t("battleMenu")), "landing-menu-card battle-zone", startOrResume),
+      button(iconLabel("book", t("comicBooksMenu")), "landing-menu-card comics-zone", async () => {
         await actions.audio();
         actions.go("comicbook");
       }),
       logo,
-      button(`🔐 ${t("parentZone")}`, "landing-menu-card parent-zone", () => actions.requireParent("parent:dashboard")),
-      button(`⚙ ${t("settingMenu")}`, "landing-menu-card setting-zone", () => actions.go("player-settings")),
+      button(iconLabel("lock", t("parentZone")), "landing-menu-card parent-zone", () => actions.requireParent("parent:dashboard")),
+      button(iconLabel("settings", t("settingMenu")), "landing-menu-card setting-zone", () => actions.go("player-settings")),
     ),
   );
   landing.addEventListener("pointerdown", async () => {

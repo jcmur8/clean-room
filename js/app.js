@@ -42,6 +42,7 @@ import { renderParentDashboard } from "./views/parent-dashboard.js";
 import { renderPlayerSettings } from "./views/player-settings.js";
 import { renderComicBook, renderComicReader } from "./views/comicbook.js";
 import { renderMissionOffer } from "./views/mission-offer.js";
+import { iconLabel } from "./icons.js";
 import { el, button } from "./ui.js";
 import { heroPortrait } from "./profile-photo.js";
 import { t, setLanguage, modeName, localized } from "./i18n.js";
@@ -117,7 +118,8 @@ const actions = {
   assistantSpeak: (text) => {
     const d = getState();
     beep("radio", d.appSettings.soundVolume * 0.7);
-    return speakAssistant(text, d.appSettings.speech, d.appSettings.language);
+    window.setTimeout(() => speakAssistant(text, d.appSettings.speech, d.appSettings.language), 250);
+    return true;
   },
   stopVoice: stopSpeech,
   startMusic: () => {
@@ -313,7 +315,7 @@ function renderModes() {
           { class: "grid three" },
           ...modes.map((m) =>
             button(
-              `${m.id === "quick" ? "⚡" : m.id === "deep" ? "🧹" : "🛡️"} ${modeName(m)}`,
+              iconLabel(m.id === "quick" ? "play" : "battle", modeName(m)),
               "choice mode-card",
               () => {
                 route = "mission-offer";
@@ -393,7 +395,7 @@ function renderIntro(modeId) {
               ),
           ),
           el("p", { text: t("teamRule") }),
-          button(t("begin"), "btn-primary briefing-begin", () => startBattle(modeId)),
+          button(iconLabel("play", t("begin")), "btn-primary briefing-begin", () => startBattle(modeId)),
         ),
       ),
     ),
@@ -461,7 +463,8 @@ function showPin(purpose = "parent:dashboard") {
     { class: "modal" },
     el(
       "div",
-      { class: "card" },
+      { class: "card pin-card" },
+      button("×", "pin-close", () => modal.remove(), { "aria-label": t("closeHelp") }),
       el("h2", { text: t("parentPin") }),
       el("p", { text: t("grownArea") }),
       dots,
@@ -477,10 +480,6 @@ function showPin(purpose = "parent:dashboard") {
     if (k === "←") {
       pin = pin.slice(0, -1);
       refresh();
-      return;
-    }
-    if (k === "X") {
-      modal.remove();
       return;
     }
     if (pin.length < 4) pin += k;
@@ -514,8 +513,9 @@ function showPin(purpose = "parent:dashboard") {
       }
     }
   }
-  for (const k of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "X", "0", "←"])
+  for (const k of ["1", "2", "3", "4", "5", "6", "7", "8", "9"])
     keys.append(button(k, "btn-secondary", () => press(k)));
+  keys.append(el("span", { "aria-hidden": "true" }), button("0", "btn-secondary", () => press("0")), button("←", "btn-secondary", () => press("←"), { "aria-label": t("backspace") }));
   modal.firstChild.append(keys);
   document.body.append(modal);
 }

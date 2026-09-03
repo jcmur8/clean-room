@@ -1,5 +1,9 @@
 # Implementation Notes
 
+## v1.14.0
+
+This release adds `js/icons.js`, a reusable current-color SVG icon library that avoids emoji rendering differences across Safari versions. It also simplifies the battle information hierarchy, introduces modal safety alerts, strengthens timeout feedback, updates the assistant speech profile, and moves PIN dismissal outside the numeric keypad. Schema remains 11; the offline cache advances to `room-monster-v1.14.0`.
+
 ## v1.13.0
 
 Schema 11 localizes the retained `quick` mode as Quick Mission. Quick-mode phase snapshots are generated dynamically in participant-sized chunks; the existing modulo assignment then shares a short final phase across all active heroes. Locked comic tiles set `selectedMonsterId` and route directly to the Quick Mission offer, while unlocked tiles remain comic-reader links.
