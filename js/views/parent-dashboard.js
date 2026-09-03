@@ -134,6 +134,65 @@ function renderProfiles(content, data, actions) {
 function renderMissions(content, data, actions) {
   const missions = data.missions.filter((mission) => !mission.archived);
   const controls = new Map();
+  const showAddMission = () => {
+    const title = el("input", { maxlength: "60", placeholder: t("missionTitle") });
+    const instruction = el("textarea", { rows: "4", maxlength: "240", placeholder: t("missionInstruction") });
+    const icon = el("input", { maxlength: "4", value: "🎯", "aria-label": t("missionIcon") });
+    icon.value = "🎯";
+    const modal = el(
+      "div",
+      { class: "modal", role: "dialog", "aria-modal": "true" },
+      el(
+        "div",
+        { class: "card add-mission-dialog" },
+        el("h2", { text: t("addMissionTitle") }),
+        el("label", { class: "field" }, el("span", { text: t("missionTitle") }), title),
+        el("label", { class: "field" }, el("span", { text: t("missionInstruction") }), instruction),
+        el("label", { class: "field" }, el("span", { text: t("missionIcon") }), icon),
+        el(
+          "div",
+          { class: "button-row" },
+          button(t("cancel"), "btn-secondary", () => modal.remove()),
+          button(t("addMission"), "btn-primary", async () => {
+            const missionTitle = title.value.trim();
+            const missionInstruction = instruction.value.trim();
+            if (!missionTitle || !missionInstruction) {
+              actions.notice(t("missionFieldsRequired"));
+              return;
+            }
+            data.missions.push({
+              id: crypto.randomUUID(),
+              title: missionTitle,
+              titleEs: missionTitle,
+              childInstruction: missionInstruction,
+              childInstructionEs: missionInstruction,
+              parentInstruction: missionInstruction,
+              parentInstructionEs: missionInstruction,
+              safetyNote: "",
+              safetyNoteEs: "",
+              zoneId: "room",
+              icon: icon.value.trim() || "🎯",
+              estimatedMinutes: 5,
+              difficulty: 1,
+              active: true,
+              roles: ["Finder"],
+              childExclusions: [],
+              points: 10,
+              collectibleId: "custom-mission",
+              inspectionRequired: true,
+              archived: false,
+            });
+            await actions.save(data);
+            modal.remove();
+            actions.goParent("missions");
+            actions.notice(t("missionAdded"));
+          }),
+        ),
+      ),
+    );
+    document.body.append(modal);
+    title.focus();
+  };
   const header = el(
     "tr",
     {},
@@ -182,20 +241,31 @@ function renderMissions(content, data, actions) {
       el(
         "td",
         {},
-        button(t("duplicate"), "btn-secondary matrix-action", async () => {
-          const duplicate = structuredClone(mission);
-          duplicate.id = crypto.randomUUID();
-          duplicate.title += " Copy";
-          duplicate.titleEs += " Copia";
-          data.missions.push(duplicate);
+        button(t("deleteMission"), "btn-danger matrix-action", async () => {
+          const blockingMode = data.gameModes.find(
+            (mode) => mode.missionIds.includes(mission.id) && mode.missionIds.length <= 1,
+          );
+          if (blockingMode) {
+            actions.notice(t("cannotDeleteOnlyMission", { mode: modeName(blockingMode) }));
+            return;
+          }
+          if (!confirm(t("deleteMissionConfirm", { mission: localized(mission, "title") }))) return;
+          mission.archived = true;
+          mission.active = false;
+          for (const mode of data.gameModes) {
+            mode.missionIds = mode.missionIds.filter((id) => id !== mission.id);
+            if (mode.missionPhases) delete mode.missionPhases[mission.id];
+          }
           await actions.save(data);
           actions.goParent("missions");
+          actions.notice(t("missionDeleted"));
         }),
       ),
     );
   });
   content.append(
     el("p", { class: "notice", text: t("missionMatrixHelp") }),
+    button(t("addMissions"), "btn-primary add-missions-button", showAddMission),
     el(
       "div",
       { class: "mission-matrix-wrap" },

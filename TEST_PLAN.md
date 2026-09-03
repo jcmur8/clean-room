@@ -1,5 +1,14 @@
 # Test Plan
 
+## v1.13.0 interaction checks
+
+- Tap a locked comic tile and verify a Quick Mission offer opens for that exact monster; complete it and verify the tile becomes an unlocked comic link.
+- Confirm there is no Battle this Monster button and the welcome label reads Settings.
+- Verify the logo is about 30% larger, buttons are smaller, and the former left/right groups are swapped.
+- Enter Parent Zone twice and verify the numeric PIN is requested each time.
+- With two heroes and three Quick Mission tasks, verify phase one gives each hero a different task and phase two assigns the remaining task to both. Verify larger task sets create additional phases.
+- Under Parent → Missions, verify Add Missions creates a configurable row and Delete removes a mission from every mode after confirmation.
+
 ## v1.12.0 campaign-flow checks
 
 - Confirm setup initially shows one hero, supports adding more, and strips every non-digit from both four-digit PIN fields.

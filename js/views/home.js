@@ -41,7 +41,7 @@ export function renderHome(root, data, actions) {
         actions.go("comicbook");
       }),
       logo,
-      button(`🔐 ${t("parentZone")}`, "landing-menu-card parent-zone", () => actions.goParent("dashboard")),
+      button(`🔐 ${t("parentZone")}`, "landing-menu-card parent-zone", () => actions.requireParent("parent:dashboard")),
       button(`⚙ ${t("settingMenu")}`, "landing-menu-card setting-zone", () => actions.go("player-settings")),
     ),
   );

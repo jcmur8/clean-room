@@ -192,6 +192,16 @@ export function migrate(data) {
     d.schemaVersion = 10;
   }
 
+  if (d.schemaVersion === 10) {
+    const quick = d.gameModes.find((mode) => mode.id === "quick");
+    if (quick) {
+      quick.name = "Quick Mission";
+      quick.nameEs = "Misión Rápida";
+      quick.defaultMode = true;
+    }
+    d.schemaVersion = 11;
+  }
+
   if (d.schemaVersion !== SCHEMA_VERSION) {
     throw new Error("Unsupported schema version");
   }

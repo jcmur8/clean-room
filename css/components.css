@@ -580,8 +580,8 @@
   align-self: stretch;
 }
 .landing-logo {
-  width: min(330px, 100%);
-  max-height: 48vh;
+  width: min(430px, 100%);
+  max-height: 58vh;
   object-fit: contain;
   filter: drop-shadow(0 0 20px rgba(52, 231, 255, 0.28));
 }
@@ -596,11 +596,11 @@
 }
 .landing-menu-grid {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(230px, 0.82fr) minmax(220px, 1fr);
+  grid-template-columns: minmax(190px, 0.78fr) minmax(300px, 1.12fr) minmax(190px, 0.78fr);
   grid-template-rows: minmax(220px, 2fr) minmax(110px, 1fr);
   grid-template-areas:
-    "battle logo comics"
-    "parent logo setting";
+    "comics logo battle"
+    "setting logo parent";
   gap: clamp(14px, 2vw, 24px);
   min-height: 0;
 }
@@ -613,13 +613,13 @@
   display: grid;
   place-items: center;
   min-height: 150px;
-  padding: clamp(18px, 3vw, 42px);
+  padding: clamp(14px, 2.2vw, 30px);
   overflow: hidden;
   border: 2px solid #36795b;
   border-radius: 22px;
   background: linear-gradient(145deg, #0d352b, #071d1a);
   color: #d7ffe1;
-  font-size: clamp(28px, 4vw, 52px);
+  font-size: clamp(25px, 3.3vw, 44px);
   font-weight: 900;
   line-height: 1.05;
   text-align: center;
@@ -740,6 +740,11 @@
   color: #caffd5;
   border-radius: 18px;
   text-align: center;
+  cursor: pointer;
+}
+.monster-library-tile:focus-visible {
+  outline: 4px solid #56d8ff;
+  outline-offset: 4px;
 }
 .monster-library-tile.locked .library-monster {
   filter: grayscale(1) brightness(0.36) contrast(1.2);
@@ -765,27 +770,18 @@
 .monster-library-tile span {
   font-size: 13px;
 }
-.monster-select-button,
-.comic-read-button {
+.comic-tile-action {
   width: 100%;
-  min-height: 48px;
-  padding: 9px 10px;
+  min-height: 42px;
+  padding: 10px;
   border-radius: 10px;
-  background: #123b31;
-  color: #d8ffe2;
-  font-size: 14px;
-}
-.monster-select-button.selected {
-  background: #56d8ff;
-  color: #03161b;
-}
-.comic-read-button {
   background: #7857bb;
-  color: #fff;
+  color: #fff !important;
+  font-weight: 900;
 }
-.comic-locked-note {
-  min-height: 38px;
-  color: #9ab0a2 !important;
+.comic-tile-action.locked-mission {
+  background: #0d4651;
+  color: #bdf6ff !important;
 }
 .comic-reader-card {
   width: min(100%, 1040px);

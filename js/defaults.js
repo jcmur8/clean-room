@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 10;
+export const SCHEMA_VERSION = 11;
 export const heroAvatars = [
   "🦸",
   "🦸‍♀️",
@@ -267,8 +267,8 @@ export const zones = [
 export const defaultModes = [
   {
     id: "quick",
-    name: "Quick Rescue",
-    nameEs: "Rescate Rápido",
+    name: "Quick Mission",
+    nameEs: "Misión Rápida",
     missionIds: ["trash", "clothes", "toys", "floor"],
     missionPhases: { trash: 1, clothes: 1, toys: 1, floor: 1 },
     childSelectable: true,

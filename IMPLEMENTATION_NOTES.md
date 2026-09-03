@@ -1,5 +1,9 @@
 # Implementation Notes
 
+## v1.13.0
+
+Schema 11 localizes the retained `quick` mode as Quick Mission. Quick-mode phase snapshots are generated dynamically in participant-sized chunks; the existing modulo assignment then shares a short final phase across all active heroes. Locked comic tiles set `selectedMonsterId` and route directly to the Quick Mission offer, while unlocked tiles remain comic-reader links.
+
 ## v1.12.0
 
 Schema 10 removes the legacy `normal` game mode, makes `quick` the default, and renames the retained `deep` mode to Complete Rescue while preserving its identifier for session compatibility. The `mission-offer` route sits between mode choice and briefing. Its typewriter animation and assistant voice are local-only, and its robot sprite is bundled for offline use.

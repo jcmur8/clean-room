@@ -1,5 +1,15 @@
 # The Battle of the Room
 
+## v1.13.0 — Comic launches and balanced Quick Missions
+
+- Tapping a locked Comic Books character now immediately offers a Quick Mission against that monster; victory unlocks its comic. Unlocked characters still open their stories.
+- Removed the separate Battle this Monster control and renamed Setting to Settings.
+- Enlarged the centered logo by roughly 30%, reduced surrounding controls, and swapped the left/right button groups.
+- Entering Parent Zone from the welcome screen always requests the numeric parent PIN.
+- Quick Mission assigns at most one distinct required task per hero in each phase, creates more phases when tasks outnumber heroes, and shares the remaining task when the final phase has fewer tasks than heroes.
+- Parent → Missions replaces Duplicate with confirmed Delete and adds an Add Missions dialog.
+- Schema version is 11 and the service-worker cache is `room-monster-v1.13.0`.
+
 ## v1.12.0 — Incoming mission campaign flow
 
 - First-time setup begins with one child and filters Parent PIN input to exactly four numeric digits.
