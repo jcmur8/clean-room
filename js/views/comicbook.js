@@ -10,17 +10,19 @@ export function renderComicBook(root, data, actions) {
   const tiles = monsters.map((monster) => {
     const defeated = unlocked.has(monster.id);
     const selected = data.appSettings.selectedMonsterId === monster.id;
-    const selectMonster = button(
-      selected ? `✓ ${t("selectedForBattle")}` : `⚔ ${t("selectForBattle")}`,
-      `monster-select-button ${selected ? "selected" : ""}`,
-      async () => {
-        data.appSettings.selectedMonsterId = monster.id;
-        await actions.save(data);
-        actions.notice(t("monsterSelected", { monster: monsterName(monster) }));
-        actions.go("comicbook");
-      },
-      { "aria-pressed": selected ? "true" : "false" },
-    );
+    const selectMonster = defeated
+      ? button(
+          selected ? `✓ ${t("selectedForBattle")}` : `⚔ ${t("battleThisMonster")}`,
+          `monster-select-button ${selected ? "selected" : ""}`,
+          async () => {
+            data.appSettings.selectedMonsterId = monster.id;
+            await actions.save(data);
+            actions.notice(t("monsterSelected", { monster: monsterName(monster) }));
+            actions.go("modes");
+          },
+          { "aria-pressed": selected ? "true" : "false" },
+        )
+      : null;
     return el(
       "article",
       { class: `monster-library-tile ${defeated ? "unlocked" : "locked"} ${selected ? "selected" : ""}` },

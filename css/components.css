@@ -236,6 +236,9 @@
 .keypad button {
   font-size: 28px;
 }
+.numeric-pin-input {
+  -webkit-text-security: disc;
+}
 .zone-strip {
   display: flex;
   gap: 8px;
@@ -243,8 +246,11 @@
 }
 .zone {
   padding: 8px 12px;
-  background: #eee;
+  border: 1px solid #6d5739;
+  background: #eadcb8;
+  color: #21180e;
   border-radius: 999px;
+  font-weight: 800;
 }
 .zone.restored {
   background: #dff3e4;
@@ -277,6 +283,137 @@
   border-radius: 14px;
   background: #fff;
   color: #102019;
+}
+.mission-offer-screen {
+  position: relative;
+  min-height: calc(100vh - 105px);
+  overflow: hidden;
+  border: 1px solid #2e7f61;
+  background: radial-gradient(circle at 50% 40%, #0b3433, #01090c 70%);
+}
+.transmission-grid {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 5px, rgba(91, 255, 196, 0.035) 6px),
+    linear-gradient(rgba(71, 229, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(71, 229, 255, 0.06) 1px, transparent 1px);
+  background-size: auto, 44px 44px, 44px 44px;
+  animation: transmission-scan 5s linear infinite;
+}
+.mission-offer-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(320px, 1.2fr);
+  grid-template-areas: "label label" "robot message" "robot actions";
+  gap: 14px 28px;
+  align-items: center;
+  width: min(1050px, 94vw);
+  margin: auto;
+  padding: clamp(18px, 3vw, 38px);
+  border: 2px solid #56d8ff;
+  border-radius: 18px;
+  background: rgba(2, 20, 25, 0.9);
+  box-shadow: 0 0 45px rgba(57, 220, 255, 0.2), inset 0 0 35px rgba(65, 255, 174, 0.06);
+}
+.transmission-label {
+  grid-area: label;
+  color: #7effae;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+.digital-butler {
+  grid-area: robot;
+  width: 100%;
+  max-height: 58vh;
+  object-fit: contain;
+  animation: robot-salute-arrival 1.1s ease-out both, robot-hologram 2.8s ease-in-out 1.1s infinite;
+  filter: drop-shadow(0 0 24px rgba(74, 225, 255, 0.4));
+}
+.incoming-message-panel {
+  grid-area: message;
+  min-height: 180px;
+  padding: 24px;
+  border-left: 5px solid #65ff9b;
+  background: #061d1d;
+  color: #d4ffdf;
+  font-size: clamp(25px, 3.7vw, 46px);
+  font-weight: 800;
+  line-height: 1.25;
+}
+.incoming-message-text { display: inline; }
+.typing-cursor { color: #65ff9b; animation: cursor-blink 0.65s steps(1) infinite; }
+.mission-offer-actions {
+  grid-area: actions;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+}
+.mission-offer-actions button { min-height: 82px; font-size: clamp(22px, 3vw, 34px); }
+.detective-briefing-screen { padding: 34px 12px; }
+.detective-portfolio {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr);
+  gap: clamp(22px, 4vw, 48px);
+  width: min(1080px, 96vw);
+  margin: auto;
+  padding: clamp(35px, 5vw, 64px) clamp(22px, 4vw, 50px) clamp(24px, 4vw, 44px);
+  border: 12px solid #5b3c22;
+  border-radius: 12px 28px 28px 12px;
+  background:
+    linear-gradient(90deg, rgba(83, 53, 27, 0.15) 0 2px, transparent 2px) 50% 0 / 12px 100%,
+    #e5d2a5;
+  color: #21170d;
+  box-shadow: 0 22px 50px #000, inset 0 0 28px rgba(69, 39, 14, 0.25);
+}
+.portfolio-tab {
+  position: absolute;
+  top: -31px;
+  left: 30px;
+  padding: 10px 24px;
+  border: 4px solid #5b3c22;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: #bd8c4d;
+  color: #1b1108;
+  font-weight: 950;
+  letter-spacing: 0.09em;
+}
+.briefing-evidence {
+  position: relative;
+  display: grid;
+  align-content: center;
+  padding: 22px;
+  border: 2px solid #4d3c2c;
+  background: #f3ead3;
+  color: #20170e;
+  transform: rotate(-1deg);
+  box-shadow: 7px 8px 0 rgba(76, 48, 24, 0.18);
+}
+.evidence-stamp {
+  position: absolute;
+  top: 12px;
+  right: 9px;
+  z-index: 2;
+  padding: 5px 10px;
+  border: 4px double #8d1e1e;
+  color: #8d1e1e;
+  font-weight: 950;
+  transform: rotate(8deg);
+}
+.briefing-report { color: #21170d; }
+.briefing-report h1 { color: #25170b; font-family: Georgia, serif; }
+.briefing-report .hero-chip { border: 1px solid #766143; background: #f7efd9; color: #21170d; }
+.briefing-begin { width: 100%; min-height: 80px; font-size: clamp(26px, 4vw, 42px); }
+@media (max-width: 760px) {
+  .mission-offer-card,
+  .detective-portfolio { grid-template-columns: 1fr; }
+  .mission-offer-card { grid-template-areas: "label" "robot" "message" "actions"; }
+  .digital-butler { max-height: 34vh; }
+  .detective-portfolio { padding-top: 58px; }
 }
 .setup-hero-row .field {
   margin: 0;
@@ -421,9 +558,7 @@
 .landing-screen {
   position: relative;
   min-height: calc(100dvh - 150px);
-  align-content: stretch;
-  grid-template-rows: minmax(165px, 31vh) minmax(340px, 1fr) auto;
-  gap: clamp(12px, 2vh, 22px);
+  align-content: center;
   padding: clamp(12px, 2vw, 24px);
   overflow: hidden;
   border: 1px solid #246848;
@@ -441,10 +576,12 @@
   place-items: center;
   align-content: center;
   min-height: 0;
+  grid-area: logo;
+  align-self: stretch;
 }
 .landing-logo {
-  width: min(360px, 72vw);
-  max-height: 26vh;
+  width: min(330px, 100%);
+  max-height: 48vh;
   object-fit: contain;
   filter: drop-shadow(0 0 20px rgba(52, 231, 255, 0.28));
 }
@@ -459,11 +596,18 @@
 }
 .landing-menu-grid {
   display: grid;
-  grid-template-columns: minmax(180px, 0.62fr) minmax(0, 1.38fr);
-  grid-template-rows: repeat(2, minmax(150px, 1fr));
+  grid-template-columns: minmax(220px, 1fr) minmax(230px, 0.82fr) minmax(220px, 1fr);
+  grid-template-rows: minmax(220px, 2fr) minmax(110px, 1fr);
+  grid-template-areas:
+    "battle logo comics"
+    "parent logo setting";
   gap: clamp(14px, 2vw, 24px);
   min-height: 0;
 }
+.landing-menu-card.battle-zone { grid-area: battle; }
+.landing-menu-card.comics-zone { grid-area: comics; }
+.landing-menu-card.parent-zone { grid-area: parent; }
+.landing-menu-card.setting-zone { grid-area: setting; }
 .landing-menu-card {
   position: relative;
   display: grid;
@@ -510,6 +654,7 @@
 .landing-menu-card.comics-zone { border-color: #9d70ff; color: #eadfff; }
 .landing-menu-card.parent-zone,
 .landing-menu-card.setting-zone {
+  min-height: 110px;
   padding-inline: clamp(12px, 2vw, 24px);
   font-size: clamp(22px, 3vw, 38px);
 }
@@ -531,7 +676,13 @@
   }
   .landing-menu-grid {
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(4, minmax(105px, 1fr));
+    grid-template-rows: auto repeat(2, minmax(130px, 1fr)) repeat(2, minmax(90px, auto));
+    grid-template-areas:
+      "logo"
+      "battle"
+      "comics"
+      "parent"
+      "setting";
   }
   .landing-menu-card { min-height: 105px; font-size: clamp(25px, 8vw, 38px); }
 }

@@ -1,4 +1,4 @@
-const CACHE = "room-monster-v1.11.0";
+const CACHE = "room-monster-v1.12.0";
 const ASSETS = [
   "./",
   "./index.html",
@@ -34,6 +34,7 @@ const ASSETS = [
   "./js/router.js",
   "./js/views/setup.js",
   "./js/views/home.js",
+  "./js/views/mission-offer.js",
   "./js/views/mission.js",
   "./js/views/battle-transition.js",
   "./js/views/monster-origin.js",
@@ -52,6 +53,7 @@ const ASSETS = [
   "./assets/images/monsters/monster-roster-v2.png",
   "./assets/images/hero-cleaners-logo-v1.png",
   "./assets/images/heroes-de-limpieza-logo-v1.png",
+  "./assets/images/digital-butler-salute-v1.png",
   "./assets/comics/en/page-01.jpg",
   "./assets/comics/es/page-01.jpg",
   "./assets/comics/en/page-02.jpg",

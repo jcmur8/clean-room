@@ -168,6 +168,30 @@ export function migrate(data) {
     d.schemaVersion = 9;
   }
 
+  if (d.schemaVersion === 9) {
+    const modeDefaults = makeDefaultData().gameModes;
+    d.gameModes = (d.gameModes || [])
+      .filter((mode) => mode.id !== "normal")
+      .map((mode) => {
+        const replacement = modeDefaults.find((item) => item.id === mode.id);
+        return replacement
+          ? {
+              ...mode,
+              name: replacement.name,
+              nameEs: replacement.nameEs,
+              defaultMode: mode.id === "quick",
+            }
+          : mode;
+      });
+    for (const fallback of modeDefaults) {
+      if (!d.gameModes.some((mode) => mode.id === fallback.id))
+        d.gameModes.push(structuredClone(fallback));
+    }
+    if (!d.gameModes.some((mode) => mode.id === d.appSettings.lastModeId))
+      d.appSettings.lastModeId = "quick";
+    d.schemaVersion = 10;
+  }
+
   if (d.schemaVersion !== SCHEMA_VERSION) {
     throw new Error("Unsupported schema version");
   }

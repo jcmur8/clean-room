@@ -20,7 +20,6 @@ export function renderSetup(root, data, actions) {
   let step = 0;
   let heroes = [
     { name: "Hero One", avatar: heroAvatars[0], photo: null },
-    { name: "Hero Two", avatar: heroAvatars[1], photo: null },
   ];
   let pin = "";
   let confirmation = "";
@@ -108,7 +107,7 @@ export function renderSetup(root, data, actions) {
               : null,
           ),
         );
-        if (heroes.length > 2) {
+        if (heroes.length > 1) {
           row.append(
             button(t("removeHero"), "btn-secondary", () => {
               heroes.splice(index, 1);
@@ -150,14 +149,18 @@ export function renderSetup(root, data, actions) {
         el("h1", { text: t("pinTitle") }),
         el("p", { text: t("pinIntro") }),
       );
-      const first = input("password");
-      const second = input("password");
+      const first = input("text");
+      const second = input("text");
+      first.className = second.className = "numeric-pin-input";
       first.inputMode = second.inputMode = "numeric";
+      first.pattern = second.pattern = "[0-9]*";
       first.maxLength = second.maxLength = 4;
       first.oninput = () => {
+        first.value = first.value.replace(/\D/g, "").slice(0, 4);
         pin = first.value;
       };
       second.oninput = () => {
+        second.value = second.value.replace(/\D/g, "").slice(0, 4);
         confirmation = second.value;
       };
       card.append(
@@ -189,6 +192,7 @@ export function renderSetup(root, data, actions) {
         ),
         el("p", { text: t("setupSummary") }),
         button(t("saveSetup"), "btn-primary", async () => {
+          await actions.audio();
           const security = await hashPin(pin);
           data.children = heroes.map((hero, index) => ({
             id: `child-${index + 1}`,

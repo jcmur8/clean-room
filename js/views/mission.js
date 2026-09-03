@@ -266,15 +266,22 @@ export function renderMission(root, data, actions) {
             const assignedMission = session.missionSnapshots.find(
               (item) => item.id === task.missionId,
             );
+            const instruction = localized(assignedMission, "childInstruction");
+            const subtasks = instruction.match(/[^.!?]+[.!?]?/g) || [instruction];
             return el(
               "li",
               {},
               el("strong", {
                 text: `${assignedMission.icon} ${localized(assignedMission, "title")}`,
               }),
-              el("span", {
-                text: localized(assignedMission, "childInstruction"),
-              }),
+              el(
+                "ul",
+                { class: "hero-subtask-list" },
+                ...subtasks
+                  .map((text) => text.trim())
+                  .filter(Boolean)
+                  .map((text) => el("li", { text })),
+              ),
             );
           }),
         );

@@ -208,6 +208,18 @@
 .hero-responsibility-list strong { font-size: clamp(20px, 3vw, 30px); }
 .hero-responsibility-list span { margin-top: 6px; color: #b9eac5; }
 .popover-dismiss-hint { color: #86b99a; font-size: 14px; }
+.hero-subtask-list {
+  margin: 10px 0 0;
+  padding-left: 28px;
+  list-style: disc;
+}
+.hero-subtask-list li {
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #caffd5;
+}
 .hero-task-toggle {
   grid-column: 1 / 3;
   display: grid;

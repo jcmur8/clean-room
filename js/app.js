@@ -16,7 +16,7 @@ import {
 } from "./audio.js";
 import { monsters } from "./defaults.js";
 import { monsterSprite } from "./monsters.js";
-import { speak, speakCommand } from "./speech.js";
+import { speak, speakCommand, speakAssistant, stopSpeech } from "./speech.js";
 import { applyAccessibility, announce, focusMain } from "./accessibility.js";
 import { createSession } from "./game-engine.js";
 import {
@@ -41,6 +41,7 @@ import { renderMonsterOrigin } from "./views/monster-origin.js";
 import { renderParentDashboard } from "./views/parent-dashboard.js";
 import { renderPlayerSettings } from "./views/player-settings.js";
 import { renderComicBook, renderComicReader } from "./views/comicbook.js";
+import { renderMissionOffer } from "./views/mission-offer.js";
 import { el, button } from "./ui.js";
 import { heroPortrait } from "./profile-photo.js";
 import { t, setLanguage, modeName, localized } from "./i18n.js";
@@ -113,6 +114,12 @@ const actions = {
     }, 280);
     return true;
   },
+  assistantSpeak: (text) => {
+    const d = getState();
+    beep("radio", d.appSettings.soundVolume * 0.7);
+    return speakAssistant(text, d.appSettings.speech, d.appSettings.language);
+  },
+  stopVoice: stopSpeech,
   startMusic: () => {
     const d = getState();
     if (d.appSettings.sound) startBattleMusic(d.appSettings.soundVolume);
@@ -269,8 +276,10 @@ function render() {
   if (!d.appSettings.setupComplete) return renderSetup(root, d, actions);
   if (route === "home") renderHome(root, d, actions);
   else if (route === "modes") renderModes();
+  else if (route === "mission-offer")
+    renderMissionOffer(root, d, actions, params.modeId || "quick");
   else if (route === "intro")
-    renderIntro(params.modeId || d.appSettings.lastModeId || "normal");
+    renderIntro(params.modeId || d.appSettings.lastModeId || "quick");
   else if (route === "mission") renderMission(root, d, actions);
   else if (route === "battle-transition")
     renderBattleTransition(root, d, actions);
@@ -307,7 +316,7 @@ function renderModes() {
               `${m.id === "quick" ? "⚡" : m.id === "deep" ? "🧹" : "🛡️"} ${modeName(m)}`,
               "choice mode-card",
               () => {
-                route = "intro";
+                route = "mission-offer";
                 params = { modeId: m.id };
                 render();
               },
@@ -324,23 +333,23 @@ function renderIntro(modeId) {
     missions = (mode?.missionIds || [])
       .map((id) => d.missions.find((x) => x.id === id))
       .filter((x) => x?.active && !x.archived);
+  const briefingMonsterId =
+    d.appSettings.selectedMonsterId ||
+    monsters[(d.appSettings.nextMonsterIndex || 0) % monsters.length].id;
   root.replaceChildren(
     el(
       "section",
-      { class: "child-screen" },
+      { class: "child-screen detective-briefing-screen" },
       el(
         "div",
-        { class: "card hero-card" },
+        { class: "detective-portfolio" },
+        el("div", { class: "portfolio-tab", text: t("detectiveBriefing") }),
         el(
           "div",
-          {},
+          { class: "briefing-evidence" },
+          el("span", { class: "evidence-stamp", text: t("classified") }),
           monsterSprite(
-            {
-              monsterId:
-                monsters[
-                  (d.appSettings.nextMonsterIndex || 0) % monsters.length
-                ].id,
-            },
+            { monsterId: briefingMonsterId },
             "monster-sprite intro-monster messy",
           ),
           el(
@@ -356,7 +365,7 @@ function renderIntro(modeId) {
         ),
         el(
           "div",
-          {},
+          { class: "briefing-report" },
           el("h1", { text: t("briefing") }),
           el("p", {
             text: t("briefingText", {
@@ -384,7 +393,7 @@ function renderIntro(modeId) {
               ),
           ),
           el("p", { text: t("teamRule") }),
-          button(t("beginMission"), "btn-primary", () => startBattle(modeId)),
+          button(t("begin"), "btn-primary briefing-begin", () => startBattle(modeId)),
         ),
       ),
     ),

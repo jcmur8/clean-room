@@ -50,6 +50,29 @@ export function speakCommand(
     return false;
   }
 }
+export function speakAssistant(text, enabled = true, language = "en") {
+  if (!enabled || !("speechSynthesis" in window) || !text) return false;
+  try {
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(String(text));
+    utterance.rate = 0.9;
+    utterance.pitch = 1.18;
+    utterance.volume = 1;
+    utterance.lang = language === "es" ? "es-US" : "en-US";
+    const voices = speechSynthesis.getVoices();
+    const candidates = voices.filter((voice) =>
+      voice.lang?.toLowerCase().startsWith(language === "es" ? "es" : "en"),
+    );
+    const preferred = candidates.find((voice) =>
+      /samantha|victoria|monica|paulina|google|microsoft/i.test(voice.name),
+    );
+    if (preferred || candidates[0]) utterance.voice = preferred || candidates[0];
+    speechSynthesis.speak(utterance);
+    return true;
+  } catch {
+    return false;
+  }
+}
 export function stopSpeech() {
   try {
     speechSynthesis.cancel();

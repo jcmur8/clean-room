@@ -1,5 +1,17 @@
 # The Battle of the Room
 
+## v1.12.0 — Incoming mission campaign flow
+
+- First-time setup begins with one child and filters Parent PIN input to exactly four numeric digits.
+- The centered bilingual logo is surrounded by two large child choices (Battle and Comic Books) and two smaller adult/settings choices.
+- Welcome music starts automatically whenever Safari has an active audio permission; setup and the first page interaction activate it when needed.
+- The app now offers only Quick Rescue and Complete Rescue. Existing Normal Battle settings migrate safely into the two-mode structure.
+- Selecting an unlocked monster in Comic Books launches the battle-mode flow with that monster as the target.
+- A narrated digital transmission with a saluting robot asks the hero to Accept or Deny before the detective-portfolio Battle Briefing.
+- Briefing colors now use dark text on light evidence cards, and its action is simplified to Begin.
+- Responsibility popovers show sentence-level subtasks as bullet points, and Team Status uses the shorter completion reminder.
+- Schema version is 10 and the service-worker cache is `room-monster-v1.12.0`.
+
 ## v1.11.0 — Selectable monsters and mission popovers
 
 - Comic Book now lets children select any monster as the target of their next battle, while comic stories remain locked until that monster is defeated.

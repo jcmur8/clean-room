@@ -1,5 +1,14 @@
 # Test Plan
 
+## v1.12.0 campaign-flow checks
+
+- Confirm setup initially shows one hero, supports adding more, and strips every non-digit from both four-digit PIN fields.
+- Confirm only Quick Rescue and Complete Rescue appear in child and parent mode screens.
+- Confirm the logo is centered between large Battle/Comic Books controls and smaller Parent Zone/Settings controls.
+- Select an unlocked monster from Comic Books and verify mode choice leads to the incoming transmission, Accept opens its detective briefing, and Deny returns home.
+- Confirm the typewriter message, saluting robot, digital-assistant narration, dark-on-light briefing evidence, and simplified Begin button.
+- Confirm responsibility popovers show subtasks as bullets and Team Status reads “Every hero must finish their task to move on.”
+
 ## v1.11.0 interaction checks
 
 - Verify Parent Zone and Setting are narrower than Battle and Comic Books on the landing screen.

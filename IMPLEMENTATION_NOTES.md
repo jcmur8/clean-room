@@ -1,5 +1,9 @@
 # Implementation Notes
 
+## v1.12.0
+
+Schema 10 removes the legacy `normal` game mode, makes `quick` the default, and renames the retained `deep` mode to Complete Rescue while preserving its identifier for session compatibility. The `mission-offer` route sits between mode choice and briefing. Its typewriter animation and assistant voice are local-only, and its robot sprite is bundled for offline use.
+
 ## v1.11.0
 
 `appSettings.selectedMonsterId` is an optional, backward-compatible next-battle override. Session creation consumes the selected monster and the app clears the override after creating that session. Hero responsibility details are rendered as an accessible non-blocking dialog and dismissed by the next pointer press outside it. Both language-specific logo PNGs are bundled in the offline cache.

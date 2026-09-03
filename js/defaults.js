@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 9;
+export const SCHEMA_VERSION = 10;
 export const heroAvatars = [
   "🦸",
   "🦸‍♀️",
@@ -272,29 +272,15 @@ export const defaultModes = [
     missionIds: ["trash", "clothes", "toys", "floor"],
     missionPhases: { trash: 1, clothes: 1, toys: 1, floor: 1 },
     childSelectable: true,
-    defaultMode: false,
+    defaultMode: true,
     timerPolicy: "elapsed",
     reminderInterval: 5,
     missionDurationSeconds: 300,
   },
   {
-    id: "normal",
-    name: "Normal Battle",
-    nameEs: "Batalla Normal",
-    missionIds: factoryMissions.map((m) => m.id),
-    missionPhases: Object.fromEntries(
-      factoryMissions.map((mission, index) => [mission.id, Math.floor(index / 2) + 1]),
-    ),
-    childSelectable: true,
-    defaultMode: true,
-    timerPolicy: "elapsed",
-    reminderInterval: 7,
-    missionDurationSeconds: 420,
-  },
-  {
     id: "deep",
-    name: "Deep Clean",
-    nameEs: "Limpieza Profunda",
+    name: "Complete Rescue",
+    nameEs: "Rescate Completo",
     missionIds: factoryMissions.map((m) => m.id),
     missionPhases: Object.fromEntries(
       factoryMissions.map((mission, index) => [mission.id, Math.floor(index / 2) + 1]),
@@ -325,7 +311,7 @@ export function makeDefaultData() {
       rewardMessage: "Great teamwork! Ask a grown-up about your family reward.",
       rewardMessageEs:
         "¡Excelente trabajo en equipo! Pregúntenle a un adulto sobre su premio familiar.",
-      lastModeId: "normal",
+      lastModeId: "quick",
       maxParticipants: 8,
       stepCountdownSeconds: 300,
       nextMonsterIndex: 0,

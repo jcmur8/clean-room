@@ -11,54 +11,44 @@ export function renderHome(root, data, actions) {
       return;
     }
     const defaultMode = data.gameModes.find((mode) => mode.defaultMode);
-    actions.go(data.appSettings.showModeSelection ? "modes" : "intro", {
-      modeId: defaultMode ? defaultMode.id : "normal",
+    actions.go(data.appSettings.showModeSelection ? "modes" : "mission-offer", {
+      modeId: defaultMode ? defaultMode.id : "quick",
     });
   };
 
-  const menu = el(
+  const logo = el(
     "div",
-    { class: "landing-menu-grid", "aria-label": t("mainMenu") },
-    button(`🔐 ${t("parentZone")}`, "landing-menu-card parent-zone", () => actions.goParent("dashboard")),
-    button(`⚔ ${active ? t("resume") : t("battleMenu")}`, "landing-menu-card battle-zone", startOrResume),
-    button(`⚙ ${t("settingMenu")}`, "landing-menu-card setting-zone", () => actions.go("player-settings")),
-    button(`📚 ${t("comicBooksMenu")}`, "landing-menu-card comics-zone", async () => {
-      await actions.audio();
-      actions.go("comicbook");
+    { class: "landing-logo-wrap" },
+    el("img", {
+      class: "landing-logo",
+      src: data.appSettings.language === "es"
+        ? "./assets/images/heroes-de-limpieza-logo-v1.png"
+        : "./assets/images/hero-cleaners-logo-v1.png",
+      alt: data.appSettings.language === "es" ? "Héroes de Limpieza" : "Hero Cleaners",
     }),
+    el("p", { class: "landing-tagline", text: t("landingTagline") }),
   );
 
-  const musicButton = button(`♫ ${t("menuMusicHint")}`, "menu-music-activation", async (event) => {
-    event?.stopPropagation?.();
-    await actions.audio();
-    actions.startMenuMusic();
-    musicButton.textContent = `♫ ${t("menuMusicPlaying")}`;
-    musicButton.classList.add("playing");
-  });
-
-  root.replaceChildren(
+  const landing = el(
+    "section",
+    { class: "landing-screen child-screen" },
     el(
-      "section",
-      { class: "landing-screen child-screen" },
-      el(
-        "div",
-        { class: "landing-logo-wrap" },
-        el("img", {
-          class: "landing-logo",
-          src:
-            data.appSettings.language === "es"
-              ? "./assets/images/heroes-de-limpieza-logo-v1.png"
-              : "./assets/images/hero-cleaners-logo-v1.png",
-          alt:
-            data.appSettings.language === "es"
-              ? "Héroes de Limpieza"
-              : "Hero Cleaners",
-        }),
-        el("p", { class: "landing-tagline", text: t("landingTagline") }),
-      ),
-      menu,
-      musicButton,
+      "div",
+      { class: "landing-menu-grid", "aria-label": t("mainMenu") },
+      button(`⚔ ${active ? t("resume") : t("battleMenu")}`, "landing-menu-card battle-zone", startOrResume),
+      button(`📚 ${t("comicBooksMenu")}`, "landing-menu-card comics-zone", async () => {
+        await actions.audio();
+        actions.go("comicbook");
+      }),
+      logo,
+      button(`🔐 ${t("parentZone")}`, "landing-menu-card parent-zone", () => actions.goParent("dashboard")),
+      button(`⚙ ${t("settingMenu")}`, "landing-menu-card setting-zone", () => actions.go("player-settings")),
     ),
   );
+  landing.addEventListener("pointerdown", async () => {
+    await actions.audio();
+    actions.startMenuMusic();
+  }, { once: true, capture: true });
+  root.replaceChildren(landing);
   actions.startMenuMusic();
 }
